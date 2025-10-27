@@ -21,18 +21,28 @@ php artisan sheaf:install slider
 @blade
 <x-demo x-data="{ volume: [50] }">
     <x-ui.slider 
-        x-model="volume" 
-        :min-value="0"
-        :max-value="100"
+        x-model="volume"
+        :fill-track="[true, false]" 
+    />
+    <!-- circle variant -->
+    <x-ui.slider 
+        x-model="volume"
+        handleVariant="circle"
+        :fill-track="[true, false]" 
     />
 </x-demo>
 @endblade
 
 ```html
+ <x-ui.slider 
+    wire:model="volume"
+    :fill-track="[true, false]" 
+/>
+<!-- circle variant -->
 <x-ui.slider 
     wire:model="volume"
-    :min-value="0"
-    :max-value="100"
+    :fill-track="[true, false]" 
+    handle-variant="circle"
 />
 ```
 
@@ -41,6 +51,7 @@ php artisan sheaf:install slider
 To use with Livewire, simply use `wire:model` to bind your state:
 
 ```html
+<!-- this asume you have something like `public $volume = [50]` in your bounded livewire component  -->
 <x-ui.slider 
     wire:model.live="volume"
     :min-value="0"
@@ -62,7 +73,7 @@ You can use it outside Livewire with just Alpine (with Blade):
 </div>
 ```
 
-Because we're making this possible using the `x-modelable` API, you can't use `state` as a variable name because the component uses it internally.
+Because we're making this possible using the `x-modelable` *like* but not explicitly API, you can't use `state` as a variable name because the component uses it internally.
 
 ## Range Configuration
 
@@ -76,7 +87,11 @@ Define the boundaries of your slider with custom minimum and maximum values.
         x-model="range"
         :min-value="20"
         :max-value="80"
+        :fill-track="[true, false]"
+        :step="1"
+        tooltips
     />
+    <!-- keep highlight -->
     <p class="mt-2 text-sm text-gray-600">Value: <span x-text="range[0]"></span></p>
 </x-demo>
 @endblade
