@@ -101,6 +101,10 @@ Define the boundaries of your slider with custom minimum and maximum values.
     wire:model="temperature"
     :min-value="20"
     :max-value="80"
+    :fill-track="[true, false]"
+    :step="1"
+    tooltips
+/>
 />
 ```
 
@@ -113,6 +117,7 @@ Control the increment between selectable values using the `step` attribute.
     <x-ui.slider 
         x-model="price"
         :min-value="0"
+        :fill-track="[true, false]"
         :max-value="100"
         :step="10"
     />
@@ -124,6 +129,7 @@ Control the increment between selectable values using the `step` attribute.
 <x-ui.slider 
     wire:model="price"
     :min-value="0"
+    :fill-track="[true, false]"
     :max-value="100"
     :step="10"
 />
@@ -134,12 +140,14 @@ Control the increment between selectable values using the `step` attribute.
 For precise control without step restrictions, specify the number of decimal places.
 
 @blade
-<x-demo x-data="{ measurement: [3.142] }">
+<x-demo x-data="{ measurement: [3.14] }">
     <x-ui.slider 
         x-model="measurement"
         :min-value="0"
         :max-value="10"
-        :decimal-places="3"
+        :decimalPlaces="2"
+        :fill-track="[true, false]"
+        tooltips
     />
     <p class="mt-2 text-sm text-gray-600">Value: <span x-text="measurement[0]"></span></p>
 </x-demo>
@@ -150,7 +158,9 @@ For precise control without step restrictions, specify the number of decimal pla
     wire:model="measurement"
     :min-value="0"
     :max-value="10"
-    :decimal-places="3"
+    :decimalPlaces="2"
+    :fill-track="[true, false]"
+    tooltips
 />
 ```
 
@@ -159,12 +169,14 @@ For precise control without step restrictions, specify the number of decimal pla
 Add behavioral padding to prevent values from reaching the absolute edges of the track.
 
 @blade
-<x-demo x-data="{ value: [50] }">
+<x-demo x-data="{ value: [30] }">
     <x-ui.slider 
         x-model="value"
         :min-value="0"
         :max-value="100"
+        :fill-track="[true, false]"
         :range-padding="10"
+        tooltips
     />
     <p class="mt-2 text-sm text-gray-600">Value: <span x-text="value[0]"></span> (Range: 10-90)</p>
 </x-demo>
@@ -175,7 +187,9 @@ Add behavioral padding to prevent values from reaching the absolute edges of the
     wire:model="value"
     :min-value="0"
     :max-value="100"
+    :fill-track="[true, false]"
     :range-padding="10"
+    tooltips
 />
 ```
 
@@ -187,7 +201,9 @@ For asymmetric padding, pass an array with start and end values:
         x-model="value"
         :min-value="0"
         :max-value="100"
+        :fill-track="[true, false]"
         :range-padding="[10, 30]"
+        tooltips
     />
     <p class="mt-2 text-sm text-gray-600">Value: <span x-text="value[0]"></span> (Range: 10-70)</p>
 </x-demo>
@@ -199,6 +215,7 @@ For asymmetric padding, pass an array with start and end values:
     :min-value="0"
     :max-value="100"
     :range-padding="[10, 30]"
+    tooltips
 />
 ```
 
@@ -224,6 +241,7 @@ Create range selectors with multiple draggable handles by providing an array of 
     :min-value="0"
     :max-value="100"
     :fill-track="[false, true, false]"
+    tooltips
 />
 ```
 
@@ -241,6 +259,7 @@ Ensure handles maintain a minimum distance from each other.
         :max-value="100"
         :margin="10"
         :fill-track="[false, true, false]"
+        tooltips
     />
     <p class="mt-2 text-sm text-gray-600">Range: <span x-text="range[0]"></span> - <span x-text="range[1]"></span> (Min gap: 10)</p>
 </x-demo>
@@ -253,6 +272,7 @@ Ensure handles maintain a minimum distance from each other.
     :max-value="100"
     :margin="10"
     :fill-track="[false, true, false]"
+    tooltips
 />
 ```
 
@@ -268,6 +288,7 @@ Limit the maximum distance between handles using the `limit` attribute.
         :max-value="100"
         :limit="30"
         :fill-track="[false, true, false]"
+        tooltips
     />
     <p class="mt-2 text-sm text-gray-600">Range: <span x-text="range[0]"></span> - <span x-text="range[1]"></span> (Max gap: 30)</p>
 </x-demo>
@@ -280,6 +301,7 @@ Limit the maximum distance between handles using the `limit` attribute.
     :max-value="100"
     :limit="30"
     :fill-track="[false, true, false]"
+    tooltips
 />
 ```
 
@@ -291,14 +313,13 @@ Choose between different handle styles to match your design.
 
 @blade
 <x-demo>
-    <div class="space-y-6" x-data="{ default: [50], circle: [60] }">
+    <div class="space-y-6" x-data="{ default: [30], circle: [60] }">
         <div>
             <p class="text-sm font-medium mb-2">Default Handle</p>
             <x-ui.slider 
                 x-model="default"
                 :min-value="0"
                 :max-value="100"
-                handleVariant="default"
             />
         </div>
         <div>
@@ -318,7 +339,6 @@ Choose between different handle styles to match your design.
 <!-- Default handle -->
 <x-ui.slider 
     wire:model="volume"
-    handleVariant="default"
 />
 
 <!-- Circle handle -->
