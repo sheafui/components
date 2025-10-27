@@ -75,6 +75,209 @@ You can use it outside Livewire with just Alpine (with Blade):
 
 Because we're making this possible using the `x-modelable` *like* but not explicitly API, you can't use `state` as a variable name because the component uses it internally.
 
+## Visual Customization
+
+### Handle Variants
+
+Choose between different handle styles to match your design.
+
+@blade
+<x-demo>
+    <div class="space-y-6" x-data="{ defaultV: [30], circle: [60] }">
+        <div>
+            <p class="text-sm font-medium mb-2">Default Handle</p>
+            <x-ui.slider 
+                x-model="defaultV"
+            />
+        </div>
+        <div>
+            <p class="text-sm font-medium mb-2">Circle Handle</p>
+            <x-ui.slider 
+                x-model="circle"
+                handle-variant="circle"
+            />
+        </div>
+    </div>
+</x-demo>
+@endblade
+
+```html
+<!-- Default handle -->
+<x-ui.slider 
+    wire:model="volume"
+/>
+
+<!-- Circle handle -->
+<x-ui.slider 
+    wire:model="volume"
+    handleVariant="circle"
+/>
+```
+
+### Track Fills
+
+Visually highlight portions of the track with color fills.
+
+#### Single Handle Fill
+
+@blade
+<x-demo x-data="{ volume: [65] }">
+    <x-ui.slider 
+        x-model="volume"
+        :min-value="0"
+        :max-value="100"
+        :fill-track="[true, false]"
+    />
+</x-demo>
+@endblade
+
+```html
+<x-ui.slider 
+    wire:model="volume"
+    :min-value="0"
+    :max-value="100"
+    :fill-track="[true, false]"
+/>
+```
+
+#### Multiple Handle Fills
+
+Control which segments between handles are filled by passing an array of boolean values.
+
+@blade
+<x-demo x-data="{ range: [25, 75] }">
+    <x-ui.slider 
+        x-model="range"
+        :min-value="0"
+        :max-value="100"
+        :fill-track="[false, true, false]"
+    />
+</x-demo>
+@endblade
+
+```html
+<x-ui.slider 
+    wire:model="range"
+    :min-value="0"
+    :max-value="100"
+    :fill-track="[false, true, false]"
+/>
+```
+
+## Tooltips
+
+Display dynamic tooltips showing the current value of each handle.
+
+### Basic Tooltips
+
+@blade
+<x-demo x-data="{ value: [45] }">
+    <x-ui.slider 
+        x-model="value"
+        :min-value="0"
+        :max-value="100"
+        tooltips
+    />
+</x-demo>
+@endblade
+
+```html
+<x-ui.slider 
+    wire:model="value"
+    :min-value="0"
+    :max-value="100"
+    tooltips
+/>
+```
+
+### Custom Tooltip Formatting
+
+Use the `formatTooltipUsing()` method via `x-init` to customize tooltip display.
+
+@blade
+<x-demo x-data="{ price: [49.99] }">
+    <x-ui.slider 
+        x-model="price"
+        :min-value="0"
+        :max-value="100"
+        tooltips
+        x-init="formatTooltipUsing((value) => '$' + value.toFixed(2))"
+    />
+</x-demo>
+@endblade
+
+```html
+<x-ui.slider 
+    wire:model="price"
+    :min-value="0"
+    :max-value="100"
+    tooltips
+    x-init="formatTooltipUsing((value) => '$' + value.toFixed(2))"
+/>
+```
+
+#### Time Format Example
+
+@blade
+<x-demo x-data="{ hour: [14.5] }">
+    <x-ui.slider 
+        x-model="hour"
+        :min-value="0"
+        :max-value="24"
+        :step="0.25"
+        tooltips
+        x-init="
+            formatTooltipUsing((value) => {
+                const h = Math.floor(value);
+                const m = Math.round((value - h) * 60);
+                return h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0');
+            });
+        "
+    />
+</x-demo>
+@endblade
+
+```html
+<x-ui.slider 
+    wire:model="meetingTime"
+    :min-value="0"
+    :max-value="24"
+    :step="0.25"
+    tooltips
+    x-init="
+        formatTooltipUsing((value) => {
+            const h = Math.floor(value);
+            const m = Math.round((value - h) * 60);
+            return h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0');
+        });
+    "
+/>
+```
+
+#### Percentage Format Example
+
+@blade
+<x-demo x-data="{ completion: [67] }">
+    <x-ui.slider 
+        x-model="completion"
+        :min-value="0"
+        :max-value="100"
+        tooltips
+        x-init="formatTooltipUsing((value) => value.toFixed(0) + '%')"
+    />
+</x-demo>
+@endblade
+
+```html
+<x-ui.slider 
+    wire:model="completion"
+    :min-value="0"
+    :max-value="100"
+    tooltips
+    x-init="formatTooltipUsing((value) => value.toFixed(0) + '%')"
+/>
+```
+
 ## Range Configuration
 
 ### Setting Min/Max Values
@@ -305,212 +508,7 @@ Limit the maximum distance between handles using the `limit` attribute.
 />
 ```
 
-## Visual Customization
 
-### Handle Variants
-
-Choose between different handle styles to match your design.
-
-@blade
-<x-demo>
-    <div class="space-y-6" x-data="{ default: [30], circle: [60] }">
-        <div>
-            <p class="text-sm font-medium mb-2">Default Handle</p>
-            <x-ui.slider 
-                x-model="default"
-                :min-value="0"
-                :max-value="100"
-            />
-        </div>
-        <div>
-            <p class="text-sm font-medium mb-2">Circle Handle</p>
-            <x-ui.slider 
-                x-model="circle"
-                :min-value="0"
-                :max-value="100"
-                handleVariant="circle"
-            />
-        </div>
-    </div>
-</x-demo>
-@endblade
-
-```html
-<!-- Default handle -->
-<x-ui.slider 
-    wire:model="volume"
-/>
-
-<!-- Circle handle -->
-<x-ui.slider 
-    wire:model="volume"
-    handleVariant="circle"
-/>
-```
-
-### Track Fills
-
-Visually highlight portions of the track with color fills.
-
-#### Single Handle Fill
-
-@blade
-<x-demo x-data="{ volume: [65] }">
-    <x-ui.slider 
-        x-model="volume"
-        :min-value="0"
-        :max-value="100"
-        :fill-track="[true, false]"
-    />
-</x-demo>
-@endblade
-
-```html
-<x-ui.slider 
-    wire:model="volume"
-    :min-value="0"
-    :max-value="100"
-    :fill-track="[true, false]"
-/>
-```
-
-#### Multiple Handle Fills
-
-Control which segments between handles are filled by passing an array of boolean values.
-
-@blade
-<x-demo x-data="{ range: [25, 75] }">
-    <x-ui.slider 
-        x-model="range"
-        :min-value="0"
-        :max-value="100"
-        :fill-track="[false, true, false]"
-    />
-</x-demo>
-@endblade
-
-```html
-<x-ui.slider 
-    wire:model="range"
-    :min-value="0"
-    :max-value="100"
-    :fill-track="[false, true, false]"
-/>
-```
-
-## Tooltips
-
-Display dynamic tooltips showing the current value of each handle.
-
-### Basic Tooltips
-
-@blade
-<x-demo x-data="{ value: [45] }">
-    <x-ui.slider 
-        x-model="value"
-        :min-value="0"
-        :max-value="100"
-        tooltips
-    />
-</x-demo>
-@endblade
-
-```html
-<x-ui.slider 
-    wire:model="value"
-    :min-value="0"
-    :max-value="100"
-    tooltips
-/>
-```
-
-### Custom Tooltip Formatting
-
-Use the `formatTooltipUsing()` method via `x-init` to customize tooltip display.
-
-@blade
-<x-demo x-data="{ price: [49.99] }">
-    <x-ui.slider 
-        x-model="price"
-        :min-value="0"
-        :max-value="100"
-        tooltips
-        x-init="formatTooltipUsing((value) => '$' + value.toFixed(2))"
-    />
-</x-demo>
-@endblade
-
-```html
-<x-ui.slider 
-    wire:model="price"
-    :min-value="0"
-    :max-value="100"
-    tooltips
-    x-init="formatTooltipUsing((value) => '$' + value.toFixed(2))"
-/>
-```
-
-#### Time Format Example
-
-@blade
-<x-demo x-data="{ hour: [14.5] }">
-    <x-ui.slider 
-        x-model="hour"
-        :min-value="0"
-        :max-value="24"
-        :step="0.25"
-        tooltips
-        x-init="
-            formatTooltipUsing((value) => {
-                const h = Math.floor(value);
-                const m = Math.round((value - h) * 60);
-                return h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0');
-            });
-        "
-    />
-</x-demo>
-@endblade
-
-```html
-<x-ui.slider 
-    wire:model="meetingTime"
-    :min-value="0"
-    :max-value="24"
-    :step="0.25"
-    tooltips
-    x-init="
-        formatTooltipUsing((value) => {
-            const h = Math.floor(value);
-            const m = Math.round((value - h) * 60);
-            return h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0');
-        });
-    "
-/>
-```
-
-#### Percentage Format Example
-
-@blade
-<x-demo x-data="{ completion: [67] }">
-    <x-ui.slider 
-        x-model="completion"
-        :min-value="0"
-        :max-value="100"
-        tooltips
-        x-init="formatTooltipUsing((value) => value.toFixed(0) + '%')"
-    />
-</x-demo>
-@endblade
-
-```html
-<x-ui.slider 
-    wire:model="completion"
-    :min-value="0"
-    :max-value="100"
-    tooltips
-    x-init="formatTooltipUsing((value) => value.toFixed(0) + '%')"
-/>
-```
 
 ## Pips (Value Markers)
 
@@ -522,8 +520,6 @@ Add visual markers along the track to help users identify specific values.
 <x-demo x-data="{ value: [50] }">
     <x-ui.slider 
         x-model="value"
-        :min-value="0"
-        :max-value="100"
         pips
     />
 </x-demo>
@@ -532,8 +528,6 @@ Add visual markers along the track to help users identify specific values.
 ```html
 <x-ui.slider 
     wire:model="value"
-    :min-value="0"
-    :max-value="100"
     pips
 />
 ```
@@ -544,25 +538,27 @@ Control how frequently pips appear using the `pipsDensity` attribute. Higher val
 
 @blade
 <x-demo x-data="{ value: [50] }">
-    <div class="space-y-8">
+    <div class="space-y-8 mb-20">
         <div>
             <p class="text-sm font-medium mb-2">Density: 5 (More pips)</p>
             <x-ui.slider 
                 x-model="value"
                 :min-value="0"
                 :max-value="100"
-                pips
                 :pipsDensity="5"
+                tooltips
+                pips
+                class="mb-6!"
             />
         </div>
         <div>
             <p class="text-sm font-medium mb-2">Density: 20 (Fewer pips)</p>
             <x-ui.slider 
                 x-model="value"
-                :min-value="0"
-                :max-value="100"
+                tooltips
                 pips
                 :pipsDensity="20"
+                class="mb-6!"
             />
         </div>
     </div>
@@ -1375,32 +1371,32 @@ Disable user interaction with the slider.
 
 ## Component Props
 
-| Prop Name | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `wire:model` / `x-model` | string | - | Bind to Livewire or Alpine state |
-| `name` | string | - | Input name attribute |
-| `min-value` | integer | `0` | Minimum value of the slider |
-| `max-value` | integer | `100` | Maximum value of the slider |
-| `step` | integer\|null | `null` | Step increment (null = any decimal) |
-| `decimal-places` | integer\|null | `null` | Number of decimal places to round to |
-| `range-padding` | integer\|array | `null` | Behavioral padding at track edges |
-| `vertical` | boolean | `false` | Display slider vertically |
-| `top-to-bottom` | boolean | `false` | Reverse vertical slider direction |
-| `rtl` | boolean | `null` | Force right-to-left direction |
-| `fill-track` | array\|boolean | `null` | Which track segments to fill with color |
-| `tooltips` | boolean | `false` | Show tooltips on handles |
-| `handle-variant` | string | `'default'` | Handle style: `default`, `circle` |
-| `pips` | boolean | `false` | Enable pips (value markers) |
-| `pips-mode` | string\|null | `null` | Pip mode: `range`, `steps`, `positions`, `count`, `values` |
-| `pips-density` | integer | `10` | Pip frequency (higher = fewer pips) |
-| `pips-values` | array\|integer | `null` | Values/positions for pips (mode-dependent) |
-| `are-pips-stepped` | boolean | `false` | Round pips to steps (non-linear sliders) |
-| `margin` | integer\|null | `null` | Minimum distance between handles |
-| `limit` | integer\|null | `null` | Maximum distance between handles |
-| `behavior` | string | `'tap'` | Interaction behavior: `tap`, `drag`, `drag-fixed`, `none` |
-| `non-linear-points` | array\|null | `null` | Define non-linear track sections |
-| `disabled` | boolean | `false` | Disable user interaction |
-| `class` | string | `''` | Additional CSS classes |
+| Prop Name                | Type           | Default     | Description                                                |
+| ------------------------ | -------------- | ----------- | ---------------------------------------------------------- |
+| `wire:model` / `x-model` | string         | -           | Bind to Livewire or Alpine state                           |
+| `name`                   | string         | -           | Input name attribute                                       |
+| `min-value`              | integer        | `0`         | Minimum value of the slider                                |
+| `max-value`              | integer        | `100`       | Maximum value of the slider                                |
+| `step`                   | integer\|null  | `null`      | Step increment (null = any decimal)                        |
+| `decimal-places`         | integer\|null  | `null`      | Number of decimal places to round to                       |
+| `range-padding`          | integer\|array | `null`      | Behavioral padding at track edges                          |
+| `vertical`               | boolean        | `false`     | Display slider vertically                                  |
+| `top-to-bottom`          | boolean        | `false`     | Reverse vertical slider direction                          |
+| `rtl`                    | boolean        | `null`      | Force right-to-left direction                              |
+| `fill-track`             | array\|boolean | `null`      | Which track segments to fill with color                    |
+| `tooltips`               | boolean        | `false`     | Show tooltips on handles                                   |
+| `handle-variant`         | string         | `'default'` | Handle style: `default`, `circle`                          |
+| `pips`                   | boolean        | `false`     | Enable pips (value markers)                                |
+| `pips-mode`              | string\|null   | `null`      | Pip mode: `range`, `steps`, `positions`, `count`, `values` |
+| `pips-density`           | integer        | `10`        | Pip frequency (higher = fewer pips)                        |
+| `pips-values`            | array\|integer | `null`      | Values/positions for pips (mode-dependent)                 |
+| `are-pips-stepped`       | boolean        | `false`     | Round pips to steps (non-linear sliders)                   |
+| `margin`                 | integer\|null  | `null`      | Minimum distance between handles                           |
+| `limit`                  | integer\|null  | `null`      | Maximum distance between handles                           |
+| `behavior`               | string         | `'tap'`     | Interaction behavior: `tap`, `drag`, `drag-fixed`, `none`  |
+| `non-linear-points`      | array\|null    | `null`      | Define non-linear track sections                           |
+| `disabled`               | boolean        | `false`     | Disable user interaction                                   |
+| `class`                  | string         | `''`        | Additional CSS classes                                     |
 
 ## JavaScript Callbacks
 
