@@ -323,11 +323,10 @@ For precise control without step restrictions, specify the number of decimal pla
     <x-ui.slider 
         x-model="measurement"
         :max-value="10"
-        :decimalPlaces="2"
+        :decimalPlaces="3"
         :fill-track="[true, false]"
-        tooltips
     />
-    <p class="mt-2 text-sm text-neutral-600">Value: <span x-text="measurement[0]"></span></p>
+    <p class="mt-2 text-sm text-neutral-600">Value: <span x-text="measurement"></span></p>
 </x-demo>
 @endblade
 
