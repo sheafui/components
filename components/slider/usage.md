@@ -748,13 +748,13 @@ Fine-tune which pips are displayed and their size using `filterPipsUsing()`. Ret
     pipsMode="steps"
     :max-value="500"
     :pipsDensity="1"
-    tooltips
     :step="5"
+    tooltips
     pips
     x-init="
-        formatTooltipUsing((value) => '$' + value.toFixed(0));
-        formatPipValueUsing((value) => '$' + value);
-        filterPipsUsing((value, type) => {
+        $slider.formatTooltipUsing((value) => '$' + value.toFixed(0));
+        $slider.formatPipValueUsing((value) => '$' + value);
+        $slider.filterPipsUsing((value, type) => {
             if (value < 50) return -1;        // Hide below $50
             if (value % 100 === 0) return 1;  // Large pip every $100
             if (value % 50 === 0) return 2;   // Small pip every $50
@@ -771,20 +771,20 @@ For non-linear sliders, ensure pip labels only appear at selectable stepped posi
 @blade
 <x-demo x-data="{ value: [50] }">
     <x-ui.slider 
-        x-model="value"
         :nonLinearPoints="['20%' => 50, '50%' => 75]"
-        pips
         :arePipsStepped="true"
+        x-model="value"
+        pips
     />
 </x-demo>
 @endblade
 
 ```blade
 <x-ui.slider 
-    wire:model="value"
     :nonLinearPoints="['20%' => 50, '50%' => 75]"
-    pips
     :arePipsStepped="true"
+    wire:model="value"
+    pips
 />
 ```
 
@@ -798,10 +798,11 @@ Display the slider vertically instead of horizontally.
 <x-demo x-data="{ volume: [70] }">
     <div class="flex justify-center h-64">
         <x-ui.slider 
+            :fill-track="[true, false]"
             x-model="volume"
+            :step="1"
             vertical
             tooltips
-            :fill-track="[true, false]"
         />
     </div>
 </x-demo>
@@ -810,9 +811,10 @@ Display the slider vertically instead of horizontally.
 ```blade
 <x-ui.slider 
     wire:model="volume"
-    vertical
-    tooltips
     :fill-track="[true, false]"
+    tooltips
+    vertical
+    :step="1"
 />
 ```
 
@@ -825,10 +827,11 @@ Reverse the direction of a vertical slider so minimum is at the top.
     <div class="flex justify-center h-64">
         <x-ui.slider 
             x-model="value"
-            vertical
-            top-to-bottom
-            tooltips
             :fill-track="[true, false]"
+            top-to-bottom
+            :step="1"
+            vertical
+            tooltips
         />
     </div>
 </x-demo>
@@ -837,8 +840,9 @@ Reverse the direction of a vertical slider so minimum is at the top.
 ```blade
 <x-ui.slider 
     wire:model="temperature"
-    vertical
     top-to-bottom
+    :step="1"
+    vertical
     tooltips
 />
 ```
@@ -851,9 +855,10 @@ Force the slider to operate right-to-left (useful for RTL languages).
 <x-demo x-data="{ value: [40] }">
     <x-ui.slider 
         x-model="value"
-        rtl
-        tooltips
         :fill-track="[true, false]"
+        tooltips
+        :step="1"
+        rtl
     />
 </x-demo>
 @endblade
@@ -861,39 +866,79 @@ Force the slider to operate right-to-left (useful for RTL languages).
 ```blade
 <x-ui.slider 
     wire:model="value"
+    :step="1"
+    tooltips
     rtl
 />
 ```
 
+### Circle Variant
+
+@blade
+<x-demo x-data="{ value: [30] }">
+    <div class="flex justify-center h-64">
+        <x-ui.slider 
+            x-model="value"
+            :fill-track="[true, false]"
+            top-to-bottom
+            handle-variant="circle"
+            :step="1"
+            vertical
+            tooltips
+        />
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.slider 
+    wire:model="temperature"
+    handle-variant="circle"
+    top-to-bottom
+    :step="1"
+    vertical
+    tooltips
+/>
+```
 ## Advanced Features
 
 ### Non-Linear Tracks
 
 Create sliders where certain portions of the track represent different value ranges.
 
+> This was buggy in the original library because the slider can return strings or decimals even specifying the step to int. We need to manually fix it to integers.
 @blade
 <x-demo x-data="{ value: [50] }">
     <x-ui.slider 
         x-model="value"
         :nonLinearPoints="['30%' => 50, '70%' => 80]"
+        x-init="$slider.formatTooltipUsing((val)=>val.toFixed())"
+        :step="1"
         pips
         tooltips
     />
+    <p class="mt-6 text-sm text-gray-600">Value (buggy): <span x-text="value"></span></p>
+    <p class="mt-2 text-sm text-gray-600">Value (manually): <span x-text="Number(value).toFixed()"></span></p>
 </x-demo>
 @endblade
 
 ```blade
-<x-ui.slider 
+ <x-ui.slider 
     wire:model="value"
     :nonLinearPoints="['30%' => 50, '70%' => 80]"
+    x-init="$slider.formatTooltipUsing((val)=>val.toFixed())"
+    :step="1"
     pips
+    tooltips
 />
+<p class="mt-6 text-sm text-gray-600">Value (buggy): <span wire:text="value"></span></p>
+<p class="mt-2 text-sm text-gray-600">Value (manually): <span wire:text="Number(value).toFixed()"></span></p>
 ```
 
 In this example:
-- 0-30% of the track represents values 0-50
-- 30-70% of the track represents values 50-80
-- 70-100% of the track represents values 80-100
+- `0-30%` of the track represents values 0-50
+- `30-70%` of the track represents values 50-80
+- `70-100%` of the track represents values 80-100
 
 ### Behavior Customization
 
@@ -907,9 +952,10 @@ Control how users interact with the slider using the `behavior` attribute. Avail
 <x-demo x-data="{ range: [30, 70] }">
     <x-ui.slider 
         x-model="range"
-        behavior="drag"
         :fill-track="[false, true, false]"
+        behavior="drag"
         tooltips
+        :step="1"
     />
     <p class="mt-2 text-sm text-gray-600">Try dragging the filled area between handles</p>
 </x-demo>
@@ -919,6 +965,7 @@ Control how users interact with the slider using the `behavior` attribute. Avail
 <x-ui.slider 
     wire:model="range"
     behavior="drag"
+    :step="1"
     :fill-track="[false, true, false]"
 />
 ```
@@ -928,11 +975,11 @@ Control how users interact with the slider using the `behavior` attribute. Avail
 Disable user interaction with the slider.
 
 @blade
-<x-demo x-data="{ value: [50] }">
+<x-demo x-data="{ value: [12] }">
     <x-ui.slider 
         x-model="value"
-        disabled
-        tooltips
+        x-init="$slider.disable()"
+        :fill-track="[true, false]"
     />
 </x-demo>
 @endblade
@@ -940,9 +987,12 @@ Disable user interaction with the slider.
 ```blade
 <x-ui.slider 
     wire:model="value"
+    x-init="$slider.disable()"
     disabled
 />
 ```
+
+> you may pass the slider index (starting from `0`) to the disable function for disabling specific hanle (eg `$slider.disable(1)`): 
 
 ## Real-World Examples
 
