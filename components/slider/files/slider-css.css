@@ -1,0 +1,78 @@
+@layer base {
+    @import 'nouislider/dist/nouislider.css';
+}
+
+@layer components {
+    [data-slot='slider'] {
+        @apply relative flex items-center justify-center h-3 rounded-box border-0 bg-transparent ring-1 ring-neutral-950/10 dark:ring-white/20;
+
+        /* Base track */
+        & .noUi-target,
+        & .noUi-base {
+            @apply relative border-none m-0 rounded-box overflow-visible;
+        }
+
+        & .noUi-connects {
+            @apply rounded-box bg-neutral-950/5 dark:bg-white/5;
+        }
+
+        & .noUi-connect {
+            @apply absolute left-0 top-0 h-full bg-[var(--color-primary)];
+        }
+
+        &[disabled='true'] .noUi-connect {
+            @apply opacity-25;
+        }
+
+        /* Handle base */
+        & .noUi-handle {
+            @apply absolute rounded-box border border-neutral-950/10 bg-neutral-100 dark:bg-neutral-700 shadow-none dark:border-[var(--color-primary)] backface-hidden hover:ring-4 hover:ring-[color-mix(in_oklab,var(--color-primary)_25%,var(--color-primary-fg)_60%)] focus:ring-4 focus:ring-[color-mix(in_oklab,_var(--color-primary)_25%,_var(--color-primary-fg)_60%)];
+
+            &::before,
+            &::after {
+                @apply w-0.5 mx-[1px] bg-neutral-400;
+            }
+        }
+
+        &[data-vertical='true'] .noUi-handle {
+
+            &::before,
+            &::after {
+                @apply !h-0.5 !my-[1px] w-1/2 bg-neutral-400;
+            }
+        }
+
+        /* Variant: circle */
+        &[data-variant='circle'] .noUi-handle {
+
+            @apply !w-6 !h-6 rounded-full shadow-md;
+            
+            translate: -3px !important;
+
+            &::before,
+            &::after {
+                @apply hidden;
+            }
+        }
+
+        /* Handle positioning */
+        & .noUi-horizontal .noUi-handle {
+            @apply left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform;
+        }
+
+        /* Tooltips */
+        & .noUi-tooltip {
+            @apply rounded-box mb-0.5 border-0 bg-white text-neutral-950 shadow-sm ring-1 ring-neutral-950/10 dark:bg-neutral-800 dark:text-white dark:ring-white/20;
+        }
+
+        /* Pips */
+        & .noUi-pips {
+            @apply mt-1;
+        }
+
+        & .noUi-pips .noUi-value {
+            @apply mt-1 text-neutral-950 dark:text-white;
+        }
+    }
+
+}

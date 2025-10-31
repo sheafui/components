@@ -16,6 +16,21 @@ Use the [sheaf artisan command](/docs/guides/cli-installation#content-component-
 php artisan sheaf:install slider
 ```
 
+then import the component javascripts:
+
+```js
+// app.js
+import './components/slider.js'
+```
+then import the css:
+
+```css
+ /* app.css */
+@import './components/slider.css';
+```
+
+
+
 ## Basic Usage
 
 @blade
