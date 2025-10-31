@@ -28,7 +28,7 @@ php artisan sheaf:install slider
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="volume"
     :step="1"
@@ -40,7 +40,7 @@ php artisan sheaf:install slider
 
 To use with Livewire, simply use `wire:model` to bind your state:
 
-```html
+```blade
 <!-- this asume you have something like `public $volume = [50]` in your bounded livewire component  -->
 <x-ui.slider 
     wire:model.live="volume"
@@ -51,7 +51,7 @@ To use with Livewire, simply use `wire:model` to bind your state:
 
 You can use it outside Livewire with just Alpine (with Blade):
 
-```html
+```blade
 <div class="w-full" x-data="{ volume: [50] }">
     <x-ui.slider 
         x-model="volume"
@@ -89,7 +89,7 @@ Choose between different handle styles to match your design.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Default handle -->
 <x-ui.slider 
     wire:model="volume"
@@ -119,7 +119,7 @@ Visually highlight portions of the track with color fills.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="volume"
     :fill-track="[true, false]"
@@ -139,7 +139,7 @@ Control which segments between handles are filled by passing an array of boolean
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="range"
     :fill-track="[false, true, false]"
@@ -162,7 +162,7 @@ Display dynamic tooltips showing the current value of each handle.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     :step="1"
@@ -186,7 +186,7 @@ Use the `$slider.formatTooltipUsing()` method via `x-init` to customize tooltip 
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="price"
     tooltips
@@ -214,7 +214,7 @@ Use the `$slider.formatTooltipUsing()` method via `x-init` to customize tooltip 
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="meetingTime"
     :max-value="24"
@@ -249,7 +249,7 @@ Use the `$slider.formatTooltipUsing()` method via `x-init` to customize tooltip 
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="completion"
     tooltips
@@ -278,7 +278,7 @@ Define the boundaries of your slider with custom minimum and maximum values.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="temperature"
     :min-value="20"
@@ -305,7 +305,7 @@ Control the increment between selectable values using the `step` attribute.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="price"
     :fill-track="[true, false]"
@@ -331,7 +331,7 @@ For precise control without step restrictions, specify the number of decimal pla
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="measurement"
     :max-value="10"
@@ -358,7 +358,7 @@ Add behavioral padding to prevent values from reaching the absolute edges of the
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     :fill-track="[true, false]"
@@ -385,7 +385,7 @@ For asymmetric padding, pass an array with start and end values:
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     :range-padding="[10, 30]"
@@ -408,7 +408,7 @@ Create range selectors with multiple draggable handles by providing an array of 
 </x-demo>
 @endblade
 
-```html
+```blade
  <!-- you may have $priceRange = [20, 75] -->
 <x-ui.slider 
     wire:model="priceRange"
@@ -437,7 +437,7 @@ Ensure handles maintain a minimum distance from each other.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="range"
     :margin="10"
@@ -465,7 +465,7 @@ Limit the maximum distance between handles using the `limit` attribute.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="range"
     :limit="30"
@@ -494,7 +494,7 @@ Add visual markers along the track to help users identify specific values.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     :step="1"
@@ -533,7 +533,7 @@ Control how frequently pips appear using the `pipsDensity` attribute. Higher val
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- More frequent pips -->
 <x-ui.slider 
     wire:model="value"
@@ -572,7 +572,7 @@ Display pips at every step interval.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     x-model="value"
     :step="12"
@@ -599,7 +599,7 @@ Place pips at specific percentage positions along the track.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     pips
@@ -624,7 +624,7 @@ Display a specific number of evenly distributed pips.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     pips
@@ -646,7 +646,7 @@ this is may intrduce large digits if the path length is divisible by the count s
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     x-model="value"
     pips
@@ -672,7 +672,7 @@ Place pips at exact slider values.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     pips
@@ -699,7 +699,7 @@ Format pip labels using the `formatPipValueUsing()` method.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="price"
     :max-value="500"
@@ -742,7 +742,7 @@ Fine-tune which pips are displayed and their size using `filterPipsUsing()`. Ret
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="budget"
     :max-value="500"
@@ -779,7 +779,7 @@ For non-linear sliders, ensure pip labels only appear at selectable stepped posi
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     :nonLinearPoints="['20%' => 50, '50%' => 75]"
@@ -807,7 +807,7 @@ Display the slider vertically instead of horizontally.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="volume"
     vertical
@@ -834,7 +834,7 @@ Reverse the direction of a vertical slider so minimum is at the top.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="temperature"
     vertical
@@ -858,7 +858,7 @@ Force the slider to operate right-to-left (useful for RTL languages).
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     rtl
@@ -882,7 +882,7 @@ Create sliders where certain portions of the track represent different value ran
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     :nonLinearPoints="['30%' => 50, '70%' => 80]"
@@ -915,7 +915,7 @@ Control how users interact with the slider using the `behavior` attribute. Avail
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="range"
     behavior="drag"
@@ -937,7 +937,7 @@ Disable user interaction with the slider.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="value"
     disabled
@@ -982,7 +982,7 @@ Disable user interaction with the slider.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="priceRange"
     :max-value="1000"
@@ -1025,7 +1025,7 @@ Disable user interaction with the slider.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="volume"
     tooltips
@@ -1092,7 +1092,7 @@ Disable user interaction with the slider.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="meetingTime"
     :max-value="23"
@@ -1156,7 +1156,7 @@ Disable user interaction with the slider.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="rating"
     :max-value="5"
@@ -1215,7 +1215,7 @@ Disable user interaction with the slider.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="temperature"
     :min-value="50"
@@ -1287,7 +1287,7 @@ Disable user interaction with the slider.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.slider 
     wire:model="departmentBudgets"
     :max-value="10000"
@@ -1347,7 +1347,7 @@ These methods are available via `x-init` to customize the slider's display:
 
 Customize how tooltip values are displayed.
 
-```html
+```blade
 x-init="$slider.formatTooltipUsing((value) => ' + value.toFixed(2))"
 ```
 
@@ -1362,7 +1362,7 @@ x-init="$slider.formatTooltipUsing((value) => ' + value.toFixed(2))"
 
 Customize how pip labels are displayed.
 
-```html
+```blade
 x-init="formatPipValueUsing((value) => value + '%')"
 ```
 
@@ -1377,7 +1377,7 @@ x-init="formatPipValueUsing((value) => value + '%')"
 
 Control which pips are displayed and their size.
 
-```html
+```blade
 x-init="filterPipsUsing((value, type) => {
     if (value % 50 === 0) return 1;  // Large pip
     if (value % 10 === 0) return 2;  // Small pip
@@ -1401,7 +1401,7 @@ x-init="filterPipsUsing((value, type) => {
 
 You can chain multiple callbacks in `x-init`:
 
-```html
+```blade
 x-init="
     formatTooltipUsing((value) => ' + value.toFixed(2));
     formatPipValueUsing((value) => ' + value);
@@ -1442,7 +1442,7 @@ The slider component works in all modern browsers that support:
 
 For sliders with large ranges, use pip filtering to avoid clutter:
 
-```html
+```blade
 <x-ui.slider 
     :max-value="1000"
     pips
