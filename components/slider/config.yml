@@ -3,4 +3,4 @@ files:
   slider-js: resources/js/components/slider.js
   slider-css: resources/css/components/slider.css
 dependencies:
-  internal: [icon]
+  external: ['noUiSlider', 'npm install nouislider']
