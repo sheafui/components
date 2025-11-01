@@ -125,10 +125,6 @@ If you need different logos for expanded and collapsed states (e.g., a full logo
 - `[:has([data-collapsed]_&)_&]`: Applies when the sidebar is collapsed
 - `[:not(:has([data-collapsed]_&))_&]`: Applies when the sidebar is expanded
 
-Got it. Here’s the **clean, concise, and professional** version — short paragraphs, no fluff, clear language:
-
----
-
 #### Brand on Mobile
 
 When using the `sidebar-main` variant, the brand section isn’t displayed on mobile by default. If you want it visible, render it manually inside the header or any visible container. (keep it only under `md:` breack point on other it will be on the sidebar)
