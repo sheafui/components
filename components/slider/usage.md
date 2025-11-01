@@ -236,7 +236,7 @@ Use the `$slider.formatTooltipUsing()` method via `x-init` to customize tooltip 
     :step="0.25"
     tooltips
     x-init="
-        formatTooltipUsing((value) => {
+        $slider.formatTooltipUsing((value) => {
             const h = Math.floor(value);
             const m = Math.round((value - h) * 60);
             return h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0');
@@ -259,7 +259,7 @@ Use the `$slider.formatTooltipUsing()` method via `x-init` to customize tooltip 
     <x-ui.slider 
         x-model="completion"
         tooltips
-        x-init="$slider.formatTooltipUsing((value) => value.toFixed(0) + '%')"
+        x-init="$slider.formatTooltipUsing((value) => value.toFixed() + '%')"
     />
 </x-demo>
 @endblade
@@ -268,7 +268,7 @@ Use the `$slider.formatTooltipUsing()` method via `x-init` to customize tooltip 
 <x-ui.slider 
     wire:model="completion"
     tooltips
-    x-init="$slider.formatTooltipUsing((value) => value.toFixed(0) + '%')"
+    x-init="$slider.formatTooltipUsing((value) => value.toFixed() + '%')"
 />
 ```
 
@@ -338,7 +338,7 @@ For precise control without step restrictions, specify the number of decimal pla
     <x-ui.slider 
         x-model="measurement"
         :max-value="10"
-        :decimalPlaces="3"
+        :decimalPlaces="2"
         :fill-track="[true, false]"
     />
     <p class="mt-2 text-sm text-neutral-600">Value: <span x-text="measurement"></span></p>
