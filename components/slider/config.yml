@@ -4,5 +4,5 @@ files:
   slider-css: resources/css/components/slider.css
 dependencies:
   external: [
-    'noUiSlider': 'npm install nouislider'
+    noUiSlider: 'npm install nouislider'
   ]  
