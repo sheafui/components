@@ -1,5 +1,6 @@
 @props([
     'position' => 'bottom-center',
+    'teleport' => 'body',
     'portal' => false 
 ])
 
@@ -75,7 +76,7 @@
         </div>
         
         @if($portal)
-            <template x-teleport="body">
+            <template x-teleport="{{ $teleport }}">
         @endif
         
         <div 
