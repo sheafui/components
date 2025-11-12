@@ -14,8 +14,12 @@ category: advanced techniques
 > *This guide created by mohamed the man who build of the component here at sheafui, and also it is not the first pattern, here at sheaf we passed from 3 phases for making blade component feels native to be used with livewire and alpinejs, even if you read component's code source isn't all of them following this pattern and we're working to convert them all one by one to this pattern.* 
 
 @blade
-    *Also this a 70%-80% writed by hand to speack to you directly in human undestandable way, the other 20%-30% is refinements by AI (claude) and grammar correctements since sheaf team isn't english native speakers*
+<x-md.callout title="keep in mind!">
+    this article is 70% to 80% writed by hand to speack to you directly in human and undestandable way, the other 20%-30% is refinements by AI (claude) and grammar correctements since sheaf team isn't english native speakers
+</x-md.callout>
 @endblade
+
+
 Here's the problem: you build a beautiful custom select component. It works great with Livewire. Then someone wants to use it in a pure Alpine app, and everything breaks. Or vice versa. You end up maintaining two versions of the same component, which is a nightmare.
 
 **What if I told you there's a pattern that makes your components work with both, automatically?**
