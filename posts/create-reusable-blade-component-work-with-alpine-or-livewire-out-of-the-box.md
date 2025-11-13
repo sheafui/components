@@ -11,27 +11,32 @@ category: advanced techniques
 
 # Master Two-Way Data Binding for Universal TALL Stack Components
 
-> *This guide created by mohamed the man who build of the component here at sheafui, and also it is not the first pattern, here at sheaf we passed from 3 phases for making blade component feels native to be used with livewire and alpinejs, even if you read component's code source isn't all of them following this pattern and we're working to convert them all one by one to this pattern.* 
-
 @blade
-<x-md.callout title="keep in mind!">
-    this article is 70% to 80% writed by hand to speack to you directly in human and undestandable way, the other 20%-30% is refinements by AI (claude) and grammar correctements since sheaf team isn't english native speakers
+<x-md.callout title="Notice">
+    This guide was created by Mohamed, who built most of the components at SheafUI. This isn't our first approach—we've evolved through three different patterns to make Blade components feel native with both Livewire and Alpine.js. If you explore our component source code, you'll notice not all of them follow this pattern yet. We're working to migrate them one by one.
+    
+    Enjoy this piece of material!
 </x-md.callout>
 @endblade
 
+@blade
+<x-md.callout title="AI Credits">
+    This article is 70-80% written by hand to speak to you directly in a human, understandable way. The remaining 20-30% consists of refinements by AI (Claude) and grammar corrections, since the SheafUI team are not native English speakers.
+</x-md.callout>
+@endblade
 
-Here's the problem: you build a beautiful custom select component. It works great with Livewire. Then someone wants to use it in a pure Alpine app, and everything breaks. Or vice versa. You end up maintaining two versions of the same component, which is a nightmare.
+- Here's the problem: you build a beautiful custom select component. It works great with Livewire. Then someone wants to use it in a pure Alpine app, and everything breaks. Or vice versa. You end up maintaining two versions of the same component.
 
-**What if I told you there's a pattern that makes your components work with both, automatically?**
+**What if there was a pattern that makes your components work with both frameworks automatically, feeling native to each?**
 
-That's what we're building today. A universal two-way data binding system that supports:
-- ✅ Livewire's `wire:model`
-- ✅ Livewire's `.live` modifier
-- ✅ Alpine's `x-model`
-- ✅ Pure Alpine apps (no Livewire at all)
-- ✅ Hybrid setups (Livewire + Alpine)
+That's what we're building today: a universal two-way data binding system that supports:
+- Livewire's `wire:model`
+- Livewire's `.live` modifier
+- Alpine's `x-model`
+- Pure Alpine apps (no Livewire at all)
+- Hybrid setups (Livewire + Alpine)
 
-And the user doesn't have to change a single line of code. They just use `wire:model` or `x-model`, and it works.
+> And the user doesn't have to change a single line of code. They just use `wire:model` or `x-model`, and it works.
 
 ## The Problem We're Solving
 
@@ -47,11 +52,11 @@ Let's say you're building a custom toggle component. Users want to use it like t
 </div>
 ```
 
-**The challenge:** How do you make the same Blade component work with both, maintain two-way reactivity, and not create a mess of conditional logic?
+**The challenge:** How do you make the same Blade component work with both frameworks? These directives (`x-model` and `wire:model`) are intended for specific HTML tags, not custom components. How do you maintain two-way reactivity without creating a mess of conditional logic?
 
-## The Architecture - Three Layers
+## The Architecture: Three Layers
 
-Our solution has three layers that work together:
+Our solution has three layers that work together. This is the foundation you need to build any reactive Blade component:
 
 ### Layer 1: The Blade Component (Public API)
 This is what users interact with. It detects which binding method they're using and passes the right data to JavaScript.
@@ -712,75 +717,8 @@ class TestComponent extends Component
 Let's build a complete custom select component using this pattern:
 
 ### The Blade Component
-
-```blade
-@props([
-    'placeholder' => 'Select an option',
-    'options' => [],
-])
-
-@php
-    $wireModelAttr = $attributes->whereStartsWith('wire:model')->first();
-    $hasWireModel = !empty($wireModelAttr);
-    
-    $wireModelValue = null;
-    $isLive = false;
-    
-    if ($hasWireModel) {
-        $wireModelValue = $attributes->get($wireModelAttr);
-        $isLive = str_contains($wireModelAttr, '.live');
-    }
-@endphp
-
-<div
-    x-data="customSelectComponent({
-        livewire: @if($hasWireModel) $wire @else null @endif,
-        model: @js($wireModelValue),
-        isLive: @js($isLive),
-        options: @js($options),
-        placeholder: @js($placeholder),
-    })"
-    class="relative"
-    {{ $attributes->except(['class', 'wire:model', 'wire:model.live', 'x-model']) }}
-    @if($hasWireModel) wire:ignore @endif
-    @click.away="isOpen = false"
->
-    <!-- Selected value display -->
-    <button
-        type="button"
-        @click="isOpen = !isOpen"
-        class="w-full px-4 py-2 text-left bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-    >
-        <span x-text="selectedLabel" class="block truncate"></span>
-        <span class="absolute inset-y-0 right-0 flex items-center pr-2">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-        </span>
-    </button>
-
-    <!-- Dropdown -->
-    <div
-        x-show="isOpen"
-        x-transition
-        class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
-    >
-        <template x-for="option in options" :key="option.value">
-            <div
-                @click="selectOption(option.value)"
-                class="px-4 py-2 cursor-pointer hover:bg-blue-50"
-                :class="{ 'bg-blue-100': isSelected(option.value) }"
-            >
-                <span x-text="option.label"></span>
-            </div>
-        </template>
-    </div>
-</div>
-```
-
-### The JavaScript Component
-
-```javascript
+@blade
+<x-md.file file="resources/views/js/components/dede.js">
 const customSelectComponent = ({
     livewire,
     model,
@@ -843,7 +781,79 @@ const customSelectComponent = ({
 };
 
 Alpine.data('customSelectComponent', customSelectComponent);
-```
+</x-md.file>
+@endblade
+
+@blade
+
+<x-md.file file="de.blade.php">
+@props([
+    'placeholder' => 'Select an option',
+    'options' => [],
+])
+
+@php
+    $wireModelAttr = $attributes->whereStartsWith('wire:model')->first();
+    $hasWireModel = !empty($wireModelAttr);
+    
+    $wireModelValue = null;
+    $isLive = false;
+    
+    if ($hasWireModel) {
+        $wireModelValue = $attributes->get($wireModelAttr);
+        $isLive = str_contains($wireModelAttr, '.live');
+    }
+@endphp
+
+<div
+    x-data="customSelectComponent({
+        livewire: @if($hasWireModel) $wire @else null @endif,
+        model: @js($wireModelValue),
+        isLive: @js($isLive),
+        options: @js($options),
+        placeholder: @js($placeholder),
+    })"
+    class="relative"
+    {{ $attributes->except(['class', 'wire:model', 'wire:model.live', 'x-model']) }}
+    @if($hasWireModel) wire:ignore @endif
+    @click.away="isOpen = false"
+>
+    <!-- Selected value display -->
+    <button
+        type="button"
+        @click="isOpen = !isOpen"
+        class="w-full px-4 py-2 text-left bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+    >
+        <span x-text="selectedLabel" class="block truncate"></span>
+        <span class="absolute inset-y-0 right-0 flex items-center pr-2">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </span>
+    </button>
+
+    <!-- Dropdown -->
+    <div
+        x-show="isOpen"
+        x-transition
+        class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
+    >
+        <template x-for="option in options" :key="option.value">
+            <div
+                @click="selectOption(option.value)"
+                class="px-4 py-2 cursor-pointer hover:bg-blue-50"
+                :class="{ 'bg-blue-100': isSelected(option.value) }"
+            >
+                <span x-text="option.label"></span>
+            </div>
+        </template>
+    </div>
+</div>
+</x-md.file>
+@endblade
+
+### The JavaScript Component
+
 
 ### Usage Examples
 
