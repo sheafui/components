@@ -42,6 +42,7 @@
     // Detect if model binding uses `.live` modifier (for real-time syncing)
     $isLive = $modelAttrs && str_contains($modelAttrs, '.live');
 
+    $livewireId = isset($__livewire) ? $__livewire->getId() : null;
 @endphp
 
 <div
@@ -56,7 +57,7 @@
         x-data="sliderComponent({
             // adapt component with livewire natively
             model: @js($model),
-            livewire: window.Livewire.find(@js($__livewire->getId())),
+            livewire: @js(isset($livewireId)) ? window.Livewire.find(@js($livewireId)) : null,
             isLive: @js($isLive),
             // typical props
             arePipsStepped: @js($arePipsStepped),
