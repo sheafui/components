@@ -132,14 +132,9 @@ For these advanced use cases, you need finer control over state management and s
 ### Advanced Solution 
 Our solution has three layers that work together. This is the foundation you need to build any reactive Blade component:
 
-### Layer 1: The Blade Component (Public API)
-This is what users interact with. It detects which binding method they're using and passes the right data to JavaScript.
-
-### Layer 2: The Alpine Component (Reactivity Engine)
-This handles the actual two-way binding logic. It's smart enough to use Livewire entanglement OR Alpine's x-model, depending on what's available.
-
-### Layer 3: Your Component Logic
-This is your actual component (toggle, select, slider, whatever). It just reads and writes to `_state`, and the binding system handles the rest.
+- **Layer 1**: The Blade Component (*Public API*)
+- **Layer 2**: The Alpine Component (*Reactivity Engine*)
+- **Layer 3**: Your Component Logic
 
 Let's build this step by step.
 
@@ -151,9 +146,8 @@ Before we code anything, you need to understand what Livewire entanglement is. I
 
 Entanglement creates a two-way reactive bridge between JavaScript and PHP. When you entangle a property:
 
-1. **JS → PHP**: Changes in JavaScript automatically sync to the server
-2. **PHP → JS**: Server updates automatically reflect in JavaScript
-3. **No manual events**: No need to `$wire.set()` or listen for updates
+1. **JS → PHP**: Changes in JavaScript automatically sync to the server.
+2. **PHP → JS**: Server updates automatically reflect in JavaScript.
 
 Here's the simplest example:
 
@@ -170,9 +164,6 @@ init() {
     // this.volume automatically updates in JS!
 }
 ```
-
-### The `.live` Modifier
-
 Entanglement has two modes:
 
 ```javascript
@@ -198,23 +189,18 @@ First, we need to detect whether the user is using `wire:model` or `x-model`:
     'label' => null,
     // ... other props
 ])
-
+<!-- one of 100 solution to get the model propetry name and if it live or not -->
 @php
-    // Detect Livewire binding
-    $wireModelAttr = $attributes->whereStartsWith('wire:model')->first();
-    $hasWireModel = !empty($wireModelAttr);
+    // Detect if the component is bound to a Livewire model
+    $modelAttrs = collect($attributes->getAttributes())->keys()->first(fn($key) => str_starts_with($key, 'wire:model'));
+
+    $model = $modelAttrs ? $attributes->get($modelAttrs) : null;
+
+    // Detect if model binding uses `.live` modifier (for real-time syncing)
+    $isLive = $modelAttrs && str_contains($modelAttrs, '.live');
     
-    // Extract the model data if Livewire is used
-    $wireModelValue = null;
-    $isLive = false;
-    
-    if ($hasWireModel) {
-        // Get the property name: wire:model="isActive" → "isActive"
-        $wireModelValue = $attributes->get($wireModelAttr);
-        
-        // Check for .live modifier: wire:model.live="isActive"
-        $isLive = str_contains($wireModelAttr, '.live');
-    }
+    // grab the livewire id of the component we're inside
+    $livewireId = isset($__livewire) ? $__livewire->getId() : null;
 @endphp
 ```
 
@@ -231,12 +217,13 @@ Now we pass this information to our Alpine component:
 ```blade
 <div
     x-data="toggleComponent({
-        livewire: @if($hasWireModel) $wire @else null @endif,
-        model: @js($wireModelValue),
+        // adapt component with livewire natively
+        model: @js($model),
+        livewire: @js(isset($livewireId)) ? window.Livewire.find(@js($livewireId)) : null,
         isLive: @js($isLive),
     })"
-    {{ $attributes->except('class') }}
-    @if($hasWireModel) wire:ignore @endif
+    {{ $attributes}}
+    wire:ignore 
 >
     <!-- Component markup here -->
 </div>
@@ -247,7 +234,7 @@ Now we pass this information to our Alpine component:
 1. **`livewire: $wire`** - We pass the Livewire instance (only available in Livewire components)
 2. **`model: "isActive"`** - The property name to entangle
 3. **`isLive: true/false`** - Whether to use live syncing
-4. **`wire:ignore`** - Critical! Tells Livewire not to morph this element's DOM
+4. **`wire:ignore`** - Critical! Tells Livewire not to morph (replace) this element's DOM
 
 ### The Complete Blade Template
 
