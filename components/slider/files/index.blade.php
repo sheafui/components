@@ -28,6 +28,7 @@
 ])
 
 @php
+
     // enable pips by pips props as well don't always override the pips mode
     if($pips && is_null($pipsMode)) $pipsMode = 'range';
     $componentId = $id ?? 'slider-' . uniqid();
@@ -43,6 +44,7 @@
     $isLive = $modelAttrs && str_contains($modelAttrs, '.live');
 
     $livewireId = isset($__livewire) ? $__livewire->getId() : null;
+
 @endphp
 
 <div

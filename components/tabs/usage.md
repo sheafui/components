@@ -71,7 +71,7 @@ Use `wire:model` to bind the active tab to a Livewire property:
 
 @blade
 <x-demo>
-    <x-ui.tabs wire:model="activeTab">
+    <x-ui.tabs >
         <x-ui.tab.group>
             <x-ui.tab label="Dashboard" name="dashboard" />
             <x-ui.tab label="Settings" name="settings" />
