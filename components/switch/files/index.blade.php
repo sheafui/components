@@ -5,7 +5,7 @@
     'description' => null,
     'disabled' => false,
     'maxWidth' => 'max-w-md',
-    '_checked' => false,
+    'checked' => false,
     'size' => 'md',
     'switchClass' => '',
     'thumbClass' => '',
