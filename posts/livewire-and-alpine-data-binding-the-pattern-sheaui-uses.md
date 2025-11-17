@@ -132,11 +132,24 @@ For these advanced use cases, you need finer control over state management and s
 ### Advanced Solution 
 Our solution has three layers that work together. This is the foundation you need to build any reactive Blade component:
 
-- **Layer 1**: The Blade Component (*Public API*)
-- **Layer 2**: The Alpine Component (*Reactivity Engine*)
-- **Layer 3**: Your Component Logic
+```blade
+                                                ┌──────────────────────────────────────┐
+                                                │   Layer 1: Blade Component        │
+                                                │   (Detects wire:model or x-model) │
+                                                └──────────────────────────────────────┘
+                                                                    ↓
+                                                ┌──────────────────────────────────────┐
+                                                │   Layer 2: Alpine Component       │
+                                                │   (Handles entanglement/x-model)  │
+                                                └──────────────────────────────────────┘
+                                                                    ↓
+                                                ┌──────────────────────────────────────┐
+                                                │   Layer 3: Your Component Logic   │
+                                                │   (Just reads/writes to _state)   │
+                                                └──────────────────────────────────────┘
+```
 
-Let's build this step by step.
+> Let's build this step by step.
 
 ### Step 1: Understanding Livewire Entanglement
 
@@ -388,8 +401,6 @@ Alpine.data('toggleComponent', toggleComponent);
 </x-md.file>
 @endblade
 
----
-
 ## How It Works: The Three Scenarios
 
 Let's walk through what happens in each usage scenario:
@@ -401,24 +412,14 @@ Let's walk through what happens in each usage scenario:
 <x-ui.toggle wire:model="isActive" />
 ```
 
-**The Flow:**
 
-**[VISUAL: Sequence diagram showing the flow]**
+1. *Blade Detection* → Detects `wire:model`, passes `livewire: $wire`, `model: 'isActive'`
+2. *State Initialization* → `$initState()` calls `$entangle('isActive')`
+3. *Entanglement Created* → `_state` is now entangled with the Livewire property
+4. *User Interaction* → User clicks toggle → `this.isOn = !this.isOn` → Updates `_state`
+5. *Auto-Sync to Server* → Entanglement automatically syncs the change to the server
+6. *Server Updates* → If Livewire updates `isActive` on the server → `_state` automatically updates in JavaScript
 
-1. **Blade Detection** → Detects `wire:model`, passes `livewire: $wire`, `model: 'isActive'`
-2. **State Initialization** → `$initState()` calls `$entangle('isActive')`
-3. **Entanglement Created** → `_state` is now entangled with the Livewire property
-4. **User Interaction** → User clicks toggle → `this.isOn = !this.isOn` → Updates `_state`
-5. **Auto-Sync to Server** → Entanglement automatically syncs the change to the server
-6. **Server Updates** → If Livewire updates `isActive` on the server → `_state` automatically updates in JavaScript
-
-@blade
-<x-md.callout variant="success" title="Key Benefit">
-**Zero manual syncing needed!** Entanglement handles all communication between JavaScript and PHP automatically.
-</x-md.callout>
-@endblade
-
----
 
 ### Scenario 2: Alpine Binding
 
@@ -431,34 +432,21 @@ Let's walk through what happens in each usage scenario:
 
 **The Flow:**
 
-**[VISUAL: Sequence diagram showing x-model flow]**
+1. *Blade Detection* → No `wire:model` found, passes `livewire: null`, `model: null`
+2. *State Initialization* → `$initState()` returns `null`
+3. *Alpine Fallback* → In `init()`, falls back to `this.$root?._x_model?.get()`
+4. *Link to x-model* → `_state` is now linked to Alpine's reactive `isActive` property
+5. *User Interaction* → User clicks toggle → `this.isOn = !this.isOn` → Updates `_state`
+6. *Manual Sync* → `$watch` triggers and syncs to x-model via `$root._x_model.set(value)`
 
-1. **Blade Detection** → No `wire:model` found, passes `livewire: null`, `model: null`
-2. **State Initialization** → `$initState()` returns `null`
-3. **Alpine Fallback** → In `init()`, falls back to `this.$root?._x_model?.get()`
-4. **Link to x-model** → `_state` is now linked to Alpine's reactive `isActive` property
-5. **User Interaction** → User clicks toggle → `this.isOn = !this.isOn` → Updates `_state`
-6. **Manual Sync** → `$watch` triggers and syncs to x-model via `$root._x_model.set(value)`
-
----
-
-### Scenario 3: Standalone
-
-**Usage:**
-```blade
-<x-ui.toggle />
-```
 
 **The Flow:**
 
-1. **No Binding** → Both `livewire` and `model` are `null`
-2. **Default State** → `_state` defaults to `false`
-3. **Self-Contained** → Component works perfectly, state just isn't shared externally
-4. **Still Functional** → Great for demos, prototypes, or purely visual components
+1. *No Binding* → Both `livewire` and `model` are `null`
+2. *Default State* → `_state` defaults to `false`
+3. *Self-Contained* → Component works perfectly, state just isn't shared externally
+4. *Still Functional* → Great for demos, prototypes, or purely visual components
 
-**[VISUAL: Simple diagram showing component with internal state only]**
-
----
 
 ## Understanding the Critical Parts
 
@@ -487,7 +475,6 @@ this.$root?._x_model?.get()
 The `?.` operator is **crucial** for graceful degradation:
 
 - ✅ Not every component uses `x-model`
-- ✅ Some components are used standalone
 - ✅ Prevents crashes when APIs don't exist
 - ✅ Allows the same code to work in all three scenarios
 
@@ -509,76 +496,3 @@ this.$watch('_state', (value) => {
 **For Alpine:** We need to manually sync changes back to the parent component's reactive system. Alpine's `x-model` requires explicit syncing, unlike Livewire's automatic entanglement.
 
 **The Watcher:** Listens for any change to `_state` and pushes it back to Alpine's `x-model`.
-
----
-
-## Visual Summary
-
-**[VISUAL: Large diagram showing all three scenarios side-by-side]**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Toggle Component                          │
-│                                                              │
-│  wire:model          x-model           Standalone           │
-│      │                 │                    │               │
-│      ↓                 ↓                    ↓               │
-│  Entanglement      x-model API        No binding           │
-│      │                 │                    │               │
-│      ↓                 ↓                    ↓               │
-│   _state ←→ PHP    _state ←→ Alpine    _state (local)     │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Quick Reference: When to Use What
-
-| Scenario       | Best For                                    | Setup Required                          |
-| -------------- | ------------------------------------------- | --------------------------------------- |
-| **wire:model** | Livewire components, server-side validation | Livewire component with public property |
-| **x-model**    | Pure Alpine apps, client-side only          | Alpine x-data with property             |
-| **Standalone** | Demos, prototypes, self-contained UI        | None—just use the component!            |
-
-```
-
-## Suggestions for Visuals
-
-### 1. **Entanglement Flow Diagram**
-```
-JavaScript                Server (PHP)
-   ↓                         ↓
-volume = 75  ────────→  $volume = 75
-   ↑                         ↑
-volume = 50  ←────────  $volume = 50
-```
-
-### 2. **Three-Layer Architecture**
-```
-┌──────────────────────────────────────┐
-│   Layer 1: Blade Component           │
-│   (Detects wire:model or x-model)    │
-└──────────────┬───────────────────────┘
-               ↓
-┌──────────────────────────────────────┐
-│   Layer 2: Alpine Component          │
-│   (Handles entanglement/x-model)     │
-└──────────────┬───────────────────────┘
-               ↓
-┌──────────────────────────────────────┐
-│   Layer 3: Your Component Logic      │
-│   (Just reads/writes _state)         │
-└──────────────────────────────────────┘
-```
-
-### 3. **Scenario Comparison Chart**
-Side-by-side flow diagrams showing what happens in each of the three scenarios.
-
-### 4. **Decision Tree**
-```
-User adds wire:model? 
-├─ Yes → Use entanglement
-└─ No → Check for x-model?
-    ├─ Yes → Use x-model API
-    └─ No → Use default state
-```
