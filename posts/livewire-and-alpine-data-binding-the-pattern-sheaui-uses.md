@@ -191,11 +191,11 @@ Use `.live` mode sparingly! Every change triggers a server round-trip. For most 
 
 
 
-## Step 2: Building the Blade Component
+### Step 2: Building the Blade Component
 
 Now let's build a component that automatically detects whether the user wants Livewire or Alpine binding.
 
-### Detecting the Binding Method
+#### Detecting the Binding Method
 
 First, we detect if the user is using `wire:model`:
 
@@ -224,12 +224,12 @@ First, we detect if the user is using `wire:model`:
 
 **What's happening here?**
 
-1. **Find wire:model** - We search for any attribute starting with `wire:model`
-2. **Extract property name** - If found, get the value (the property name to bind)
-3. **Check for .live** - Determine if immediate syncing is needed
-4. **Get Livewire ID** - Safely grab the Livewire component ID if available
+1. Find `wire:model` : We search for any attribute starting with `wire:model`
+2. Extract property name :   If found, get the value (the property name to bind)
+3. Check for `.live` : Determine if immediate syncing is needed
+4. Get Livewire ID : Safely grab the Livewire component ID if available, we need this to intercat with the component from javascript
 
-### Passing Configuration to JavaScript
+#### Passing Configuration to JavaScript
 
 Next, we pass this configuration to our Alpine component:
 
@@ -254,7 +254,7 @@ Next, we pass this configuration to our Alpine component:
 - **`isLive`** - Whether to use live syncing
 - **`wire:ignore`** - **Critical!** Tells Livewire not to replace this DOM element during updates
 
-### Complete Toggle Component Example
+#### Complete Toggle Component Example
 
 Here's a full working implementation:
 
@@ -322,11 +322,11 @@ Here's a full working implementation:
 
 ---
 
-## Step 3: The Alpine Component with Dual-Mode Binding
+### Step 3: The Alpine Component with Dual-Mode Binding
 
 Now for the **magic**—the JavaScript that seamlessly handles both Livewire and Alpine binding.
 
-### The Component Structure
+#### The Component Structure
 
 @blade
 <x-md.file file="resources/js/components/toggle.js">
@@ -384,9 +384,7 @@ const toggleComponent = ({
 };
 
 // Register with Alpine
-document.addEventListener('alpine:init', () => {
-    Alpine.data('toggleComponent', toggleComponent);
-});
+Alpine.data('toggleComponent', toggleComponent);
 </x-md.file>
 @endblade
 
