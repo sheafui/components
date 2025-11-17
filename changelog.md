@@ -1,3 +1,10 @@
+# Minor/Breacking Changes Log
+
+## Nevember 17, 2025
+
+**blog:**
+- add first blog post [alpine and livewire state bindings](livewire-and-alpine-data-binding-the-pattern-sheaui-uses)
+
 ## September 15, 2025
 
 **Input Component:**
