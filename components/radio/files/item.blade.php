@@ -53,8 +53,8 @@
     @class($containerClasses)
     x-init="
         $nextTick(()=>{
-            if (@js($checked) && ($data.state == null)) {
-                $data.state = @js($value);
+            if (@js($checked) && ($data._state == null)) {
+                $data._state = @js($value);
             }
         })
     "
@@ -67,7 +67,7 @@
         id="{{ $value }}-{{ $name }}"
         value="{{ $value }}" 
         type="radio"
-        x-model="$data.state"
+        x-model="$data._state"
     />
 
     <label for="{{ $value }}-{{ $name }}" @class($labelClasses)>
