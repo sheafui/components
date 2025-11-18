@@ -275,29 +275,25 @@ Here's a full working implementation:
 <x-md.file file="resources/views/components/ui/toggle.blade.php">
 @props([
     'label' => null,
-    'onLabel' => 'On',
-    'offLabel' => 'Off',
 ])
 
 @php
-    // Detect wire:model binding
-    $wireModelAttr = $attributes->whereStartsWith('wire:model')->first();
-    $hasWireModel = !empty($wireModelAttr);
     
-    $wireModelValue = null;
-    $isLive = false;
-    
-    if ($hasWireModel) {
-        $wireModelValue = $attributes->get($wireModelAttr);
-        $isLive = str_contains($wireModelAttr, '.live');
-    }
+    // Detect if the component is bound to a Livewire model
+    $modelAttrs = collect($attributes->getAttributes())->keys()->first(fn($key) => str_starts_with($key, 'wire:model'));
+
+    $model = $modelAttrs ? $attributes->get($modelAttrs) : null;
+
+    // Detect if model binding uses `.live` modifier (for real-time syncing)
+    $isLive = $modelAttrs && str_contains($modelAttrs, '.live');
+
     
     $livewireId = isset($__livewire) ? $__livewire->getId() : null;
 @endphp
 
 <div class="flex items-center gap-3">
     @if($label)
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label class="font-medium text-gray-700 dark:text-gray-300">
             {{ $label }}
         </label>
     @endif
@@ -305,29 +301,24 @@ Here's a full working implementation:
     <button
         type="button"
         x-data="toggleComponent({
-            livewire: @js($livewireId) ? window.Livewire.find(@js($livewireId)) : null,
-            model: @js($wireModelValue),
+            // you can use $wire object here instead of manually finding the compoonent usind the id, but based on my experiece it breaks up under nested blade component and this the most stable way I have work with.
+            livewire: @js($livewireId) ? window.Livewire.find(@js($livewireId)) : null, 
+            model: @js($model),
             isLive: @js($isLive),
         })"
-        @click="toggle()"
-        :class="isOn ? 'bg-blue-600' : 'bg-gray-200'"
+        
+        x-on:click="toggle()"
+        x-bind:class="isOn ? 'bg-green-600' : 'bg-neutral-200 dark:bg-neutral-800'"
         class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        {{ $attributes->except(['class', 'wire:model', 'wire:model.live', 'x-model']) }}
-        @if($hasWireModel) wire:ignore @endif
+        {{ $attributes }}
+        
+        @if(filled($model)) wire:ignore @endif
     >
         <!-- Toggle circle -->
         <span
             :class="isOn ? 'translate-x-6' : 'translate-x-1'"
             class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
         ></span>
-        
-        <!-- On/Off labels -->
-        <span x-show="isOn" class="ml-2 text-xs font-medium text-white">
-            {{ $onLabel }}
-        </span>
-        <span x-show="!isOn" class="ml-2 text-xs font-medium text-gray-600">
-            {{ $offLabel }}
-        </span>
     </button>
 </div>
 </x-md.file>
@@ -376,15 +367,13 @@ const toggleComponent = ({
         init() {
             this.$nextTick(() => {
                 // Fallback: If not using Livewire, check for x-model
-                if (this._state === null) {
+                if (this._state == null) {
                     this._state = this.$root?._x_model?.get() ?? false;
                 }
                 
                 // Watch state changes and sync with x-model if present
                 this.$watch('_state', (value) => {
-                    if (this.$root?._x_model) {
-                        this.$root._x_model.set(value);
-                    }
+                    this.$root?._x_model?.set(value);
                 });
             });
         },
