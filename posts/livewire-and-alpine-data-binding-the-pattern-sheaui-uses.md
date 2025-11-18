@@ -13,17 +13,12 @@ category: advanced techniques
 
 @blade
 <x-md.callout title="Notice">
-    This guide was created by Mohamed, who built most of the components at SheafUI. This isn't our first approach—we've evolved through three different patterns to make Blade components feel native with both Livewire and Alpine.js. If you explore our component source code, you'll notice not all of them follow this pattern yet. We're working to migrate them one by one.
+    This guide was created by Mohamed, who built most of the components at SheafUI. This isn't our first approoach, we've evolved through three different patterns to make Blade components feel native with both Livewire and Alpine.js. If you explore our component source code, you'll notice not all of them follow this pattern yet. We're working to migrate them one by one.
     
     Enjoy this piece of material!
 </x-md.callout>
 @endblade
 
-@blade
-<x-md.callout title="AI Credits">
-    This article is 80-90% written by hand to speak to you directly in a human, understandable way. The remaining 10-20% consists of refinements by AI (Claude) and grammar corrections, since the SheafUI team are not native English speakers.
-</x-md.callout>
-@endblade
 
 **What if there was a pattern that makes your components work with both frameworks automatically, feeling native to each?**
 
@@ -115,6 +110,93 @@ Now you can use your custom component exactly like a native input:
 ```
 
 The `x-modelable="state"` directive tells Alpine: "When someone uses `x-model` or `wire:model` on this component, bind it to the `state` property."
+
+## Let's Build It: Toggle Component with x-modelable
+
+Let's implement our toggle component using `x-modelable` first. Remember, **we're using a toggle just for simplicity**  this pattern works great for toggles! But the advanced entanglement pattern we'll cover later is designed for truly complex components like sliders, autocompletes, or date pickers. 
+
+> **For real-world advanced implementations**, check out our [Range Slider component](/docs/components/slider) or other advanced component like select/otp... in the SheafUI library where the entanglement pattern really shines.
+
+### Simple Toggle Implementation
+
+Here's our toggle using `x-modelable`:
+
+@blade
+<x-md.file file="resources/views/components/ui/simple-toggle.blade.php" open>
+@props(['label' => null])
+
+<div class="flex items-center gap-3">
+    @if($label)
+        <label class="font-medium text-gray-700 dark:text-gray-300">
+            {{ $label }}
+        </label>
+    @endif
+    <!--  -->
+    <button
+        type="button"
+        x-data="{ state: false }"
+        x-modelable="state"
+        x-on:click="state = !state"
+        x-bind:class="state ? 'bg-green-600' : 'bg-neutral-200 dark:bg-neutral-800'"
+        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        {{ $attributes }}
+    >
+        <span
+            :class="state ? 'translate-x-6' : 'translate-x-1'"
+            class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+        ></span>
+    </button>
+</div>
+</x-md.file>
+@endblade
+
+### How It Works
+
+The magic happens with three simple Alpine directives:
+
+1. **`x-data="{ state: false }"`** - Creates our internal state
+2. **`x-modelable="state"`** - Exposes `state` to parent components via `x-model` or `wire:model`
+3. **`x-on:click="state = !state"`** - Toggles the state when clicked
+
+### Usage
+
+Now you can use it exactly like a native input:
+```blade
+<!-- With Livewire -->
+<x-ui.simple-toggle wire:model="isActive" label="Enable Feature" />
+
+<!-- With Alpine -->
+<div x-data="{ isActive: false }">
+    <x-ui.simple-toggle x-model="isActive" label="Enable Feature" />
+    <p x-show="isActive">Feature is active!</p>
+</div>
+```
+
+**That's it!** For this toggle component, `x-modelable` is actually the perfect solution. Clean, simple, and it just works.
+
+### Why We Need More: When x-modelable Hits Its Limits
+
+The `x-modelable` approach works beautifully for our toggle because:
+-  Single boolean state
+-  Simple click interaction
+-  No external libraries
+-  No complex transformations
+
+But what about components like:
+
+- **Range Slider** - Needs NoUISlider integration, min/max/step validation, dual handles, formatting
+- **Autocomplete** - Async data fetching, debouncing, keyboard navigation, selected items management
+- **Date Picker** - Calendar library integration, date parsing/formatting, range selections
+- **Rich Text Editor** - Quill/TinyMCE integration, toolbar state, content sanitization
+
+For these scenarios, you need:
+- Fine-grained control over when and how syncing happens
+- Integration with third-party library instances
+- Complex internal state management
+- Lifecycle hooks for initialization and cleanup
+- The ability to detect and respond to `.live` modifiers
+
+**That's where custom entanglement comes in.** Let's rebuild our toggle using the advanced pattern—not because the toggle needs it, but to understand the architecture for when you *do* need it.
 
 #### When x-modelable Isn't Enough
 
@@ -272,7 +354,7 @@ Next, we pass this configuration to our Alpine component:
 Here's a full working implementation:
 
 @blade
-<x-md.file file="resources/views/components/ui/toggle.blade.php">
+<x-md.file file="resources/views/components/ui/toggle.blade.php" open>
 @props([
     'label' => null,
 ])
@@ -328,12 +410,12 @@ Here's a full working implementation:
 
 ### Step 3: The Alpine Component with Dual-Mode Binding
 
-Now for the **magic**—the JavaScript that seamlessly handles both Livewire and Alpine binding.
+Now for the **magic** the JavaScript that seamlessly handles both Livewire and Alpine binding.
 
 #### The Component Structure
 
 @blade
-<x-md.file file="resources/js/components/toggle.js">
+<x-md.file file="resources/js/components/toggle.js" open>
 const toggleComponent = ({
     livewire,  // Livewire instance or null
     model,     // Property name (e.g., "isActive") or null
@@ -390,7 +472,7 @@ Alpine.data('toggleComponent', toggleComponent);
 </x-md.file>
 @endblade
 
-## How It Works: The Three Scenarios
+## How It Works:
 
 Let's walk through what happens in each usage scenario:
 
@@ -463,9 +545,8 @@ this.$root?._x_model?.get()
 
 The `?.` operator is **crucial** for graceful degradation:
 
-- ✅ Not every component uses `x-model`
-- ✅ Prevents crashes when APIs don't exist
-- ✅ Allows the same code to work in all three scenarios
+-  Not every component uses `x-model`
+-  Prevents crashes when APIs don't exist
 
 **Without it:** Your component would crash when used without `x-model`.  
 **With it:** Everything just works!
@@ -485,3 +566,9 @@ this.$watch('_state', (value) => {
 **For Alpine:** We need to manually sync changes back to the parent component's reactive system. Alpine's `x-model` requires explicit syncing, unlike Livewire's automatic entanglement.
 
 **The Watcher:** Listens for any change to `_state` and pushes it back to Alpine's `x-model`.
+
+@blade
+<x-md.callout title="AI Credits">
+    This article is 80-90% written by hand to speak to you directly in a human, understandable way. The remaining 10-20% consists of refinements by AI (Claude) and grammar corrections, since the SheafUI team are not native English speakers.
+</x-md.callout>
+@endblade
