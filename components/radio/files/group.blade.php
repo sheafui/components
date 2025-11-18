@@ -21,31 +21,48 @@
         'bg-neutral-200 dark:bg-neutral-800 rounded-box w-fit p-1' => $variant === 'segmented',
         'p-1' => $variant === 'cards',
     ];
+
+    // Detect if the component is bound to a Livewire model
+    $modelAttrs = collect($attributes->getAttributes())->keys()->first(fn($key) => str_starts_with($key, 'wire:model'));
+
+    $model = $modelAttrs ? $attributes->get($modelAttrs) : null;
+
+    // Detect if model binding uses `.live` modifier (for real-time syncing)
+    $isLive = $modelAttrs && str_contains($modelAttrs, '.live');
 @endphp
 
+
 <div
-    data-slot="group-controller"
-    x-data="{
-        state: null,
-        init() {
-            this.$nextTick(() => {
-                this.state = this.$root?._x_model?.get();
-            });
-            
-            this.$watch('state', (value) => {
-                // Sync with Alpine state
-                this.$root?._x_model?.set(value);
-                 
-                // Sync with Livewire state
-                let wireModel = this?.$root.getAttributeNames().find(n => n.startsWith('wire:model'))
-                 
-                if(this.$wire && wireModel){
-                    let prop = this.$root.getAttribute(wireModel)
-                    this.$wire.set(prop, value, wireModel?.includes('.live'));
-                }
-            });
-            
-        },
+    x-data="
+    function(){
+        const $entangle = (prop, live) => {
+
+            const binding = $wire.$entangle(prop);
+
+            return live ? binding.live : binding;
+        };
+
+        const $initState = (prop, live, multiple) => {
+            // when the env is not livewire
+            if (!prop) return null;
+
+            return  $entangle(prop, live);
+        };
+
+        return {
+            _state: $initState(@js($model), @js($isLive)),
+
+            init() {
+                this.$nextTick(() => {
+                    this._state = this.$root?._x_model?.get();
+                });
+                
+                this.$watch('_state', (value) => {
+                    // Sync with Alpine state
+                    this.$root?._x_model?.set(value);
+                });
+            },
+        }
     }"
     {{ $attributes->merge(['class' => 'w-full text-start']) }}
 >
@@ -60,7 +77,9 @@
     
     <div 
         role="radiogroup"
+        
         @class(Arr::toCssClasses($variantClass))
+
         @if ($label) 
             aria-labelledby="{{ $componentId }}-label" 
         @endif

@@ -101,7 +101,7 @@ For multiple checkboxes that should manage a shared array of values, bind the mo
 @blade
 <x-demo>
     <div class="max-w-md mx-auto">
-        <x-ui.checkbox.group wire:model="skills">
+        <x-ui.checkbox.group>
             <x-ui.checkbox 
                 label="Laravel"
                 value="laravel"
