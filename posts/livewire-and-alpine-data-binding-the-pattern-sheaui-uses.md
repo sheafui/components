@@ -121,8 +121,7 @@ Let's implement a  toggle component using `x-modelable` first (then we're going 
 
 Here's our toggle using `x-modelable`:
 
-@blade
-<x-md.file file="resources/views/components/ui/simple-toggle.blade.php" open>
+```blade
 @props(['label' => null])
 
 <div class="flex items-center gap-3">
@@ -147,9 +146,7 @@ Here's our toggle using `x-modelable`:
         ></span>
     </button>
 </div>
-</x-md.file>
-@endblade
-
+```
 ### How It Works
 
 The magic happens with three simple Alpine directives:
