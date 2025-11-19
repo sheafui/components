@@ -177,6 +177,8 @@ Notice that `wire:ignore`? That's crucial! It tells Livewire to leave this DOM a
 other attribtues:
 
 - `data-slot`: we love this way to target our elements in tailwind or css (This pattern was inspired by [Adam Wathan’s talk at Laracon](https://www.youtube.com/watch?v=MrzrSFbxW7M), where he broke down how to build scalable UI libraries). 
+- `data-variant`: because we're going to support two variant for the handles **default** and **cercle** and this is how we grab it from php  
+- `data-variant`: because we're going to support the two direction **horizontal** and **vertical** and this is how we grab it from php  
 
 Here's the full Blade component:
 
