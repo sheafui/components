@@ -70,7 +70,7 @@ we're going to build a slider that has tons of features and customizable as hell
 
 Before we dive in, you might be thinking: **Why not just use a basic HTML range input?** Well, well, friend, because basic range inputs are about as customizable as a brick. Need tooltips? Good luck with it. Want multiple handles for a price range? Ha! Non-linear scales? Keep dreaming...
 
-That's why noUiSlider comes in. I saw the Filament team choose it, and when I tried it, I realized it's the beast that powers great slider experiences, giving us all the flexibility we need. But here's the thing: noUiSlider's API is... let's just say it's "feature-rich" (translation: complex 🙂). We're going to wrap it in something beautiful that plays nicely with Laravel, Livewire, and Alpine.js.
+That's why [noUiSlider](https://refreshless.com/nouislider/) library comes in. I saw the Filament team choose it, and when I tried it, I realized it's the beast that powers great slider experiences, giving us all the flexibility we need. But here's the thing: noUiSlider's interaction API izzzz a sh.. let's just say it's "feature-rich" 🙂. We're going to wrap it in something beautiful that plays nicely with Laravel, Livewire, and Alpine.js.
 
 ## The Component Plan
 
@@ -79,7 +79,9 @@ Here's what we're building:
 - Seamless **two-way** data binding with both **Livewire** and **Alpine**
 - A clean API that doesn't require a PhD to use
 - Customizable everything: tooltips, pips, handles, formatters...
-- Dark mode support because it's 2024, people
+- custom design
+
+> we're going to follow the same pattern I've explained in previous post of [how to build reusable blade component for livewire and alpinejs](/blog/post/building-reusable-tall-stack-components-with-wire-model-x-model)
 
 ## Step 1: Setting Up the Foundation
 
@@ -90,11 +92,11 @@ npm install nouislider
 ```
 
 Now, let's think about our file structure. We need three main pieces:
-1. **index.blade.php**: Our Blade component
-2. **slider.js**: The Alpine component that does the heavy lifting
-3. **slider.css**: Overrides for making it look gorgeous
+1. `index.blade.php`: Our Blade component
+2. `slider.js`: The Alpine component that does the heavy lifting
+3. `slider.css`: Css overrides for making it looks good 
 
-Create these files:
+the files structure
 ```
 resources/
   views/components/ui/slider/index.blade.php
@@ -110,7 +112,18 @@ This is where the magic begins. We want developers to write something as simple 
 <x-ui.slider wire:model="volume" :step="1" tooltips />
 ```
 
-And have it just *work*. No fuss, no muss, no configuration hell.
+OR
+
+```blade
+<div x-data="{ volume: [30] }">
+    <x-ui.slider x-model="volume" :step="1" tooltips />
+</div>
+```
+
+And have it just *work* with 1 stepped and have a top tooltip. No fuss, no muss.
+
+> just try to understand the idea, you'll find the whole code source of the blade file at end of the step
+
 
 Here's the approach: we'll accept a ton of props but make them all optional with sensible defaults. The component should be smart enough to handle both Livewire (`wire:model`) and Alpine (`x-model`) without the developer even having to think about it.
 
@@ -126,7 +139,7 @@ Here's the approach: we'll accept a ton of props but make them all optional with
 ])
 ```
 
-See that `name` prop? That's doing some detective work—grabbing either `wire:model` or `x-model` automatically. Smart, right?
+See that `name` prop? That's doing some detective work grabbing either `wire:model` or `x-model` automatically. Smart, right?
 
 Here's a cool trick we're using: we're wrapping the actual slider in a container div. Why? Because pips and tooltips need space! If you don't account for this, your tooltips will get cut off, and you'll spend an hour debugging CSS. Been there, done that.
 
@@ -160,6 +173,10 @@ Also here, where we construct the slider object using Blade props and pass them 
 ```
 
 Notice that `wire:ignore`? That's crucial! It tells Livewire to leave this DOM alone during morphing. Without it, Livewire will try to update the slider's DOM and everything breaks.
+
+other attribtues:
+
+- `data-slot`: we love this way to target our elements in tailwind or css (This pattern was inspired by [Adam Wathan’s talk at Laracon](https://www.youtube.com/watch?v=MrzrSFbxW7M), where he broke down how to build scalable UI libraries). 
 
 Here's the full Blade component:
 
