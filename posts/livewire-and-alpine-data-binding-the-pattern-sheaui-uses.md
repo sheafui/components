@@ -4,8 +4,8 @@ title: Building Reusable TALL Stack Components with wire:model & x-model
 slug: building-reusable-tall-stack-components-with-wire-model-x-model
 excerpt: Learn the exact pattern for building Blade components that work natively with both wire:model and x-model. Includes x-modelable tutorial and advanced entanglement techniques for complex Laravel components.
 author: mohamed charrafi
-created_at: 11-12-2025
-published_at: 12-11-2025  
+created_at: 17-11-2025
+published_at: 18-11-2025  
 category: advanced techniques
 ---
 
