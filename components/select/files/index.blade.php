@@ -75,6 +75,8 @@
                 this.$watch('state', (value) => {
                     // Sync with Alpine.js x-model
                     this.$root?._x_model?.set(value);
+                    // Emit change event
+                    this.$dispatch('change', { value });
                 });
 
                 // Filter options based on search input
