@@ -84,28 +84,6 @@ You can use it outside Livewire with just Alpine (and Blade):
 </div>
 ```
 
-### Listen for state changes
-
-The Select component can trigger JavaScript logic whenever its value changes. Use the `@change` event to listen for changes and use `$event.detail.value` for access the value.
-
-```blade
-<div x-data="{ country: '' }">
-    <x-ui.select 
-        class="w-3xs"
-        x-model="country"
-        placeholder="Choose a country..."
-        x-on:change="console.log($event.detail.value)
-        >
-            <x-ui.select.option value="us">United States</x-ui.select.option>
-            <x-ui.select.option value="uk">United Kingdom</x-ui.select.option>
-            <x-ui.select.option value="ca">Canada</x-ui.select.option>
-            <x-ui.select.option value="au">Australia</x-ui.select.option>
-            <x-ui.select.option value="de">Germany</x-ui.select.option>
-            <x-ui.select.option value="fr">France</x-ui.select.option>
-    </x-ui.select>
-</div>
-```
-
 ### Select with Icons
 
 Enhance the select with leading icons and option-specific icons for better visual communication.
@@ -334,6 +312,40 @@ Show different states for validation feedback.
         <x-ui.select.option value="option2">Option 2</x-ui.select.option>
 </x-ui.select>
 ```
+
+## Conventions
+### Listening for Changes
+
+You can react to selection changes by listening to the `@change` event. This is useful when you need to trigger side effects, validate selections, or update other parts of your UI based on the selected value.
+The selected value is available in `$event.detail.value`:
+
+```html
+<div x-data="{ country: '' }">
+    <x-ui.select 
+        class="w-3xs"
+        x-model="country"
+        placeholder="Choose a country..."
+        @change="fetchRegionalData($event.detail.value)"
+        >
+            <x-ui.select.option value="us">United States</x-ui.select.option>
+            <x-ui.select.option value="uk">United Kingdom</x-ui.select.option>
+            <x-ui.select.option value="ca">Canada</x-ui.select.option>
+            <x-ui.select.option value="au">Australia</x-ui.select.option>
+            <x-ui.select.option value="de">Germany</x-ui.select.option>
+            <x-ui.select.option value="fr">France</x-ui.select.option>
+    </x-ui.select>
+</div>
+```
+
+**When to use `@change`**
+
+The `@change` event is useful when you want to trigger side effects or coordinate multiple components. For reading the selected value, we recommend binding it using `x-model` or `wire:model`. 
+
+This is particularly useful when:
+- You need to refresh data or trigger API calls when the selection changes
+- Multiple selects need to coordinate (cascading dropdowns, dependent filters)
+- You're working with Livewire and need to call component methods without watching nested properties
+
 ## Customization
 
 ## Component Props
