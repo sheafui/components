@@ -84,9 +84,30 @@ You can use it outside Livewire with just Alpine (and Blade):
 </div>
 ```
 
-### Listen for state changes
+### Listening for Changes
 
-The Select component can trigger JavaScript logic whenever its value changes. Use the `@change` event to listen for changes and use `$event.detail.value` for access the value.
+You can react to selection changes by listening to the `@change` event. This is useful when you need to trigger side effects, validate selections, or update other parts of your UI based on the selected value.
+The selected value is available in `$event.detail.value`:
+
+@blade
+<x-demo>
+    <div x-data="{ country: '' }">
+        <x-ui.select 
+            class="w-3xs"
+            x-model="country"
+            placeholder="Choose a country..."
+            @change="console.log('Selected country: ', $event.detail.value)"
+            >
+                <x-ui.select.option value="us">United States</x-ui.select.option>
+                <x-ui.select.option value="uk">United Kingdom</x-ui.select.option>
+                <x-ui.select.option value="ca">Canada</x-ui.select.option>
+                <x-ui.select.option value="au">Australia</x-ui.select.option>
+                <x-ui.select.option value="de">Germany</x-ui.select.option>
+                <x-ui.select.option value="fr">France</x-ui.select.option>
+        </x-ui.select>
+    </div>
+</x-demo>
+@endblade
 
 ```html
 <div x-data="{ country: '' }">
@@ -94,7 +115,7 @@ The Select component can trigger JavaScript logic whenever its value changes. Us
         class="w-3xs"
         x-model="country"
         placeholder="Choose a country..."
-        @change="console.log($event.detail.value)
+        @change="console.log('Selected country: ', $event.detail.value)"
         >
             <x-ui.select.option value="us">United States</x-ui.select.option>
             <x-ui.select.option value="uk">United Kingdom</x-ui.select.option>
