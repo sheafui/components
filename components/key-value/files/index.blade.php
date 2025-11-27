@@ -1,5 +1,3 @@
-{{-- resources/views/components/key-value-input.blade.php --}}
-
 @props([
     'label' => null,
     'keyLabel' => 'Key',
@@ -21,171 +19,204 @@
 
 @php
     $classes = $showDuplicate ? '[&_[data-col=actions]]:w-24' : '[&_[data-col=actions]]:w-14';  
+
+    // Extract wire:model property and check if .live modifier exists
+    $modelAttrs = collect($attributes->getAttributes())
+        ->keys()
+        ->first(fn($key) => str_starts_with($key, 'wire:model'));
+    
+    $model = $modelAttrs ? $attributes->get($modelAttrs) : null;
+
+    $isLive = $modelAttrs && str_contains($modelAttrs, '.live');
+
 @endphp
 
 <div 
-    x-data="{
-        state: [],
-        error: '',
-        minRows: @js($minRows),
-        maxRows: @js($maxRows),
-        allowEmptyValues: @js($allowEmptyValues),
-        preventDuplicateKeys: @js($preventDuplicateKeys),
-        dragIndex: -1,
-        
-        init: function() {
-            queueMicrotask(()=>{
-                this.state = this.$el._x_model?.get() ?? [];
-                this.ensureMinRowsRequired();
-            })
-        },
+    x-data="function(){
+        const $entangle = (prop, live) => {
 
-        ensureMinRowsRequired: function(){
-             while (this.state.length < this.minRows) {
-                this.state.push({ key: '', value: '' });
-            }
-        },
+            const binding = $wire.$entangle(prop);
 
-        validateState: function() {
-            this.error = '';
+            return live ? binding.live : binding;
+        };
+
+        const $initState = (prop, live) => {
+            // when the env is not livewire
+            if (!prop) return [];
+
+            return  $entangle(prop, live);
+        };
+
+        return {
+            state: $initState(@js($model), @js($isLive)),
+            error: '',
+            minRows: @js($minRows),
+            maxRows: @js($maxRows),
+            allowEmptyValues: @js($allowEmptyValues),
+            preventDuplicateKeys: @js($preventDuplicateKeys),
+            dragIndex: -1,
             
-            // Check for duplicate keys if prevention is enabled
-            if (this.preventDuplicateKeys) {
-                const keys = this.state
-                    .map(row => row.key ? row.key.trim() : '')
-                    .filter(key => key !== '');
-                
-                const duplicateKeys = keys.filter((key, index) => keys.indexOf(key) !== index);
-                
-                if (duplicateKeys.length > 0) {
-                    this.error = `Duplicate keys found: ${[...new Set(duplicateKeys)].join(', ')}`;
-                    return false;
-                }
-            }
-            
-            // Check for empty values if not allowed
-            if (!this.allowEmptyValues) {
-                const hasEmptyValues = this.state.some(row => {
-                    const key = row.key ? row.key.trim() : '';
-                    const value = row.value ? row.value.trim() : '';
-                    return key !== '' && value === '';
+            init: function() {
+                this.$nextTick(() => {
+                    this.state = this.$el._x_model?.get() ?? [];
+
+                    this.ensureMinRowsRequired();
+                })
+
+                this.$watch('state', (value) => {
+                    // Sync with Alpine state
+                    this.$root?._x_model?.set(value);
                 });
-                
-                if (hasEmptyValues) {
-                    this.error = 'All keys must have corresponding values.';
-                    return false;
+            },
+
+            ensureMinRowsRequired: function(){
+                while (this.state.length < this.minRows) {
+                    this.state.push({ key: '', value: '' });
                 }
-            }
-            
-            return true;
-        },
+            },
 
-        addRow() {
-            if (this.maxRows && this.state.length >= this.maxRows) {
-                this.error = `Maximum of ${this.maxRows} rows allowed.`;
-                return;
-            }
-            this.state.push({ key: '', value: '' });
-            this.clearError();
-        },
-
-        deleteRow: function(index) {
-            if (this.state.length <= this.minRows) {
-                this.error = `Minimum of ${this.minRows} row(s) required.`;
-                return;
-            }
-            
-            if (index >= 0 && index < this.state.length) {
-                this.state.splice(index, 1);
-                this.clearError();
-            }
-        },
-
-        duplicateRow: function(index) {
-            if (this.maxRows && this.state.length >= this.maxRows) {
-                this.error = `Maximum of ${this.maxRows} rows allowed.`;
-                return;
-            }
-            
-            if (index >= 0 && index < this.state.length) {
-                const originalRow = this.state[index];
-                const originalKey = originalRow.key || '';
+            validateState: function() {
+                this.error = '';
                 
-                // Generate unique key for duplicate
-                let newKey = originalKey;
-                if (originalKey.trim() !== '') {
-                    let counter = 1;
-                    do {
-                        newKey = `${originalKey}_copy${counter > 1 ? counter : ''}`;
-                        counter++;
-                    } while (this.state.some(row => row.key === newKey));
+                // Check for duplicate keys if prevention is enabled
+                if (this.preventDuplicateKeys) {
+                    const keys = this.state
+                        .map(row => row.key ? row.key.trim() : '')
+                        .filter(key => key !== '');
+                    
+                    const duplicateKeys = keys.filter((key, index) => keys.indexOf(key) !== index);
+                    
+                    if (duplicateKeys.length > 0) {
+                        this.error = `Duplicate keys found: ${[...new Set(duplicateKeys)].join(', ')}`;
+                        return false;
+                    }
                 }
                 
-                const newRow = { 
-                    key: newKey, 
-                    value: originalRow.value || '' 
-                };
+                // Check for empty values if not allowed
+                if (!this.allowEmptyValues) {
+                    const hasEmptyValues = this.state.some(row => {
+                        const key = row.key ? row.key.trim() : '';
+                        const value = row.value ? row.value.trim() : '';
+                        return key !== '' && value === '';
+                    });
+                    
+                    if (hasEmptyValues) {
+                        this.error = 'All keys must have corresponding values.';
+                        return false;
+                    }
+                }
                 
-                this.state.splice(index + 1, 0, newRow);
+                return true;
+            },
+
+            addRow: function() {
+                if (this.maxRows && this.state.length >= this.maxRows) {
+                    this.error = `Maximum of ${this.maxRows} rows allowed.`;
+                    return;
+                }
+                this.state.push({ key: '', value: '' });
                 this.clearError();
-            }
-        },
+            },
 
-        clearAll: function() {
-            this.state = Array(this.minRows).fill().map(() => ({ key: '', value: '' }));
-            this.clearError();
-        },
+            deleteRow: function(index) {
+                if (this.state.length <= this.minRows) {
+                    this.error = `Minimum of ${this.minRows} row(s) required.`;
+                    return;
+                }
+                
+                if (index >= 0 && index < this.state.length) {
+                    this.state.splice(index, 1);
+                    this.clearError();
+                }
+            },
 
-        clearError: function() {
-            this.error = '';
-        },
+            duplicateRow: function(index) {
+                if (this.maxRows && this.state.length >= this.maxRows) {
+                    this.error = `Maximum of ${this.maxRows} rows allowed.`;
+                    return;
+                }
+                
+                if (index >= 0 && index < this.state.length) {
+                    const originalRow = this.state[index];
+                    const originalKey = originalRow.key || '';
+                    
+                    // Generate unique key for duplicate
+                    let newKey = originalKey;
+                    if (originalKey.trim() !== '') {
+                        let counter = 1;
+                        do {
+                            newKey = `${originalKey}_copy${counter > 1 ? counter : ''}`;
+                            counter++;
+                        } while (this.state.some(row => row.key === newKey));
+                    }
+                    
+                    const newRow = { 
+                        key: newKey, 
+                        value: originalRow.value || '' 
+                    };
+                    
+                    this.state.splice(index + 1, 0, newRow);
+                    this.clearError();
+                }
+            },
 
-        getRowCount: function() {
-            return this.state.length;
-        },
+            clearAll: function() {
+                this.state = Array(this.minRows).fill().map(() => ({ key: '', value: '' }));
+                this.clearError();
+            },
 
-        isRowDuplicate: function(index) {
-            if (!this.preventDuplicateKeys) return false;
-            
-            const currentKey = this.state[index].key ? this.state[index].key.trim() : '';
-            if (currentKey === '') return false;
-            
-            return this.state.filter(row => {
+            clearError: function() {
+                this.error = '';
+            },
+
+            getRowCount: function() {
+                return this.state.length;
+            },
+
+            isRowDuplicate: function(index) {
+                if (!this.preventDuplicateKeys || !this.state[index]) return false;
+
+                const currentKey = this.state[index].key ? this.state[index].key.trim() : '';
+                
+                if (currentKey === '') return false;
+                
+                return this.state.filter(row => {
+                    const key = row.key ? row.key.trim() : '';
+                    return key === currentKey;
+                }).length > 1;
+            },
+
+            isRowValueEmpty: function(index) {
+                if (this.allowEmptyValues || !this.state[index]) return false;
+                
+                const row = this.state[index];
                 const key = row.key ? row.key.trim() : '';
-                return key === currentKey;
-            }).length > 1;
-        },
+                const value = row.value ? row.value.trim() : '';
+                
+                return key !== '' && value === '';
+            },
+            onDragStart: function(index) {
+                this.dragIndex = index;
+            },
 
-        isRowValueEmpty: function(index) {
-            if (this.allowEmptyValues) return false;
-            
-            const row = this.state[index];
-            const key = row.key ? row.key.trim() : '';
-            const value = row.value ? row.value.trim() : '';
-            
-            return key !== '' && value === '';
-        },
-        onDragStart: function(index) {
-            this.dragIndex = index;
-        },
+            onDrop: function(dropIndex) {
+                if (this.dragIndex === -1 || this.dragIndex === dropIndex) {
+                    this.dragIndex = -1;
+                    return;
+                }
 
-        onDrop: function(dropIndex) {
-            if (this.dragIndex === -1 || this.dragIndex === dropIndex) {
+                const newState = [...this.state];
+                const draggedItem = newState.splice(this.dragIndex, 1)[0];
+                
+                newState.splice(dropIndex, 0, draggedItem);
+
+                this.state = newState;
                 this.dragIndex = -1;
-                return;
+                this.clearError();
+            },
+            onDragEnd: function() {
+                this.dragIndex = -1;
             }
-
-            const newState = [...this.state];
-            const draggedItem = newState.splice(this.dragIndex, 1)[0];
-            
-            newState.splice(dropIndex, 0, draggedItem);
-
-            this.state = newState;
-            this.dragIndex = -1;
-            this.clearError();
-        },
-        onDragEnd: function() {
-            this.dragIndex = -1;
         }
     }"
     {{ $attributes->class($classes) }}
@@ -243,7 +274,7 @@
                             @endif
                             
                             {{-- Key Input --}}
-                            <td class="px-1 dark:border dark:border-white/10 border-0">
+                            <td class="dark:border dark:border-white/10 border-0 p-0!">
                                 <x-ui.key-value.input
                                     x-model="state[index].key"
                                     :placeHolder="$keyPlaceholder"
@@ -251,15 +282,15 @@
                             </td>
                             
                             {{-- Value Input --}}
-                            <td class="px-1 dark:border dark:border-white/10 border-0">
+                            <td class=" dark:border dark:border-white/10 border-0 p-0!">
                                 <x-ui.key-value.input
                                     x-model="state[index].value"
                                     :placeHolder="$valuePlaceholder"
                                 />
                             </td>
 
-                            {{-- Individual Actions --}}
-                            <td class="px-3 py-2 dark:border dark:border-white/10 border-0 w-24">
+                            Individual Actions
+                            <td class="p-2 dark:border dark:border-white/10 border-0 w-24">
                                 <x-ui.key-value.actions/>
                             </td>
                         </tr>
