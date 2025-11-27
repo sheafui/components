@@ -437,20 +437,19 @@
             </template>
         </div>
 
-        {{-- handle state dispaly --}}
-        <div wire:ignore class="inline-block w-full">
             <template x-if="state?.length">
-                <div class="flex w-full  flex-wrap gap-1.5 p-2 border-t border-t-neutral-200 dark:border-t-white/10">
-                    <template x-for="(tag, index) in state" :key="`${tag}-${index}`">
-                        {{-- there is a lot to do with state, so extracting it, a smart move  --}}
-                        <x-ui.tags-input.tag
-                            :$tagVariant
-                            :$tagColor
-                        />
-                    </template>
+                <div class="inline-block w-full">
+                    <div class="flex w-full  flex-wrap gap-1.5 p-2 border-t border-t-neutral-200 dark:border-t-white/10">
+                        <template x-for="(tag, index) in state" :key="`${tag}-${index}`">
+                            {{-- there is a lot to do with state, so extracting it, a smart move  --}}
+                            <x-ui.tags-input.tag
+                                :$tagVariant
+                                :$tagColor
+                            />
+                        </template>
+                    </div>
                 </div>
             </template>
-        </div>
         {{-- Error Display --}}
         <div x-show="error" style="display: none;" x-transition class="p-2 text-sm text-red-600 dark:text-red-400" id="error-message">
             <span x-text="error"></span>
