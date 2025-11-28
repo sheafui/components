@@ -20,8 +20,6 @@ Dive in and master the details!
 @endblade
 
 
-The architectural deep dive ahead will show you how to build a single modal component capable of producing standard dialogs, side slide-overs, and full-screen  while delivering native mobile gestures.
-
 @blade
  <div class="relative flex w-full py-8 flex-wrap items-center justify-center gap-4">
     <div class="flex flex-wrap items-center gap-2 md:gap-4">
@@ -722,7 +720,7 @@ if (this.distance > 100) { }
 // Just right (100px): Deliberate gesture, but not exhausting
 ```
 
-We tested with actual users. 100px is the sweet spot between intentional gesture and comfortable interaction.
+100px is the sweet spot (I think 🙂) between intentional gesture and comfortable interaction.
 
 ### The Opacity Fade Effect
 
