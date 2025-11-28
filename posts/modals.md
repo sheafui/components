@@ -13,16 +13,15 @@ category: advanced techniques
 
 @blade
 <x-md.callout title="Notice">
-    This guide was created by Mohamed, who built most of the components at SheafUI. After building dozens of modals across different projects, I've learned what separates a "good enough" modal from a production-ready system that handles edge cases gracefully. This is the architecture behind our modal component battle tested and evolved through real-world usage.
+    This guide was created by Mohamed, who built most of the components at SheafUI. After building dozens of modals across different projects, I've learned what separates a "good enough" modal from a production-ready system that handles edge cases gracefully.
     <br/>
+    if you find any missing improvements, I am fully open to learn from you, so don't hestita to reach to me
     <br/>
     Enjoy this deep dive!
 </x-md.callout>
 @endblade
 
-@blade
 
-@endblade
 
 **What makes a truly great modal system?** 
 
@@ -59,6 +58,14 @@ Our modal system has three core layers:
 
 Let's build this step by step.
 
+@blade
+<x-md.cta                                                            
+    href="/docs/components/modal"                                    
+    label="All the code we explain is fully available on our platform, so focus on understanding the Idea."
+    ctaLabel="Visit Docs"
+/>
+@endblade
+
 ## Part 1: The Global Modal Store
 
 This is the **brain** of our modal system. It needs to:
@@ -83,7 +90,6 @@ import defineReactiveMagicProperty from "../utils";
 
 document.addEventListener('alpine:init', () => {
     defineReactiveMagicProperty('modal', {
-        // Using a Set for O(1) lookup performance
         openModals: new Set(),
 
         open(id) {
@@ -488,40 +494,9 @@ setupEventListeners() {
 - Child z-index values only compete within their parent context
 - By teleporting to `body`, we escape ALL parent contexts
 
+> teleportation works great with livewire, it forward any events to the teleported place correctly
 
-#### Persistent Modals
 
-```javascript
-close() {
-    if (this.persistent) return; // Block normal close methods
-    this.isOpen = false;
-}
-
-forceClose() {
-    // Override persistence when explicitly called
-    this.isOpen = false;
-}
-```
-
-**Use case:** Confirmation dialogs where accidental clicks shouldn't dismiss:
-
-```blade
-<x-ui.modal 
-    id="delete-account"
-    persistent
-    heading="Delete Account?"
->
-    <p>This action cannot be undone.</p>
-    
-    <x-slot name="footer">
-        <x-ui.button variant="danger" wire:click="deleteAccount">
-            Yes, Delete Forever
-        </x-ui.button>
-    </x-slot>
-</x-ui.modal>
-```
-
-User **must** click a button—no accidental backdrop clicks or ESC key presses.
 
 ## Part 3: Mobile Gestures - Swipe to Close
 
@@ -681,25 +656,6 @@ handleTouchMove(event) {
 }
 ```
 
-**Why `requestAnimationFrame`?**
-
-```javascript
-// ❌ Without RAF: Updates happen whenever touchmove fires (can be 120Hz)
-handleTouchMove(event) {
-    this.modalContainer.style.transform = `translateY(${distance}px)`;
-    // Browser might repaint multiple times per frame - wasted work
-}
-
-// ✅ With RAF: Updates sync with browser's repaint cycle (60Hz)
-handleTouchMove(event) {
-    requestAnimationFrame(() => {
-        // Guaranteed to run once per frame, right before paint
-        this.modalContainer.style.transform = `translateY(${distance}px)`;
-    });
-}
-```
-
-**Result:** Butter-smooth 60fps dragging, even on low-end devices.
 
 #### Phase 3: Touch End
 
@@ -766,87 +722,7 @@ Drag Distance    |  Opacity
 
 ## Part 4: The Backdrop Component
 
-The backdrop is deceptively simple but crucial for UX:
-
-```blade
-@aware(['backdrop' => 'blur'])
-
-<div 
-    x-show="isOpen"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0"
-    x-transition:enter-end="opacity-100"
-    x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-100"
-    x-transition:leave-end="opacity-0"
-    @class([
-        'fixed inset-0 transition',
-        'bg-black/30 backdrop-blur-[1px]' => $backdrop === 'blur',
-        'bg-black/50' => $backdrop === 'dark', 
-        'bg-transparent' => $backdrop === 'transparent',
-    ])
-></div>
-```
-### Understanding Backdrop Variants
-
-#### Blur Backdrop (Default)
-
-```css
-bg-black/30 backdrop-blur-[1px]
-```
-
-**Why such subtle blur?**
-
-```css
-/* ❌ Too much blur (5px+) */
-backdrop-blur-md /* blur(12px) */
-/* Problems:
-   - Feels heavy/slow
-   - Harder to see what's behind
-   - Can cause performance issues on mobile
-*/
-
-/* ✅ Subtle blur (1px) */
-backdrop-blur-[1px]
-/* Benefits:
-   - Just enough to indicate "background"
-   - Maintains context awareness
-   - Minimal performance impact
-   - Modern, premium feel
-*/
-```
-
-The blur says "this is background" without completely obscuring it. Users maintain spatial awareness.
-
-#### Dark Backdrop
-
-```css
-bg-black/50
-```
-
-**Use case:** When you want maximum focus on modal content.
-
-```blade
-<!-- For critical actions -->
-<x-ui.modal backdrop="dark" heading="Delete Account?">
-    <!-- Dark backdrop = "pay attention, this is serious" -->
-</x-ui.modal>
-```
-
-#### Transparent Backdrop
-
-```css
-bg-transparent
-```
-
-**Use case:** Tooltips, popovers, or non-intrusive overlays.
-
-```blade
-<!-- For supplementary content -->
-<x-ui.modal backdrop="transparent" heading="Pro Tip">
-    <!-- User can still clearly see and interact with background -->
-</x-ui.modal>
-```
+The backdrop is deceptively simple you can check the code for the variants.
 
 ## Part 5: The Trigger Component
 
@@ -878,8 +754,4 @@ Sometimes you want the trigger and modal defined together. The trigger component
 </x-ui.modal.trigger>
 <x-ui.modal id="confirm-delete">...</x-ui.modal>
 ```
-
-**Benefits:**
-- **Declarative** - Clear that this element opens a modal
-- **Reusable** - Wrap any content, not just buttons
-- **Less boilerplate** - No manual `x-on:click` attributes
+yeah it is declarative, reusable and reducess the boilerplate
