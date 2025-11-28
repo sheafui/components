@@ -4,8 +4,8 @@ title: Building the Ultimate Modal System for TALL Stack Applications
 slug: building-ultimate-modal-system-tall-stack
 excerpt: Deep dive into building a production-ready modal system with global state management, mobile gestures, and seamless Livewire/Alpine integration. Learn the architectural decisions behind a truly flexible modal component.
 author: mohamed charrafi
-created_at: 27-11-2025
-published_at: 27-11-2025  
+created_at: 28-11-2025
+published_at: 28-11-2025  
 category: advanced techniques
 ---
 
