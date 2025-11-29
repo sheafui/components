@@ -66,7 +66,7 @@
 
 @endphp
 
-<div {{ $attributes->class(Arr::toCssClasses($wrapperClasses)) }} x-modelable="_checked" x-data="{ _checked: @js($_checked) }">
+<div {{ $attributes->class(Arr::toCssClasses($wrapperClasses)) }} x-modelable="_checked" x-data="{ _checked: @js($checked) }">
     <div class="">
         <!-- Switch -->
         <div class="{{ Arr::toCssClasses($containerClasses) }}">
