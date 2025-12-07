@@ -145,7 +145,6 @@ Provide users with helpful suggestions as they type.
 @blade
 <x-demo  >
     <x-ui.tags-input 
-        wire:model="skillTags" 
         placeholder="Type to see suggestions..."
         :suggestions="['PHP', 'Laravel', 'Vue.js', 'Alpine.js', 'Tailwind CSS', 'JavaScript']"
     />
@@ -164,7 +163,6 @@ to force of choosing only predifined tags you by setting   ``:allowCustom="false
 @blade
 <x-demo  >
     <x-ui.tags-input 
-        wire:model="skillTags" 
         :allowCustom="false"
         placeholder="Type something isn't in the suggestions list"
         :suggestions="['PHP', 'Laravel', 'Vue.js', 'Alpine.js', 'Tailwind CSS', 'JavaScript']"
@@ -188,7 +186,6 @@ Set limits and validation rules to ensure data quality.
 @blade
 <x-demo  >
     <x-ui.tags-input 
-        wire:model="constrainedTags" 
         placeholder="Max 3 tags, 2-10 characters each"
         :max-tags="3"
         :min-tag-length="2"
@@ -220,7 +217,6 @@ Define which keys should create new tags.
 @blade
 <x-demo  >
     <x-ui.tags-input 
-        wire:model="customSeparators" 
         placeholder="Use asterik, comma, space or semicolon to separate"
         :split-keys="['*',' ',',', ';']"
     />
@@ -268,7 +264,6 @@ Enable counter display and clear all functionality.
 @blade
 <x-demo  >
     <x-ui.tags-input 
-        wire:model="disabledTags" 
         placeholder="Disabled tags input"
         disabled
     />
@@ -292,7 +287,6 @@ Restrict input to specific character patterns.
 @blade
 <x-demo  >
     <x-ui.tags-input 
-        wire:model="alphanumericTags" 
         placeholder="Only alphanumeric characters allowed"
         allowed-chars="^[a-zA-Z0-9]+$"
     />
@@ -314,7 +308,6 @@ while you can't use character validation as previsouly but for conveniece you ca
 @blade
 <x-demo  >
     <x-ui.tags-input 
-        wire:model="filteredTags" 
         placeholder="Try typing 'spam' or 'test'"
         :blocked-words="['spam', 'test', 'admin']"
     />
@@ -336,7 +329,6 @@ Automatically sort tags alphabetically.
 @blade
 <x-demo  >
     <x-ui.tags-input 
-        wire:model="sortedTags" 
         placeholder="Tags will be sorted automatically"
         :sort-tags="true"
     />

@@ -26,15 +26,23 @@
 @endphp
 
 <div 
-    x-data="function(){
+    x-data="
+        function(){
         
-        const $entangle = (prop, live, multiple) => {
-            if (!prop) return multiple ? [] : null;
+        const $entangle = (prop, live) => {
 
-            const binding = $wire.entangle(prop);
+            const binding = $wire.$entangle(prop);
 
             return live ? binding.live : binding;
         };
+
+        const $initState = (prop, live, multiple) => {
+            // when the env is not livewire
+            if (!prop) return multiple ? [] : null;
+
+            return  $entangle(prop, live);
+        };
+
 
         return{
             search: '',
@@ -54,8 +62,8 @@
             isSearchable: @js($searchable),
             
             // Selected value(s) - array for multiple, single value for single select
-            state: $entangle(@js($model), @js($isLive), @js($multiple)),
-
+            state: $initState(@js($model), @js($isLive), @js($multiple)),
+                    
             placeholder: @js($placeholder) ?? 'select ...',
 
             init() {
@@ -68,6 +76,7 @@
                             label: option.dataset.label,
                             element: option
                         }));
+
                     // Initialize state from x-model or wire:model binding
                     this.state = this.$root?._x_model?.get();
                 });
@@ -75,6 +84,8 @@
                 this.$watch('state', (value) => {
                     // Sync with Alpine.js x-model
                     this.$root?._x_model?.set(value);
+                    // Emit change event
+                    this.$dispatch('change', { value });
                 });
 
                 // Filter options based on search input

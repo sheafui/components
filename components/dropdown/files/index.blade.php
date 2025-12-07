@@ -1,5 +1,6 @@
 @props([
     'position' => 'bottom-center',
+    'teleport' => 'body',
     'portal' => false 
 ])
 
@@ -7,7 +8,7 @@
     $classes = [
         'isolate z-50',
         'grid grid-cols-[auto_1fr_auto]',
-        'z-10 [:where(&)]:max-w-96 [:where(&)]:min-w-40 text-start',
+        '[:where(&)]:max-w-96 [:where(&)]:min-w-40 text-start',
         'bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 space-y-0.5',
         'rounded-(--dropdown-radius) p-(--dropdown-padding) [--dropdown-radius:var(--radius-box)] [--dropdown-padding:--spacing(.75)]',
     ];  
@@ -57,6 +58,7 @@
         x-on:keydown.escape.prevent.stop="close($refs.button)"
         x-on:focusin.window="handleFocusInOut($event)"
         x-id="['dropdown-button']"
+        wire:key="dropdown-{{ uniqid() }}"
         class="relative"
     >
         <!-- Button -->
@@ -75,7 +77,7 @@
         </div>
         
         @if($portal)
-            <template x-teleport="body">
+            <template x-teleport="{{ $teleport }}" wire:key="dropdown-portal-{{ uniqid() }}">
         @endif
         
         <div 
@@ -96,7 +98,7 @@
             x-transition:leave-end="opacity-0 scale-95"
             x-on:click.away="close($refs.button)"
             x-bind:id="$id('dropdown-button')"
-            style="display: none; backdrop-filter: blur(64px); -webkit-backdrop-filter: blur(64px);z-index:9999"
+            style="display: none; backdrop-filter: blur(64px); -webkit-backdrop-filter: blur(64px);"
             {{ $menu->attributes->class(Arr::toCssClasses($classes)) }}
         >
             {{ $menu }}

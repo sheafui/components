@@ -222,7 +222,7 @@ Create popovers with interactive elements like forms or action buttons.
                 User Profile
             </x-ui.button>
         </x-ui.popover.trigger>
-        <x-ui.popover.overlay class="w-80">
+        <x-ui.popover.overlay class="!w-80">
             <div class="p-2 ">
                 <div class="flex items-center gap-3 mb-3">
                     <x-ui.avatar src="https://avatars.githubusercontent.com/u/130717329?v=4"/>
@@ -252,7 +252,7 @@ Create popovers with interactive elements like forms or action buttons.
             User Profile
         </x-ui.button>
     </x-ui.popover.trigger>
-    <x-ui.popover.overlay class="w-80">
+    <x-ui.popover.overlay class="!w-80">
         <div class="p-2">
             <div class="flex items-center gap-3 mb-3">
                 <x-ui.avatar src="https://avatars.githubusercontent.com/u/130717329?v=4"/>
@@ -287,7 +287,7 @@ Perfect for displaying additional context or help information.
                     Help
                 </x-ui.button>
             </x-ui.popover.trigger>
-            <x-ui.popover.overlay position="top" class="w-64">
+            <x-ui.popover.overlay position="top" class="!w-64">
                 <div class="p-4 text-start  ">
                     <x-ui.heading class="mb-2">How to use this feature</x-ui.heading>
                     <x-ui.text class="mb-3">
@@ -308,7 +308,7 @@ Perfect for displaying additional context or help information.
                     API Key
                 </x-ui.button>
             </x-ui.popover.trigger>
-            <x-ui.popover.overlay position="right" :offset="8" class="w-56">
+            <x-ui.popover.overlay position="right" :offset="8" class="!w-56">
                 <div class="p-3">
                     <x-ui.text class="text-sm text-neutral-600 dark:text-neutral-400">
                         Your API key is used to authenticate requests. Keep it secure and don't share it publicly.
@@ -328,7 +328,7 @@ Perfect for displaying additional context or help information.
                 Help
             </x-ui.button>
         </x-ui.popover.trigger>
-        <x-ui.popover.overlay position="top" class="w-64">
+        <x-ui.popover.overlay position="top" class="!w-64">
             <div class="p-4 text-start  ">
                 <x-ui.heading class="mb-2">How to use this feature</x-ui.heading>
                 <x-ui.text class="mb-3">
@@ -349,7 +349,7 @@ Perfect for displaying additional context or help information.
                 API Key
             </x-ui.button>
         </x-ui.popover.trigger>
-        <x-ui.popover.overlay position="right" :offset="8" class="w-56">
+        <x-ui.popover.overlay position="right" :offset="8" class="!w-56">
             <div class="p-3">
                 <x-ui.text class="text-sm text-neutral-600 dark:text-neutral-400">
                     Your API key is used to authenticate requests. Keep it secure and don't share it publicly.
@@ -373,12 +373,12 @@ Customize the appearance and behavior of popovers.
                     Custom Width
                 </x-ui.button>
             </x-ui.popover.trigger>
-            <x-ui.popover.overlay class="w-96">
+            <x-ui.popover.overlay class="!w-96">
                 <div class="p-4">
                     <h3 class="font-semibold mb-2">Wide Popover</h3>
                     <p class="text-sm text-neutral-600 dark:text-neutral-400">
                         This popover has a custom width set using Tailwind classes.
-                        You can control the width by passing w-* classes to the overlay component.
+                        You can control the width by passing !w-* classes to the overlay component.
                     </p>
                 </div>
             </x-ui.popover.overlay>
@@ -408,7 +408,7 @@ Customize the appearance and behavior of popovers.
         </x-ui.button>
     </x-ui.popover.trigger>
     
-    <x-ui.popover.overlay class="w-96">
+    <x-ui.popover.overlay class="!w-96">
         <div class="p-4">
             <h3 class="font-semibold mb-2">Wide Popover</h3>
             <p class="text-sm text-neutral-600 dark:text-neutral-400">
@@ -459,7 +459,7 @@ Customize the appearance and behavior of popovers.
 | `on-hover` | string | `false` | No | if you want to open the overlay when hovering the trigger |
 | `class` | string | `''` | No | Additional CSS classes |
 
-> You can control the width of the popover by passing `w-*` Tailwind classes to the overlay component.
+> You can control the width of the popover by passing `!w-*` Tailwind classes to the overlay component.
 
 ## Keyboard Navigation
 
@@ -468,3 +468,4 @@ The popover component supports full keyboard accessibility:
 - **Escape**: Closes the popover
 - **Click outside**: Closes the popover
 - **Focus management**: Proper focus trapping when popover contains interactive elements
+

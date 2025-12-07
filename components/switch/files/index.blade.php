@@ -66,42 +66,42 @@
 
 @endphp
 
-<div {{ $attributes->class(Arr::toCssClasses($wrapperClasses)) }} x-data="{ checked: @js($checked) }">
+<div {{ $attributes->class(Arr::toCssClasses($wrapperClasses)) }} x-modelable="_checked" x-data="{ _checked: @js($checked) }">
     <div class="">
         <!-- Switch -->
         <div class="{{ Arr::toCssClasses($containerClasses) }}">
             <div class="flex-shrink-0 flex items-center">
                 <button type="button" class="{{ Arr::toCssClasses($switchClasses) }}"
-                    x-bind:class="checked ? '[:where(&)]:bg-neutral-800 [:where(&)]:dark:bg-white {{ $onClass }}' :
-                        '{{ $offClass }} [:where(&)]:bg-neutral-300 [:where(&)]:dark:bg-neutral-950'"
-                    x-on:click="checked = !checked" @disabled($disabled) x-bind:aria-checked="checked"
+                    x-bind:class="_checked ? '[:where(&)]:bg-neutral-800 [:where(&)]:dark:bg-white {{ $onClass }}' :
+                        '{{ $offClass }} [:where(&)]:bg-neutral-300 [:where(&)]:dark:bg-white/10'"
+                    x-on:click="_checked = !_checked" @disabled($disabled) x-bind:aria-_checked="_checked"
                     role="switch" aria-labelledby="{{ $id }}-label">
                     <span
-                        x-bind:class="checked ?
+                        x-bind:class="_checked ?
                             '{{ $sizeConfig['activeTranslate'] }} {{ $thumbOnClass }} [:where(&)]:bg-white [:where(&)]:dark:bg-neutral-950' :
                             'translate-x-[0.05rem] [:where(&)]:bg-white {{ $thumbOffClass }}'"
                         class="{{ Arr::toCssClasses($thumbClasses) }}">
 
                         @if ($iconOn)
-                            <x-ui.icon name="{{ $iconOn }}" x-show="checked"
+                            <x-ui.icon name="{{ $iconOn }}" x-show="_checked"
                                 class="{{ $sizeConfig['iconSize'] }} text-black! dark:text-white!" />
                         @endif
 
                         @if ($iconOff)
-                            <x-ui.icon name="{{ $iconOff }}" x-show="!checked"
+                            <x-ui.icon name="{{ $iconOff }}" x-show="!_checked"
                                 class="{{ $sizeConfig['iconSize'] }} text-black!" />
                         @endif
                     </span>
                 </button>
 
                 @if ($name)
-                    <input type="hidden" name="{{ $name }}" x-bind:value="checked ? '1' : '0'">
+                    <input type="hidden" name="{{ $name }}" {{ $attributes }} x-bind:value="_checked ? '1' : '0'">
                 @endif
             </div>
 
             <label id="{{ $id }}-label"
                 class="block text-start flex-1 text-sm font-medium text-black dark:text-white cursor-pointer select-none"
-                @if (!$disabled) x-on:click="checked = !checked" @endif>
+                @if (!$disabled) x-on:click="_checked = !_checked" @endif>
                 {{ $label }}
             </label>
         </div>

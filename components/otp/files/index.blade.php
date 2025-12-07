@@ -72,14 +72,6 @@
                     }
                 });
 
-                // Livewire-specific hook: Reinitialize after DOM morphing
-                // Livewire often removes transient attributes (like data-order)
-                Livewire.hook('morphed', ({ _el, _component }) => {
-                    // Rebuild internal references after morph phase
-                    this.setupInputs();
-                    this.updateInputAvailability();
-                });
-
                 // React to changes in the joined OTP value
                 this.$watch('_state', (value) => {
                     // Keep Alpine/Livewire state in sync
@@ -308,6 +300,7 @@
     class="contents" 
     x-on:otp-clear.window="clear()"
     x-on:otp-focus.window="focus()"
+    wire:ignore
 >
     <div 
         x-ref="inputsWrapper" 

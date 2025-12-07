@@ -2,6 +2,9 @@ import noUiSlider from 'nouislider'
 
 
 const sliderComponent = ({
+    livewire,
+    model,
+    isLive,
     arePipsStepped,
     behavior,
     decimalPlaces,
@@ -20,134 +23,138 @@ const sliderComponent = ({
     step,
     tooltips,
 
-}) => ({
-    _state: null,
-    _slider: null,
+}) => {
 
-    // callbacks to be overriden easily when using the component 
-    pipLabelFormater: (label) => label,
-    tooltipFormatter: (value) => value,
-    pipFilter: undefined,
+    // Bridge function between Livewire entanglement and local Alpine reactivity
+    const $entangle = (prop, live) => {
+        const binding = livewire.$entangle(prop);
+        return live ? binding.live : binding;
+    };
 
-    init() {
+    // Initialize component state based on presence of Livewire model
+    const $initState = (model, live) => model ? $entangle(model, live) : null;
 
-        this.$nextTick(() => {
-            // Sync external state (Alpine x-model or Livewire wire:model)
-            this._state = this.$root?._x_model?.get();
+    return {
+        _state: $initState(model, isLive),
+        _slider: null,
 
-            this.initSlider();
+        // callbacks to be overriden easily when using the component 
+        pipLabelFormater: (label) => label,
+        tooltipFormatter: (value) => value,
+        pipFilter: undefined,
 
-            this._slider.on('change', (values) => {
-                this._state = values.length > 1 ? values : values[0]
-            })
+        init() {
 
-            this.$watch('_state', (value) => {
+            this.$nextTick(() => {
+                // Sync external state (Alpine x-model or Livewire wire:model)
+                this._state = this.$root?._x_model?.get();
 
-                this._slider.set(Alpine.raw(value))
+                this.initSlider();
 
-                // Sync with Alpine x-model
-                this.$root?._x_model?.set(value);
+                this._slider.on('change', (values) => {
+                    this._state = values.length > 1 ? values : values[0]
+                })
 
-                // Sync with Livewire wire:model
-                let wireModel = this.$root.getAttributeNames()?.find(n => n.startsWith('wire:model'))
+                this.$watch('_state', (value) => {
 
-                if (this.$wire && wireModel) {
-                    let prop = this.$root.getAttribute(wireModel)
-                    this.$wire.set(prop, value, wireModel?.includes('.live'));
-                }
-            })
+                    this._slider.set(Alpine.raw(value))
 
-        });
-    },
+                    // Sync with Alpine x-model
+                    this.$root?._x_model?.set(value);
+                })
 
-    formatPipValueUsing(callback) {
-        this.pipLabelFormater = callback
-    },
+            });
+        },
 
-    filterPipsUsing(callback) {
-        this.pipFilter = callback;
-    },
+        formatPipValueUsing(callback) {
+            this.pipLabelFormater = callback
+        },
 
-    formatTooltipUsing(callback) {
-        this.tooltipFormatter = callback;
-    },
+        filterPipsUsing(callback) {
+            this.pipFilter = callback;
+        },
 
-    initSlider() {
-        const config = {
-            behaviour: behavior,
-            direction: isRtl ? 'rtl' : 'ltr',
-            connect: fillTrack,
-            format: {
-                from: (value) => value,
-                to: (value) =>
-                    decimalPlaces !== null
-                        ? +value.toFixed(decimalPlaces)
-                        : value,
-            },
-            orientation: isVertical ? 'vertical' : 'horizontal',
-            range: {
-                min: minValue,
-                ...(nonLinearPoints ?? {}),
-                max: maxValue,
-            },
-            start: Alpine.raw(this._state),
-        }
+        formatTooltipUsing(callback) {
+            this.tooltipFormatter = callback;
+        },
 
-        if (step !== null) config.step = step
-        if (limit !== null) config.limit = limit
-        if (margin !== null) config.margin = margin
-        if (padding !== null) config.padding = padding
-
-        if (tooltips !== false) {
-            config.tooltips = tooltips === true
-                ? {
-                    to: (value) => this.tooltipFormatter(value)
-                }
-                : tooltips
-        }
-
-        // pips configurations  
-        if (pipsMode !== null) {
-            config.pips = {
-                density: pipsDensity ?? 10,
-
-                mode: pipsMode,
+        initSlider() {
+            const config = {
+                behaviour: behavior,
+                direction: isRtl ? 'rtl' : 'ltr',
+                connect: fillTrack,
                 format: {
-                    to: (value) => this.pipLabelFormater(value)
+                    from: (value) => value,
+                    to: (value) =>
+                        decimalPlaces !== null
+                            ? +value.toFixed(decimalPlaces)
+                            : value,
                 },
-                stepped: arePipsStepped,
+                orientation: isVertical ? 'vertical' : 'horizontal',
+                range: {
+                    min: minValue,
+                    ...(nonLinearPoints ?? {}),
+                    max: maxValue,
+                },
+                start: Alpine.raw(this._state),
             }
 
-            if (typeof this.pipFilter === 'function') {
-                config.pips.filter = (value, type) => this.pipFilter(value, type)
+            if (step !== null) config.step = step
+            if (limit !== null) config.limit = limit
+            if (margin !== null) config.margin = margin
+            if (padding !== null) config.padding = padding
+
+            if (tooltips !== false) {
+                config.tooltips = tooltips === true
+                    ? {
+                        to: (value) => this.tooltipFormatter(value)
+                    }
+                    : tooltips
             }
 
-            // if (pipsFilter !== null) config.pips.filter = pipsFilter
-            if (pipsValues !== null) config.pips.values = pipsValues
-        }
+            // pips configurations  
+            if (pipsMode !== null) {
+                config.pips = {
+                    density: pipsDensity ?? 10,
 
-        this._slider = noUiSlider.create(this.$el, config)
-    },
-    get $slider() {
-        return this;
-    },
+                    mode: pipsMode,
+                    format: {
+                        to: (value) => this.pipLabelFormater(value)
+                    },
+                    stepped: arePipsStepped,
+                }
 
-    disable(index = null) {
-        this.$nextTick(()=>{
-            if (index) {
-                this._slider.disable(index);
-            } else {
-                this._slider.disable();
-                this.$root.setAttribute('disabled','true');
+                if (typeof this.pipFilter === 'function') {
+                    config.pips.filter = (value, type) => this.pipFilter(value, type)
+                }
+
+                // if (pipsFilter !== null) config.pips.filter = pipsFilter
+                if (pipsValues !== null) config.pips.values = pipsValues
             }
-        })
-    },
-    destroy() {
-        if (this._slider) {
-            this._slider.destroy()
-            this._slider = null
-        }
-    },
-})
+
+            this._slider = noUiSlider.create(this.$el, config)
+        },
+        get $slider() {
+            return this;
+        },
+
+        disable(index = null) {
+            this.$nextTick(() => {
+                if (index) {
+                    this._slider.disable(index);
+                } else {
+                    this._slider.disable();
+                    this.$root.setAttribute('disabled', 'true');
+                }
+            })
+        },
+        destroy() {
+            if (this._slider) {
+                this._slider.destroy()
+                this._slider = null
+            }
+        },
+    }
+}
 
 Alpine.data('sliderComponent', sliderComponent)

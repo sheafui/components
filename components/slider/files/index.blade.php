@@ -28,11 +28,23 @@
 ])
 
 @php
+
     // enable pips by pips props as well don't always override the pips mode
     if($pips && is_null($pipsMode)) $pipsMode = 'range';
     $componentId = $id ?? 'slider-' . uniqid();
     $hasPips = filled($pipsMode);
     $hasTooltips = $tooltips !== false;
+
+    // Detect if the component is bound to a Livewire model
+    $modelAttrs = collect($attributes->getAttributes())->keys()->first(fn($key) => str_starts_with($key, 'wire:model'));
+
+    $model = $modelAttrs ? $attributes->get($modelAttrs) : null;
+
+    // Detect if model binding uses `.live` modifier (for real-time syncing)
+    $isLive = $modelAttrs && str_contains($modelAttrs, '.live');
+
+    $livewireId = isset($__livewire) ? $__livewire->getId() : null;
+
 @endphp
 
 <div
@@ -45,6 +57,11 @@
 >
     <div
         x-data="sliderComponent({
+            // adapt component with livewire natively
+            model: @js($model),
+            livewire: @js(isset($livewireId)) ? window.Livewire.find(@js($livewireId)) : null,
+            isLive: @js($isLive),
+            // typical props
             arePipsStepped: @js($arePipsStepped),
             behavior: @js($behavior),
             decimalPlaces: @js($decimalPlaces),
