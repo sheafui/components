@@ -1,9 +1,7 @@
 
-{{-- dropdown/item.blade.php --}}
 @props([
     'disabled' => false,
     'icon' => null,
-    'iconAfter' => null,
     'iconVariant' => 'mini',
     'shortcut' => null,
     'variant' => 'soft',
@@ -21,7 +19,7 @@ $iconClasses = [
     'inline-flex shrink-0 mr-2',
     match($variant){
         'soft' => '',
-        'danger' => 'hover:text-red-500 dark:hover:text-red-400 focus:text-red-500 dark:focus:text-red-400'
+        'danger' => 'hover:text-red-500! dark:hover:text-red-400! focus:text-red-500! dark:focus:text-red-400!'
     }
 ];
 
@@ -32,6 +30,7 @@ $classes = [
     'w-full px-3 py-1.5 text-sm transition-colors duration-200 text-start',
     'text-neutral-800 dark:text-white text-neutral-800 dark:text-white', // text colors
     'rounded-[calc(var(--dropdown-radius)-var(--dropdown-padding))] ', // adjust the rounding based on outer dropdown rounding
+    'focus:outline-none',
     'opacity-50 cursor-not-allowed text-neutral-500 dark:text-neutral-400' => $disabled,
     $variantClasses .' '.' cursor-pointer' => !$disabled
 ];
@@ -47,9 +46,5 @@ $classes = [
         <span class="col-start-2">
             {{ $slot }}
         </span>
-    @endif
-
-    @if(filled($iconAfter))
-        <x-ui.icon :name="$iconAfter" :variant="$iconVariant" :attributes="$iconAttributes" data-slot="left-icon"/>
     @endif
 </x-ui.button.abstract>

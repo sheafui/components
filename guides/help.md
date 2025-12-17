@@ -30,7 +30,7 @@ Join our Sheaf UI Discord where the core team and contributors hang out. Ask que
 
 @blade
 <x-md.cta                                                            
-    href=" https://discord.gg/2XgFyE4D"                                    
+    href="https://discord.gg/WrrzhFTghY"                                    
     label="join our discord server"
     ctaLabel="Join"
 />
