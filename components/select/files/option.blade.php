@@ -11,11 +11,6 @@
     'iconClass' => null,
 ])
 
-@php
-    // if there no label provided (when the value is the same as label) give the slot the value's value
-    $slot = filled($slot->__toString()) ? $slot->__toString() : $value;
-@endphp
-
 <li 
     
     tabindex="0"

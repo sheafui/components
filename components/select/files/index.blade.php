@@ -73,7 +73,7 @@
                         .from(this.$el.querySelectorAll('[data-slot=option]:not([hidden])'))
                         .map((option) => ({
                             value: option.dataset.value,
-                            label: option.dataset.label,
+                            label: option.textContent.trim(),
                             element: option
                         }));
 
