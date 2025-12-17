@@ -19,8 +19,8 @@ php artisan sheaf:install context
 @blade
 <x-demo>
     <x-ui.context>
-        <x-slot:trigger>
-            <x-ui.card class="border-dashed border-2 px-16 py-8">
+        <x-slot:trigger class="flex items-center justify-center">
+            <x-ui.card class="border-dashed border-2 px-16 py-8 w-64">
                 <x-ui.text class="text-center">Right click here</x-ui.text>
             </x-ui.card>
         </x-slot:trigger>
@@ -44,7 +44,7 @@ php artisan sheaf:install context
 
 ```html
 <x-ui.context>
-    <x-slot:trigger>
+    <x-slot:trigger class="flex items-center justify-center">
         <x-ui.card class="border-dashed border-2 px-16 py-8">
             <x-ui.text class="text-center">Right click here</x-ui.text>
         </x-ui.card>
@@ -79,7 +79,7 @@ Add visual clarity with icons for better user experience.
 @blade
 <x-demo>
     <x-ui.context>
-        <x-slot:trigger>
+        <x-slot:trigger class="flex items-center justify-center">
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for actions</x-ui.text>
             </x-ui.card>
@@ -137,7 +137,7 @@ Create navigational items that link to other pages.
 @blade
 <x-demo>
     <x-ui.context>
-        <x-slot:trigger>
+        <x-slot:trigger class="flex items-center justify-center">
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for navigation</x-ui.text>
             </x-ui.card>
@@ -188,7 +188,7 @@ Temporarily disable certain actions while keeping them visible.
 @blade
 <x-demo>
     <x-ui.context>
-        <x-slot:trigger>
+        <x-slot:trigger class="flex items-center justify-center">
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for mixed states</x-ui.text>
             </x-ui.card>
@@ -246,7 +246,7 @@ Use separators to group related items and create visual hierarchy.
 @blade
 <x-demo>
     <x-ui.context>
-        <x-slot:trigger>
+        <x-slot:trigger class="flex items-center justify-center">
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for grouped actions</x-ui.text>
             </x-ui.card>
@@ -317,7 +317,7 @@ Use groups to organize related items with optional labels.
 @blade
 <x-demo>
     <x-ui.context>
-        <x-slot:trigger>
+        <x-slot:trigger class="flex items-center justify-center">
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for grouped menu</x-ui.text>
             </x-ui.card>
@@ -382,7 +382,7 @@ Create hierarchical menus with nested items.
 @blade
 <x-demo>
     <x-ui.context>
-        <x-slot:trigger>
+        <x-slot:trigger class="flex items-center justify-center">
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for file menu</x-ui.text>
             </x-ui.card>
