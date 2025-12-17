@@ -4,7 +4,7 @@ name: 'context'
 
 ## Introduction
 
-The `context` component provides a powerful right-click context menu system with full keyboard navigation, submenus, grouping, and smart positioning. It appears at the cursor location when users right-click on the trigger area, featuring smooth animations, proper focus management, and comprehensive ARIA support. Perfect for data tables, file managers, canvas elements, and any interface requiring contextual actions.
+The `context` component provides a powerful right-click context menu system with full keyboard navigation, submenus, grouping, and smart positioning.
 
 ## Installation
 
@@ -18,8 +18,8 @@ php artisan sheaf:install context
 
 @blade
 <x-demo>
-    <x-ui.context>
-        <x-slot:trigger class="flex items-center justify-center">
+    <x-ui.context class="flex items-center justify-center">
+        <x-slot:trigger>
             <x-ui.card class="border-dashed border-2 px-16 py-8 w-64">
                 <x-ui.text class="text-center">Right click here</x-ui.text>
             </x-ui.card>
@@ -42,9 +42,9 @@ php artisan sheaf:install context
 </x-demo>
 @endblade
 
-```html
+```blade    
 <x-ui.context>
-    <x-slot:trigger class="flex items-center justify-center">
+    <x-slot:trigger >
         <x-ui.card class="border-dashed border-2 px-16 py-8">
             <x-ui.text class="text-center">Right click here</x-ui.text>
         </x-ui.card>
@@ -78,8 +78,8 @@ Add visual clarity with icons for better user experience.
 
 @blade
 <x-demo>
-    <x-ui.context>
-        <x-slot:trigger class="flex items-center justify-center">
+    <x-ui.context class="flex items-center justify-center">
+        <x-slot:trigger >
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for actions</x-ui.text>
             </x-ui.card>
@@ -102,7 +102,7 @@ Add visual clarity with icons for better user experience.
 </x-demo>
 @endblade
 
-```html
+```blade    
 <x-ui.context>
     <x-slot:trigger>
         <x-ui.card class="border-dashed border-2 px-16 py-8">
@@ -136,8 +136,8 @@ Create navigational items that link to other pages.
 
 @blade
 <x-demo>
-    <x-ui.context>
-        <x-slot:trigger class="flex items-center justify-center">
+    <x-ui.context class="flex items-center justify-center">
+        <x-slot:trigger >
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for navigation</x-ui.text>
             </x-ui.card>
@@ -157,7 +157,7 @@ Create navigational items that link to other pages.
 </x-demo>
 @endblade
 
-```html
+```blade    
 <x-ui.context>
     <x-slot:trigger>
         <x-ui.card class="border-dashed border-2 px-16 py-8">
@@ -187,8 +187,8 @@ Temporarily disable certain actions while keeping them visible.
 
 @blade
 <x-demo>
-    <x-ui.context>
-        <x-slot:trigger class="flex items-center justify-center">
+    <x-ui.context class="flex items-center justify-center">
+        <x-slot:trigger >
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for mixed states</x-ui.text>
             </x-ui.card>
@@ -211,8 +211,8 @@ Temporarily disable certain actions while keeping them visible.
 </x-demo>
 @endblade
 
-```html
-<x-ui.context>
+```blade    
+<x-ui.context >
     <x-slot:trigger>
         <x-ui.card class="border-dashed border-2 px-16 py-8">
             <x-ui.text class="text-center">Right click for mixed states</x-ui.text>
@@ -245,8 +245,8 @@ Use separators to group related items and create visual hierarchy.
 
 @blade
 <x-demo>
-    <x-ui.context>
-        <x-slot:trigger class="flex items-center justify-center">
+    <x-ui.context class="flex items-center justify-center">
+        <x-slot:trigger >
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for grouped actions</x-ui.text>
             </x-ui.card>
@@ -274,7 +274,7 @@ Use separators to group related items and create visual hierarchy.
 </x-demo>
 @endblade
 
-```html
+```blade    
 <x-ui.context>
     <x-slot:trigger>
         <x-ui.card class="border-dashed border-2 px-16 py-8">
@@ -316,8 +316,8 @@ Use groups to organize related items with optional labels.
 
 @blade
 <x-demo>
-    <x-ui.context>
-        <x-slot:trigger class="flex items-center justify-center">
+    <x-ui.context class="flex items-center justify-center">
+        <x-slot:trigger >
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for grouped menu</x-ui.text>
             </x-ui.card>
@@ -343,7 +343,7 @@ Use groups to organize related items with optional labels.
 </x-demo>
 @endblade
 
-```html
+```blade    
 <x-ui.context>
     <x-slot:trigger>
         <x-ui.card class="border-dashed border-2 px-16 py-8">
@@ -381,8 +381,8 @@ Create hierarchical menus with nested items.
 
 @blade
 <x-demo>
-    <x-ui.context>
-        <x-slot:trigger class="flex items-center justify-center">
+    <x-ui.context class="flex items-center justify-center">
+        <x-slot:trigger >
             <x-ui.card class="border-dashed border-2 px-16 py-8">
                 <x-ui.text class="text-center">Right click for file menu</x-ui.text>
             </x-ui.card>
@@ -429,7 +429,7 @@ Create hierarchical menus with nested items.
 </x-demo>
 @endblade
 
-```html
+```blade    
 <x-ui.context>
     <x-slot:trigger>
         <x-ui.card class="border-dashed border-2 px-16 py-8">
@@ -485,6 +485,191 @@ Create hierarchical menus with nested items.
         <x-ui.context.item icon="cog">
             Settings
         </x-ui.context.item>
+    </x-slot:menu>
+</x-ui.context>
+```
+
+## Positioning
+
+Control where the context menu appears relative to the right-click position. By default, the menu appears at `bottom-start` position from the click point.
+
+You can pass any of these values:
+
+- Top: `top`, `top-start`, `top-end`
+- Right: `right`, `right-start`, `right-end`
+- Bottom: `bottom`, `bottom-start`, `bottom-end`
+- Left: `left`, `left-start`, `left-end`
+
+@blade
+<x-demo class="flex justify-center gap-6 flex-wrap">
+    <x-ui.context position="bottom">
+        <x-slot:trigger>
+            <x-ui.card class="border-dashed border-2 px-12 py-6">
+                <x-ui.text class="text-center text-sm">Bottom</x-ui.text>
+            </x-ui.card>
+        </x-slot:trigger>
+        <x-slot:menu>
+            <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+            <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+            <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+        </x-slot:menu>
+    </x-ui.context>
+
+    <x-ui.context position="top">
+        <x-slot:trigger>
+            <x-ui.card class="border-dashed border-2 px-12 py-6">
+                <x-ui.text class="text-center text-sm">Top</x-ui.text>
+            </x-ui.card>
+        </x-slot:trigger>
+        <x-slot:menu>
+            <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+            <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+            <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+        </x-slot:menu>
+    </x-ui.context>
+
+    <x-ui.context position="left">
+        <x-slot:trigger>
+            <x-ui.card class="border-dashed border-2 px-12 py-6">
+                <x-ui.text class="text-center text-sm">Left</x-ui.text>
+            </x-ui.card>
+        </x-slot:trigger>
+        <x-slot:menu>
+            <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+            <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+            <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+        </x-slot:menu>
+    </x-ui.context>
+
+    <x-ui.context position="right">
+        <x-slot:trigger>
+            <x-ui.card class="border-dashed border-2 px-12 py-6">
+                <x-ui.text class="text-center text-sm">Right</x-ui.text>
+            </x-ui.card>
+        </x-slot:trigger>
+        <x-slot:menu>
+            <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+            <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+            <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+        </x-slot:menu>
+    </x-ui.context>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.context position="bottom">
+    <x-slot:trigger>
+        <x-ui.card class="border-dashed border-2 px-12 py-6">
+            <x-ui.text class="text-center text-sm">Bottom</x-ui.text>
+        </x-ui.card>
+    </x-slot:trigger>
+    <x-slot:menu>
+        <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+        <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+        <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+    </x-slot:menu>
+</x-ui.context>
+
+<x-ui.context position="top">
+    <x-slot:trigger>
+        <x-ui.card class="border-dashed border-2 px-12 py-6">
+            <x-ui.text class="text-center text-sm">Top</x-ui.text>
+        </x-ui.card>
+    </x-slot:trigger>
+    <x-slot:menu>
+        <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+        <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+        <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+    </x-slot:menu>
+</x-ui.context>
+```
+
+## Offset
+
+Add spacing between the right-click point and the context menu by passing the `offset` prop. The default offset is `4` pixels.
+
+@blade
+<x-demo class="flex justify-center gap-6 flex-wrap">
+    <x-ui.context :offset="0">
+        <x-slot:trigger>
+            <x-ui.card class="border-dashed border-2 px-12 py-6">
+                <x-ui.text class="text-center text-sm">No Offset (0)</x-ui.text>
+            </x-ui.card>
+        </x-slot:trigger>
+        <x-slot:menu>
+            <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+            <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+            <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+        </x-slot:menu>
+    </x-ui.context>
+
+    <x-ui.context :offset="8">
+        <x-slot:trigger>
+            <x-ui.card class="border-dashed border-2 px-12 py-6">
+                <x-ui.text class="text-center text-sm">Small Offset (8)</x-ui.text>
+            </x-ui.card>
+        </x-slot:trigger>
+        <x-slot:menu>
+            <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+            <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+            <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+        </x-slot:menu>
+    </x-ui.context>
+
+    <x-ui.context :offset="16">
+        <x-slot:trigger>
+            <x-ui.card class="border-dashed border-2 px-12 py-6">
+                <x-ui.text class="text-center text-sm">Medium Offset (16)</x-ui.text>
+            </x-ui.card>
+        </x-slot:trigger>
+        <x-slot:menu>
+            <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+            <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+            <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+        </x-slot:menu>
+    </x-ui.context>
+
+    <x-ui.context :offset="24">
+        <x-slot:trigger>
+            <x-ui.card class="border-dashed border-2 px-12 py-6">
+                <x-ui.text class="text-center text-sm">Large Offset (24)</x-ui.text>
+            </x-ui.card>
+        </x-slot:trigger>
+        <x-slot:menu>
+            <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+            <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+            <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+        </x-slot:menu>
+    </x-ui.context>
+</x-demo>
+@endblade
+
+```blade
+<!-- No offset -->
+<x-ui.context :offset="0">
+    <x-slot:trigger>
+        <x-ui.card class="border-dashed border-2 px-12 py-6">
+            <x-ui.text class="text-center text-sm">No Offset (0)</x-ui.text>
+        </x-ui.card>
+    </x-slot:trigger>
+    <x-slot:menu>
+        <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+        <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+        <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
+    </x-slot:menu>
+</x-ui.context>
+
+<!-- Custom offset -->
+<x-ui.context :offset="16">
+    <x-slot:trigger>
+        <x-ui.card class="border-dashed border-2 px-12 py-6">
+            <x-ui.text class="text-center text-sm">Medium Offset (16)</x-ui.text>
+        </x-ui.card>
+    </x-slot:trigger>
+    <x-slot:menu>
+        <x-ui.context.item icon="pencil">Edit</x-ui.context.item>
+        <x-ui.context.item icon="document-duplicate">Duplicate</x-ui.context.item>
+        <x-ui.context.item icon="trash" variant="danger">Delete</x-ui.context.item>
     </x-slot:menu>
 </x-ui.context>
 ```
