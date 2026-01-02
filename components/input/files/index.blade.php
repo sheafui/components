@@ -37,11 +37,10 @@
         '[&:has([data-slot=input-prefix]):has([data-slot=input-suffix])_input]:rounded-none', // no border-radius if both exist
     ];
 
-    // Check if leftIcon is a slot or string
     $hasLeftIconSlot = $leftIcon instanceof \Illuminate\View\ComponentSlot;
+    
     $hasLeftIcon = filled($leftIcon);
     
-    // Check if rightIcon is a slot or string  
     $hasRightIconSlot = $rightIcon instanceof \Illuminate\View\ComponentSlot;
     
     // Count icons including rightIcon slot
