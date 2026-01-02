@@ -207,7 +207,7 @@ You can use it outside Livewire with just Alpine (and Blade):
 
 ### Static Right and Left Icons
 
-you can pass left icon to the `icon` prop
+you can pass left icon to the `leftIcon` prop
 @blade
 <x-demo x-data="{ search: '' }">
     <x-ui.input 
@@ -1162,7 +1162,6 @@ $money(input, decimal_separator, thousands_separator, precision)
 | `thousands_separator` | string | `','` | Character for thousands separation |
 | `precision` | number | `2` | Number of decimal places |
 
-
 ## Component Props
 
 ### Input Component Props
@@ -1180,6 +1179,8 @@ $money(input, decimal_separator, thousands_separator, precision)
 | `suffix` | slot | - | No | Content to show after input |
 | `prefixIcon` | string | - | No | Icon name to show as prefix |
 | `suffixIcon` | string | - | No | Icon name to show as suffix |
+| `leftIcon` | string/slot | - | No | Icon name or custom content (slottable) |
+| `rightIcon` | string/slot | - | No | Icon name or custom content (slottable) |
 | `copyable` | boolean | `false` | No | Add copy to clipboard button |
 | `clearable` | boolean | `false` | No | Add clear input button |
 | `revealable` | boolean | `false` | No | Add password reveal toggle |
