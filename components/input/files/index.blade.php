@@ -37,6 +37,13 @@
         '[&:has([data-slot=input-prefix]):has([data-slot=input-suffix])_input]:rounded-none', // no border-radius if both exist
     ];
 
+    $hasLeftIconSlot = $leftIcon instanceof \Illuminate\View\ComponentSlot;
+    
+    $hasLeftIcon = filled($leftIcon);
+    
+    $hasRightIconSlot = $rightIcon instanceof \Illuminate\View\ComponentSlot;
+    
+    // Count icons including rightIcon slot
     $iconCount = count(array_filter([$clearable, $copyable, $revealable, $rightIcon]));
 @endphp
 
@@ -158,21 +165,26 @@
             // WITHOUT LEFT ICON: 2-column layout
             // Column 1: Input (flexible width)
             // Column 2: Action icons (fixed width based on count)
-            'grid-template-columns: 1fr calc(var(--icon-width) * var(--icon-count))' => blank($leftIcon),
+            'grid-template-columns: 1fr calc(var(--icon-width) * var(--icon-count))' => !$hasLeftIcon,
             
             // WITH LEFT ICON: 3-column layout  
             // Column 1: Left icon (fixed 2.3rem) 2 seems too small spacially for  left icons
             // Column 2: Input (flexible width)
             // Column 3: Action icons (fixed width based on count)
-            'grid-template-columns: 2.3rem 1fr calc(var(--icon-width) * var(--icon-count))' => filled($leftIcon),
+            'grid-template-columns: 2.3rem 1fr calc(var(--icon-width) * var(--icon-count))' => $hasLeftIcon,
         ])
     >
-        @if($leftIcon)
-            <x-ui.icon
-                :name="$leftIcon"
-                class="!text-neutral-500 dark:!text-neutral-500 !size-[1.15rem]"
+        @if($hasLeftIcon)
+            <div
+                class="!text-neutral-500 dark:!text-neutral-500"
                 data-slot="left-icon"
-            />
+            >
+                @if($hasLeftIconSlot)
+                    {{ $leftIcon }}
+                @else
+                    <x-ui.icon :name="$leftIcon" class="!size-[1.15rem]" />
+                @endif
+            </div>
         @endif
 
         <input
@@ -198,14 +210,16 @@
             @if ($clearable)  <x-ui.input.options.clearable />  @endif
             @if ($revealable) <x-ui.input.options.revealable /> @endif
 
-            {{-- This isn’t a real input option, just an icon slotted as one. 
-                It’s here purely to handle padding logic easly, don’t judge me 🤓 --}}
-            @if ($rightIcon)  
-                <x-ui.icon 
-                    :name="$rightIcon" 
-                    class="!text-neutral-500 dark:!text-neutral-500" 
-                    data-slot="input-option"
-                />   
+            {{-- This isn't a real input option, just an icon slotted as one. 
+                It's here purely to handle padding logic easly, don't judge me 🤓 --}}
+            @if ($rightIcon)
+                <div class="!text-neutral-500 dark:!text-neutral-500" data-slot="input-option">
+                    @if($hasRightIconSlot)
+                        {{ $rightIcon }}
+                    @else
+                        <x-ui.icon :name="$rightIcon" />
+                    @endif
+                </div>
             @endif
         </div>
     </div>
