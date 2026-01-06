@@ -51,7 +51,7 @@
     
     class="
         rounded-[calc(var(--popup-round)-var(--popup-padding))] col-span-full grid grid-cols-subgrid items-center
-        focus:bg-neutral-100 focus:dark:bg-neutral-700 px-3 py-0.5 w-full text-[1rem]
+        focus:bg-neutral-100 focus:dark:bg-neutral-700 px-3 py-0.5 w-full text-base sm:text-sm
         self-center gap-x-2 
     "
 >
