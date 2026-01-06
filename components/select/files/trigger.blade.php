@@ -27,7 +27,7 @@
     @if (filled($icon))
         <x-ui.icon 
             :name="$icon"
-            class="col-span-1 col-start-1 row-start-1 h-full w-full text-black flex items-center justify-center z-10 !size-[1.10rem]" 
+            class="col-span-1 col-start-1 row-start-1 text-black flex items-center justify-center z-10 !size-[1.10rem]"
         />
     @endif
 
@@ -38,10 +38,10 @@
         aria-haspopup="listbox"
         data-slot="select-control"
         {{ $attributes->class([
-            'border bg-white truncate border-black/10 dark:bg-neutral-900 dark:border-white/10 border-gray-300 dark:text-gray-300 rounded-box px-2 py-1 text-start ',
+            'border bg-white truncate border-black/10 dark:bg-neutral-900 dark:border-white/15 rounded-box text-base sm:text-sm px-2 py-2 text-start focus:ring-2 focus:ring-offset-0 focus:outline-none focus:border-black/15 dark:focus:border-white/20 focus:ring-neutral-900/15 dark:focus:ring-neutral-100/15',
             'col-span-4 col-start-1 row-start-1 justify-self-stretch',
             // make button span all available grid columns 
-            'disabled:opacity-60 flex disabled:cursor-auto cursor-pointer',
+            'disabled:opacity-60 flex items-center disabled:cursor-auto cursor-pointer',
             'overflow-hidden whitespace-nowrap', 
             'border-red-500/50!' => $invalid, 
             $triggerClass, 
@@ -50,7 +50,7 @@
         x-bind:aria-activedescendant="!isSearchable && activeIndex !== null ? 'option-' + activeIndex : null"
         @disabled($disabled)
     >
-        <span class="truncate block w-full">
+        <span class="truncate block w-full text-base sm:text-sm">
             <span x-text="label">select...</span>
         </span>
     </button>
