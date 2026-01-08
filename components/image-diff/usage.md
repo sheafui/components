@@ -72,24 +72,6 @@ Switch to vertical comparison for top-to-bottom reveals.
 </x-ui.image-diff>
 ```
 
-### Vertical with Different Effects
-
-@blade
-<x-demo>
-    <div class="space-y-4">
-        <x-ui.image-diff :aspectRatio="1" vertical>
-            <x-ui.image-diff.before class="blur-sm" src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?w=800&q=80" alt="Blurred" />
-            <x-ui.image-diff.after src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?w=800&q=80" alt="Sharp" />
-        </x-ui.image-diff>
-    </div>
-</x-demo>
-@endblade
-```html
-<x-ui.image-diff :aspectRatio="16/9" vertical>
-    <x-ui.image-diff.before class="brightness-50" src="/photo.jpg" />
-    <x-ui.image-diff.after src="/photo.jpg" />
-</x-ui.image-diff>
-```
 
 ## Creative Effects
 
