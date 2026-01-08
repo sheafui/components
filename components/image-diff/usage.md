@@ -124,4 +124,3 @@ Use Tailwind filters on the before image for different comparisons.
 | `alt` | string | `''` | Alt text for accessibility |
 | `class` | string | `''` | Additional classes (filters like `grayscale`, `blur-sm`) |
 
-## Features to Make it More Robust
