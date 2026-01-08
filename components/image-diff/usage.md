@@ -53,6 +53,43 @@ Control the aspect ratio to match your images.
 <x-ui.image-diff :aspectRatio="1">...</x-ui.image-diff>
 ...
 ```
+## Vertical Orientation
+
+Switch to vertical comparison for top-to-bottom reveals.
+
+@blade
+<x-demo>
+    <x-ui.image-diff :aspectRatio="4/3" vertical>
+        <x-ui.image-diff.before class="grayscale" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Before" />
+        <x-ui.image-diff.after src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="After" />
+    </x-ui.image-diff>
+</x-demo>
+@endblade
+```html
+<x-ui.image-diff vertical>
+    <x-ui.image-diff.before class="grayscale" src="/before.jpg" alt="Before" />
+    <x-ui.image-diff.after src="/after.jpg" alt="After" />
+</x-ui.image-diff>
+```
+
+### Vertical with Different Effects
+
+@blade
+<x-demo>
+    <div class="space-y-4">
+        <x-ui.image-diff :aspectRatio="1" vertical>
+            <x-ui.image-diff.before class="blur-sm" src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?w=800&q=80" alt="Blurred" />
+            <x-ui.image-diff.after src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?w=800&q=80" alt="Sharp" />
+        </x-ui.image-diff>
+    </div>
+</x-demo>
+@endblade
+```html
+<x-ui.image-diff :aspectRatio="16/9" vertical>
+    <x-ui.image-diff.before class="brightness-50" src="/photo.jpg" />
+    <x-ui.image-diff.after src="/photo.jpg" />
+</x-ui.image-diff>
+```
 
 ## Creative Effects
 
@@ -95,6 +132,7 @@ Use Tailwind filters on the before image for different comparisons.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `aspectRatio` | number | `1` | Aspect ratio (e.g., `16/9`, `4/3`, `1`) |
+| `vertical` | boolean | `false` | Enable vertical (top-to-bottom) comparison |
 
 ### Before/After Images
 
