@@ -1,3 +1,4 @@
+@aware(['disabled' => false])
 
 @props([
     'href' => null,
@@ -27,7 +28,10 @@
         @break
         
     @default
-        <button {{ $attributes->merge(['type' => $type]) }}>
+        <button
+            @disabled($disabled) 
+            {{ $attributes->merge(['type' => $type]) }}
+        >
             {{ $slot }}
         </button>
 @endswitch
