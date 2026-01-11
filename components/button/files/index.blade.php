@@ -5,8 +5,8 @@
     'type' => 'button',
     'size' => 'md',
     'color' => null,
-    'loading' => false, // Set to false to disable the loading indicator feature completely
-    'loadingDisabled' => false, // Set to false to disable the loading indicator feature completely
+    'disabled'=> false,
+    'loading' => false,
     'variant' => 'primary',
     'icon' => null,
     'iconAfter' => null,
@@ -117,7 +117,8 @@ $variantClasses = match($variant){
 // Assemble base button classes, including layout, disabled states, and conditional styles
 $classes = [
     'relative inline-flex items-center font-medium justify-center gap-x-2 whitespace-nowrap transition-colors duration-200',
-    'disabled:opacity-75 dark:disabled:opacity-75 disabled:cursor-default disabled:pointer-events-none cursor-pointer',
+    '[contain:layout]', // fix for chrome bug with loading: nothing outside effect this internal layout,
+    'disabled:opacity-55 dark:disabled:opacity-55 disabled:cursor-default disabled:pointer-events-none cursor-pointer',
     '[&_a]:no-underline [&_a]:decoration-none [&_a:hover]:no-underline' => $variant !== 'none' , // Handle anchor tags inside the button
     'rounded-field' => $variant !== 'none' , // Apply rounding unless variant is 'none'
     
@@ -143,7 +144,7 @@ $loadingAttributes = $loadingAttributes->merge($hasWireLoading || $type === 'sub
 // Fallback for non-Livewire cases, I believe there use case for this static case beyond we actually need it in demo docs: 
 $loadingAttributes = $loadingAttributes->merge($loading ? [
     'data-loading' => 'true', // thats 'true' is crucial, boolean true will break the work
-    ] : []);
+] : []);
 
 /* LOADING LOGIC - END */
 @endphp
