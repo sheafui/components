@@ -3,6 +3,7 @@
 @props([
     'href' => null,
     'as' => null,
+    'disabled' => false
 ])
 
 
