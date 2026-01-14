@@ -217,7 +217,7 @@ Show team or user context in your empty state:
             <x-ui.empty.contents>
                 <x-ui.heading class="text-lg font-semibold">The Team Above</x-ui.heading>
                 <x-ui.text class="opacity-70">
-                    Start by adding your first item.
+                    Start by contacting the team.
                 </x-ui.text>
 
                 <div class="flex gap-2 mt-4">
@@ -243,7 +243,7 @@ Show team or user context in your empty state:
     <x-ui.empty.contents>
         <x-ui.heading class="text-lg font-semibold">The Team Above</x-ui.heading>
         <x-ui.text class="opacity-70">
-            Start by adding your first item.
+            Start by contacting the team.
         </x-ui.text>
 
         <div class="flex gap-2 mt-4">
