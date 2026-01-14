@@ -65,7 +65,7 @@ Customize the appearance using Tailwind classes:
 @blade
 <x-demo class="w-full flex justify-center">
     <div class="w-full max-w-2xl">
-        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box">
             <x-ui.empty.media>
                 <x-ui.icon name="folder-open" class="size-10" />
             </x-ui.empty.media>
@@ -79,7 +79,7 @@ Customize the appearance using Tailwind classes:
 @endblade
 
 ```blade
-<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box">
     <!-- content -->
 </x-ui.empty>
 ```
@@ -87,9 +87,9 @@ Customize the appearance using Tailwind classes:
 ### Background
 
 @blade
-<x-demo class="w-full flex justify-center bg-green-500">
+<x-demo class="w-full flex justify-center">
     <div class="w-full ">
-        <x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-lg">
+        <x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-box">
             <x-ui.empty.media>
                 <x-ui.icon name="folder-open" class="size-10" />
             </x-ui.empty.media>
@@ -103,7 +103,7 @@ Customize the appearance using Tailwind classes:
 @endblade
 
 ```blade
-<x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-lg">
+<x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-box">
     <!-- content -->
 </x-ui.empty>
 ```
@@ -115,7 +115,7 @@ Customize the media area with Tailwind classes:
 @blade
 <x-demo class="w-full flex justify-center">
     <div class="w-full max-w-2xl grid grid-cols-2 gap-6">
-        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box">
             <x-ui.empty.media>
                 <x-ui.icon name="inbox" class="size-10" />
             </x-ui.empty.media>
@@ -125,7 +125,7 @@ Customize the media area with Tailwind classes:
             </x-ui.empty.contents>
         </x-ui.empty>
         <!--  -->
-        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box">
             <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
                 <x-ui.icon name="document" class="size-6" />
             </x-ui.empty.media>
@@ -159,7 +159,7 @@ Guide users to take action with a prominent button:
 @blade
 <x-demo class="w-full flex justify-center">
     <div class="w-full max-w-lg">
-        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box">
             <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
                 <x-ui.icon name="document" class="size-6" />
             </x-ui.empty.media>
@@ -180,7 +180,7 @@ Guide users to take action with a prominent button:
 @endblade
 
 ```blade
-<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box">
     <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
         <x-ui.icon name="document" class="size-6" />
     </x-ui.empty.media>
@@ -205,7 +205,7 @@ Show team or user context in your empty state:
 @blade
 <x-demo class="w-full flex justify-center">
     <div class="w-full max-w-lg">
-        <x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-lg">
+        <x-ui.empty>
             <x-ui.empty.media>
                 <x-ui.avatar.group>
                     <x-ui.avatar circle src="/mohamed.png" name="Mohamed Charrafi" />
@@ -231,7 +231,7 @@ Show team or user context in your empty state:
 @endblade
 
 ```blade
-<x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-lg">
+<x-ui.empty>
     <x-ui.empty.media>
         <x-ui.avatar.group>
             <x-ui.avatar circle src="/user1.png" name="User 1" />
@@ -265,10 +265,10 @@ Handle empty search results with helpful messaging:
             <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
                 <x-ui.icon name="magnifying-glass" class="size-6" />
             </x-ui.empty.media>
-
-            <x-ui.empty.contents>
+            <!--  -->
+            <x-ui.empty.contents class="">
                 <x-ui.heading>No results found</x-ui.heading>
-                <x-ui.text class="opacity-70">
+                <x-ui.text class="opacity-70 text-center">
                     We couldn't find anything matching "your search". Try different keywords.
                 </x-ui.text>
 
@@ -289,7 +289,7 @@ Handle empty search results with helpful messaging:
 
     <x-ui.empty.contents>
         <x-ui.heading>No results found</x-ui.heading>
-        <x-ui.text class="opacity-70">
+        <x-ui.text class="opacity-70 text-center">
             We couldn't find anything matching "{{ $searchQuery }}". Try different keywords.
         </x-ui.text>
 
@@ -306,39 +306,49 @@ Use empty states within tables for better UX:
 
 @blade
 <x-demo class="w-full flex justify-center">
-    <div class="w-full max-w-3xl border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden">
-        <table class="w-full">
-            <thead class="bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-800">
-                <tr>
-                    <th class="px-4 py-3 text-left text-sm font-medium">Name</th>
-                    <th class="px-4 py-3 text-left text-sm font-medium">Status</th>
-                    <th class="px-4 py-3 text-left text-sm font-medium">Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="3" class="p-0">
-                        <x-ui.empty>
-                            <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
-                                <x-ui.icon name="inbox" class="size-6" />
-                            </x-ui.empty.media>
-                            <x-ui.empty.contents>
-                                <x-ui.heading>No data available</x-ui.heading>
-                                <x-ui.text class="opacity-70">
-                                    Start by adding your first entry.
-                                </x-ui.text>
-                            </x-ui.empty.contents>
-                        </x-ui.empty>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="w-full max-w-3xl rounded-box overflow-hidden">
+        <x-ui.table>
+            <x-ui.table.header>
+                <x-ui.table.columns>
+                    <x-ui.table.head>
+                        name
+                    </x-ui.table.head>
+                    <x-ui.table.head>
+                        type
+                    </x-ui.table.head>
+                    <x-ui.table.head>
+                        created at
+                    </x-ui.table.head>
+                    <x-ui.table.head>
+                        description
+                    </x-ui.table.head>
+                </x-ui.table.columns>
+            </x-ui.table.header>
+            <x-ui.table.rows>
+                    <x-ui.table.empty>
+                            <x-ui.empty>
+                                <x-ui.empty.media 
+                                    class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800"
+                                >
+                                    <x-ui.icon name="inbox" class="size-6" />
+                                </x-ui.empty.media>
+                                <x-ui.empty.contents>
+                                    <x-ui.heading>No data available</x-ui.heading>
+                                    <x-ui.text class="opacity-70">
+                                        Start by adding your first entry.
+                                    </x-ui.text>
+                                </x-ui.empty.contents>
+                            </x-ui.empty>
+                    </x-ui.table.empty>
+            </x-ui.table.rows>
+        </x-ui.table>
     </div>
 </x-demo>
 @endblade
 
 ```blade
 <x-ui.table>
+    <!-- header-->
     <x-ui.table.rows>
         @forelse ($items as $item)
             <x-ui.table.row>
@@ -372,17 +382,16 @@ Provide users with multiple paths forward:
 @blade
 <x-demo class="w-full flex justify-center">
     <div class="w-full max-w-lg">
-        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box">
             <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
                 <x-ui.icon name="folder-plus" class="size-6" />
             </x-ui.empty.media>
-
-            <x-ui.empty.contents>
+            <!--  -->
+            <x-ui.empty.contents class="mt-auto">
                 <x-ui.heading>No projects yet</x-ui.heading>
                 <x-ui.text class="opacity-70">
                     Create your first project or import an existing one.
                 </x-ui.text>
-
                 <div class="flex gap-2 mt-4">
                     <x-ui.button size="sm">New project</x-ui.button>
                     <x-ui.button variant="outline" size="sm">Import</x-ui.button>
@@ -394,7 +403,7 @@ Provide users with multiple paths forward:
 @endblade
 
 ```blade
-<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box">
     <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
         <x-ui.icon name="folder-plus" class="size-6" />
     </x-ui.empty.media>
@@ -419,19 +428,19 @@ Here are some frequently used styling combinations:
 
 ```blade
 <!-- Bordered card -->
-<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box">
 
 <!-- Elevated card -->
-<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-sm">
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-box shadow-sm">
 
 <!-- Filled background -->
-<x-ui.empty class="bg-neutral-50 dark:bg-neutral-900 rounded-lg">
+<x-ui.empty class="bg-neutral-50 dark:bg-neutral-900 rounded-box">
 
 <!-- Filled with border -->
-<x-ui.empty class="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg">
+<x-ui.empty class="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-box">
 
 <!-- Subtle gradient background -->
-<x-ui.empty class="bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-900 dark:to-neutral-950 rounded-lg">
+<x-ui.empty class="bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-900 dark:to-neutral-950 rounded-box">
 
 <!-- Larger padding -->
 <x-ui.empty class="py-16">
