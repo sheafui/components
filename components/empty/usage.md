@@ -4,7 +4,7 @@ name: empty
 
 ## Introduction
 
-The `Empty` component provides **beautiful empty state placeholders** for when there's no data to display. It offers multiple variants and a flexible composition API for creating meaningful empty states that guide users toward the next action.
+The `Empty` component provides **beautiful empty state placeholders** for when there's no data to display. It offers a flexible composition API for creating meaningful empty states that guide users toward the next action.
 
 ## Installation
 
@@ -19,12 +19,13 @@ php artisan sheaf:install empty
 ## Usage
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo class="w-full flex justify-center">
     <div class="w-full max-w-lg">
         <x-ui.empty>
             <x-ui.empty.media>
                 <x-ui.icon name="inbox" class="size-10" />
             </x-ui.empty.media>
+
             <x-ui.empty.contents>
                 <x-ui.heading>No results found</x-ui.heading>
                 <x-ui.text class="opacity-70">
@@ -55,96 +56,46 @@ The most basic usage combines media (icon/image) with descriptive content:
 </x-ui.empty>
 ```
 
-## Variants
+## Styling Variants
 
-Choose from different visual styles to match your design:
+Customize the appearance using Tailwind classes:
+
+### Bordered
 
 @blade
-<x-demo class="flex justify-center">
-    <div class="w-full max-w-2xl space-y-8">
-        <div class="space-y-2">
-            <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Default</p>
-            <x-ui.empty>
-                <x-ui.empty.media>
-                    <x-ui.icon name="folder-open" class="size-10" />
-                </x-ui.empty.media>
-                <x-ui.empty.contents>
-                    <x-ui.heading>No items</x-ui.heading>
-                    <x-ui.text class="opacity-70">Get started by creating your first item.</x-ui.text>
-                </x-ui.empty.contents>
-            </x-ui.empty>
-        </div>
-
-        <div class="space-y-2">
-            <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Bordered</p>
-            <x-ui.empty variant="bordered">
-                <x-ui.empty.media>
-                    <x-ui.icon name="folder-open" class="size-10" />
-                </x-ui.empty.media>
-                <x-ui.empty.contents>
-                    <x-ui.heading>No items</x-ui.heading>
-                    <x-ui.text class="opacity-70">Get started by creating your first item.</x-ui.text>
-                </x-ui.empty.contents>
-            </x-ui.empty>
-        </div>
-
-        <div class="space-y-2">
-            <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Background</p>
-            <x-ui.empty variant="background">
-                <x-ui.empty.media>
-                    <x-ui.icon name="folder-open" class="size-10" />
-                </x-ui.empty.media>
-                <x-ui.empty.contents>
-                    <x-ui.heading>No items</x-ui.heading>
-                    <x-ui.text class="opacity-70">Get started by creating your first item.</x-ui.text>
-                </x-ui.empty.contents>
-            </x-ui.empty>
-        </div>
+<x-demo class="w-full flex justify-center">
+    <div class="w-full max-w-2xl">
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+            <x-ui.empty.media>
+                <x-ui.icon name="folder-open" class="size-10" />
+            </x-ui.empty.media>
+            <x-ui.empty.contents>
+                <x-ui.heading>No items</x-ui.heading>
+                <x-ui.text class="opacity-70">Get started by creating your first item.</x-ui.text>
+            </x-ui.empty.contents>
+        </x-ui.empty>
     </div>
 </x-demo>
 @endblade
 
 ```blade
-<!-- Default variant -->
-<x-ui.empty>
-    <!-- content -->
-</x-ui.empty>
-
-<!-- Bordered variant -->
-<x-ui.empty variant="bordered">
-    <!-- content -->
-</x-ui.empty>
-
-<!-- Background variant -->
-<x-ui.empty variant="background">
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
     <!-- content -->
 </x-ui.empty>
 ```
 
-## Media Variants
-
-Use different media styles to emphasize your empty state:
+### Background
 
 @blade
-<x-demo class="flex justify-center">
-    <div class="w-full max-w-2xl grid grid-cols-2 gap-6">
-        <x-ui.empty variant="bordered">
+<x-demo class="w-full flex justify-center bg-green-500">
+    <div class="w-full ">
+        <x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-lg">
             <x-ui.empty.media>
-                <x-ui.icon name="inbox" class="size-10" />
+                <x-ui.icon name="folder-open" class="size-10" />
             </x-ui.empty.media>
             <x-ui.empty.contents>
-                <x-ui.heading>Icon Media</x-ui.heading>
-                <x-ui.text class="opacity-70">Simple icon display</x-ui.text>
-            </x-ui.empty.contents>
-        </x-ui.empty>
-
-        <x-ui.empty variant="bordered">
-            <x-ui.empty.media variant="icon">
-                <x-ui.icon name="document" class="size-6" />
-            </x-ui.empty.media>
-            <x-ui.empty.contents>
-                <x-ui.heading>Icon Variant</x-ui.heading>
-                <x-ui.text class="opacity-70">With background circle</x-ui.text>
+                <x-ui.heading>No items</x-ui.heading>
+                <x-ui.text class="opacity-70">Get started by creating your first item.</x-ui.text>
             </x-ui.empty.contents>
         </x-ui.empty>
     </div>
@@ -152,13 +103,49 @@ Use different media styles to emphasize your empty state:
 @endblade
 
 ```blade
-<!-- Default media -->
+<x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-lg">
+    <!-- content -->
+</x-ui.empty>
+```
+
+## Media Styling
+
+Customize the media area with Tailwind classes:
+
+@blade
+<x-demo class="w-full flex justify-center">
+    <div class="w-full max-w-2xl grid grid-cols-2 gap-6">
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+            <x-ui.empty.media>
+                <x-ui.icon name="inbox" class="size-10" />
+            </x-ui.empty.media>
+            <x-ui.empty.contents>
+                <x-ui.heading>Simple Icon</x-ui.heading>
+                <x-ui.text class="opacity-70">Default icon display</x-ui.text>
+            </x-ui.empty.contents>
+        </x-ui.empty>
+        <!--  -->
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+            <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
+                <x-ui.icon name="document" class="size-6" />
+            </x-ui.empty.media>
+            <x-ui.empty.contents>
+                <x-ui.heading>Icon with Circle</x-ui.heading>
+                <x-ui.text class="opacity-70">Circular background</x-ui.text>
+            </x-ui.empty.contents>
+        </x-ui.empty>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<!-- Simple icon -->
 <x-ui.empty.media>
     <x-ui.icon name="inbox" class="size-10" />
 </x-ui.empty.media>
 
-<!-- Icon variant with background -->
-<x-ui.empty.media variant="icon">
+<!-- Icon with circular background -->
+<x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
     <x-ui.icon name="document" class="size-6" />
 </x-ui.empty.media>
 ```
@@ -170,10 +157,10 @@ Use different media styles to emphasize your empty state:
 Guide users to take action with a prominent button:
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo class="w-full flex justify-center">
     <div class="w-full max-w-lg">
-        <x-ui.empty variant="bordered">
-            <x-ui.empty.media variant="icon">
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+            <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
                 <x-ui.icon name="document" class="size-6" />
             </x-ui.empty.media>
 
@@ -193,8 +180,8 @@ Guide users to take action with a prominent button:
 @endblade
 
 ```blade
-<x-ui.empty variant="bordered">
-    <x-ui.empty.media variant="icon">
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+    <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
         <x-ui.icon name="document" class="size-6" />
     </x-ui.empty.media>
 
@@ -216,9 +203,9 @@ Guide users to take action with a prominent button:
 Show team or user context in your empty state:
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo class="w-full flex justify-center">
     <div class="w-full max-w-lg">
-        <x-ui.empty variant="background">
+        <x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-lg">
             <x-ui.empty.media>
                 <x-ui.avatar.group>
                     <x-ui.avatar circle src="/mohamed.png" name="Mohamed Charrafi" />
@@ -244,7 +231,7 @@ Show team or user context in your empty state:
 @endblade
 
 ```blade
-<x-ui.empty variant="background">
+<x-ui.empty class="bg-neutral-50 dark:bg-white/5 rounded-lg">
     <x-ui.empty.media>
         <x-ui.avatar.group>
             <x-ui.avatar circle src="/user1.png" name="User 1" />
@@ -272,10 +259,10 @@ Show team or user context in your empty state:
 Handle empty search results with helpful messaging:
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo class="w-full flex justify-center">
     <div class="w-full max-w-lg">
         <x-ui.empty>
-            <x-ui.empty.media variant="icon">
+            <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
                 <x-ui.icon name="magnifying-glass" class="size-6" />
             </x-ui.empty.media>
 
@@ -296,7 +283,7 @@ Handle empty search results with helpful messaging:
 
 ```blade
 <x-ui.empty>
-    <x-ui.empty.media variant="icon">
+    <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
         <x-ui.icon name="magnifying-glass" class="size-6" />
     </x-ui.empty.media>
 
@@ -318,7 +305,7 @@ Handle empty search results with helpful messaging:
 Use empty states within tables for better UX:
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo class="w-full flex justify-center">
     <div class="w-full max-w-3xl border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden">
         <table class="w-full">
             <thead class="bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-800">
@@ -332,7 +319,7 @@ Use empty states within tables for better UX:
                 <tr>
                     <td colspan="3" class="p-0">
                         <x-ui.empty>
-                            <x-ui.empty.media variant="icon">
+                            <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
                                 <x-ui.icon name="inbox" class="size-6" />
                             </x-ui.empty.media>
                             <x-ui.empty.contents>
@@ -361,7 +348,7 @@ Use empty states within tables for better UX:
             <x-ui.table.row>
                 <x-ui.table.cell colspan="4" class="!p-0">
                     <x-ui.empty>
-                        <x-ui.empty.media variant="icon">
+                        <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
                             <x-ui.icon name="inbox" class="size-6" />
                         </x-ui.empty.media>
                         <x-ui.empty.contents>
@@ -383,10 +370,10 @@ Use empty states within tables for better UX:
 Provide users with multiple paths forward:
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo class="w-full flex justify-center">
     <div class="w-full max-w-lg">
-        <x-ui.empty variant="bordered">
-            <x-ui.empty.media variant="icon">
+        <x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+            <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
                 <x-ui.icon name="folder-plus" class="size-6" />
             </x-ui.empty.media>
 
@@ -407,8 +394,8 @@ Provide users with multiple paths forward:
 @endblade
 
 ```blade
-<x-ui.empty variant="bordered">
-    <x-ui.empty.media variant="icon">
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
+    <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
         <x-ui.icon name="folder-plus" class="size-6" />
     </x-ui.empty.media>
 
@@ -426,36 +413,31 @@ Provide users with multiple paths forward:
 </x-ui.empty>
 ```
 
-## Component Props
+## Common Styling Patterns
 
-#### Empty Component
+Here are some frequently used styling combinations:
 
-| Prop Name | Type   | Default     | Required | Description                                       |
-| --------- | ------ | ----------- | -------- | ------------------------------------------------- |
-| `variant` | string | `'default'` | No       | Visual style: `'default'`, `'bordered'`, `'background'` |
+```blade
+<!-- Bordered card -->
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
 
-#### Empty Media Component
+<!-- Elevated card -->
+<x-ui.empty class="border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-sm">
 
-| Prop Name | Type   | Default     | Required | Description                                       |
-| --------- | ------ | ----------- | -------- | ------------------------------------------------- |
-| `variant` | string | `'default'` | No       | Media style: `'default'`, `'icon'`                |
+<!-- Filled background -->
+<x-ui.empty class="bg-neutral-50 dark:bg-neutral-900 rounded-lg">
 
-#### Empty Contents Component
+<!-- Filled with border -->
+<x-ui.empty class="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg">
 
-The contents component accepts any content and has no specific props beyond standard attributes.
+<!-- Subtle gradient background -->
+<x-ui.empty class="bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-900 dark:to-neutral-950 rounded-lg">
 
-## Component Structure
+<!-- Larger padding -->
+<x-ui.empty class="py-16">
 
-The empty component consists of:
-
-- **Container**: `<x-ui.empty>` - Main wrapper with variant styling
-- **Media**: `<x-ui.empty.media>` - Icon, image, or avatar display area
-- **Contents**: `<x-ui.empty.contents>` - Text, buttons, and action elements
-
-## Best Practices
-
-1. **Be Helpful**: Explain why the state is empty and what users can do next
-2. **Stay Positive**: Use encouraging language rather than negative phrasing
-3. **Provide Action**: Include a clear call-to-action when appropriate
-4. **Match Context**: Use different messages for "no data" vs "no search results"
-5. **Keep it Simple**: Don't overwhelm users with too many options
+<!-- Icon container with color -->
+<x-ui.empty.media class="flex items-center justify-center w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+    <x-ui.icon name="inbox" class="size-7" />
+</x-ui.empty.media>
+```
