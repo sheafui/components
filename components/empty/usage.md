@@ -213,13 +213,12 @@ Show team or user context in your empty state:
                     <x-ui.avatar circle>+1</x-ui.avatar>
                 </x-ui.avatar.group>
             </x-ui.empty.media>
-
+            <!--  -->
             <x-ui.empty.contents>
                 <x-ui.heading class="text-lg font-semibold">The Team Above</x-ui.heading>
                 <x-ui.text class="opacity-70">
                     Start by contacting the team.
                 </x-ui.text>
-
                 <div class="flex gap-2 mt-4">
                     <x-ui.button>Create</x-ui.button>
                     <x-ui.button variant="ghost">Learn more</x-ui.button>
