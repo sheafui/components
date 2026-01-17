@@ -15,7 +15,7 @@ Unlike monolithic table libraries, our approach uses **composable traits** on th
 Use the [sheaf artisan command](/docs/guides/cli-installation#content-component-management) to install the `table` component:
 
 ```bash
-php artisan sheaf:install table
+php artisan sheaf:install data-table
 ```
 
 ## Basic Static Table
@@ -23,7 +23,7 @@ php artisan sheaf:install table
 Let's start with a simple static table without any dynamic features.
 
 @blade
-<x-demo>
+<x-demo class="w-full">
     <x-ui.table>
         <x-ui.table.header>
             <x-ui.table.columns>
@@ -77,11 +77,11 @@ Let's start with a simple static table without any dynamic features.
 
 ## Pagination
 
-Add pagination to your table by passing a Laravel paginator and enabling the pagination feature.
+Add pagination to your table by passing a Laravel paginator to table component.
 
 ### Creating the Livewire Component
 
-First, create a Livewire component that uses the `WithPagination` trait:
+First, create a Livewire component that uses the `App\Livewire\Concerns\WithPagination` trait:
 
 ```php
 <?php
@@ -90,7 +90,7 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Livewire\Component;
-use Src\Components\Livewire\Concerns\WithPagination;
+use App\Livewire\Concerns\WithPagination;
 
 class UsersTable extends Component
 {
@@ -99,7 +99,9 @@ class UsersTable extends Component
     public function render()
     {
         $users = User::query()
-            ->paginate($this->perPage);
+            ->paginate();
+            // or (if you using length aware paginator with full variant)
+            // ->paginate($this->perPage);
 
         return view('livewire.users-table', [
             'users' => $users,
@@ -115,18 +117,14 @@ class UsersTable extends Component
     <x-ui.table :paginator="$users">
         <x-ui.table.header>
             <x-ui.table.columns>
-                <x-ui.table.head>Name</x-ui.table.head>
-                <x-ui.table.head>Email</x-ui.table.head>
-                <x-ui.table.head>Role</x-ui.table.head>
+                <!-- columns contents ... -->
             </x-ui.table.columns>
         </x-ui.table.header>
 
         <x-ui.table.rows>
             @foreach ($users as $user)
                 <x-ui.table.row wire:key="user-{{ $user->id }}">
-                    <x-ui.table.cell>{{ $user->name }}</x-ui.table.cell>
-                    <x-ui.table.cell>{{ $user->email }}</x-ui.table.cell>
-                    <x-ui.table.cell>{{ $user->role }}</x-ui.table.cell>
+                    <!-- rows conents -->
                 </x-ui.table.row>
             @endforeach
         </x-ui.table.rows>
@@ -136,13 +134,7 @@ class UsersTable extends Component
 
 ### Customizing Items Per Page
 
-The `WithPagination` trait includes a `$perPage` property that defaults to 15. You can override it:
-
-```php
-use WithPagination;
-
-public int $perPage = 25;
-```
+The `App\Livewire\Concerns\WithPagination` trait includes a `$perPage` property that defaults to 15. You can override it in the trait, don't forget the code is yours tweack it as you want.
 
 ### Pagination Variants
 
