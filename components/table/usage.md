@@ -84,25 +84,16 @@ Add pagination to your table by passing a Laravel paginator to table component.
 First, create a Livewire component that uses the `App\Livewire\Concerns\WithPagination` trait:
 
 ```php
-<?php
-
-namespace App\Livewire;
-
-use App\Models\User;
-use Livewire\Component;
-use App\Livewire\Concerns\WithPagination;
-
+// ...
 class UsersTable extends Component
 {
-    use WithPagination;
+    use App\Livewire\Concerns\WithPagination;
 
     public function render()
     {
-        $users = User::query()
-            ->paginate();
+        $users = User::query()->paginate();
             // or (if you using length aware paginator with full variant)
             // ->paginate($this->perPage);
-
         return view('livewire.users-table', [
             'users' => $users,
         ]);
@@ -115,19 +106,7 @@ class UsersTable extends Component
 ```blade
 <div>
     <x-ui.table :paginator="$users">
-        <x-ui.table.header>
-            <x-ui.table.columns>
-                <!-- columns contents ... -->
-            </x-ui.table.columns>
-        </x-ui.table.header>
-
-        <x-ui.table.rows>
-            @foreach ($users as $user)
-                <x-ui.table.row wire:key="user-{{ $user->id }}">
-                    <!-- rows conents -->
-                </x-ui.table.row>
-            @endforeach
-        </x-ui.table.rows>
+       <!-- table contents... -->
     </x-ui.table>
 </div>
 ```
@@ -136,25 +115,17 @@ class UsersTable extends Component
 
 The `App\Livewire\Concerns\WithPagination` trait includes a `$perPage` property that defaults to 15. You can override it in the trait, don't forget the code is yours tweack it as you want.
 
-### Pagination Variants
-
-Control the pagination appearance with the `pagination:variant` attribute:
-
-```blade
-<x-ui.table 
-    :paginator="$users"
-    pagination:variant="simple"
->
-    <!-- ... -->
-</x-ui.table>
-```
-
-Available variants:
-- `full` - Shows page numbers, previous/next (default)
-- `simple` - Shows only previous/next buttons
-- `compact` - Minimal pagination controls
+### More About Pagination ? 
+@blade
+<x-md.cta                                                            
+    href="/docs/components/pagination"                                    
+    label="the pagination component has a very detailled documentations and demoing parts there"
+    ctaLabel="Visit Docs"
+/>
+@endblade
 
 ## Feature Guides
+in this guide I am going to walk throught using this data-table component with bunch of others to create a stunning data tables, I am going to list list of math theorems and thier founding year and the mathematiciens behind them..., 
 
 ### Stickiness
 
