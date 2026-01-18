@@ -11,22 +11,27 @@ The `pagination` component provides a flexible, accessible navigation system for
 ## Installation
 
 Use the [sheaf artisan command](/docs/guides/cli-installation#content-component-management) to install the `pagination` component:
-
 ```bash
 php artisan sheaf:install pagination
 ```
 
-> Once installed, you can use the <x-ui.pagination /> component in any livewire component.
-
+> Once installed, you can use the `<x-ui.pagination />` component in any Livewire component.
 
 ## Basic Usage
+
+@blade
+<x-md.cta                                                            
+    href="/demos/pagination"                                    
+    label="See the interactive demo for this component"
+    ctaLabel="Go to Demo"
+/>
+@endblade
 
 ### With Length-Aware Pagination
 
 Length-aware pagination provides page numbers and total count, ideal for datasets where users need to know the total number of pages.
-
 ```php
-use App\Livewire\Concerns\WithPagination;
+use Src\Components\Livewire\Concerns\WithPagination;
 
 class UsersTable extends Component
 {
@@ -40,7 +45,6 @@ class UsersTable extends Component
     }
 }
 ```
-
 ```blade
 <!-- In your view -->
 <div>
@@ -55,9 +59,7 @@ class UsersTable extends Component
 ### With Simple Pagination
 
 Simple pagination only shows Previous/Next buttons without total page count, optimized for large datasets where counting all records would be expensive.
-
 ```php
-// In your Livewire component
 public function render()
 {
     return view('livewire.users-table', [
@@ -65,7 +67,6 @@ public function render()
     ]);
 }
 ```
-
 ```blade
 <!-- Same view code works automatically -->
 <x-ui.pagination :paginator="$users" />
@@ -73,45 +74,43 @@ public function render()
 
 > **Note:** The component automatically detects whether you're using `paginate()` or `simplePaginate()` and renders the appropriate interface.
 
-> **Note:** the `perPage` is optional and we need it only when using the length aware pagination with full variant otherwise you can keep it just as a reusable flag across your paginations.
-
 ## Pagination Variants
 
 ### Default Variant
 
-Compact pagination with minimal UI on the right corner for *simpl* and **length aware** paginations.
+Compact pagination with minimal UI on the right corner for **simple** and **length-aware** paginations. No loading indicators.
 
 @blade
 <x-md.cta                                                            
     href="/demos/pagination?variant=default"                                    
-    label="look under the table section to see how pagination looks, play around with the control to demo all the 4 morphs of the ui there"
+    label="Look under the table section to see how pagination looks. Play around with controls to demo all 4 UI variations."
     ctaLabel="Visit The Demo"
 />
 @endblade
 
 ### Full Variant
 
-Comprehensive pagination with item counts, page information, and per-page selector (for length-aware only), and expand the pagination to the full width for the simple pagination.
+Comprehensive pagination with item counts, page information, and per-page selector (for length-aware only). Expands to full width for simple pagination. Includes loading indicators.
 
 **Features:**
 - Shows "1-15 of 150" item range
 - Displays "Page 1 of 10"
-- Includes per-page selector (10, 20, 30, 40, 50)
+- Includes per-page selector (10, 20, 30...)
 - First/Last page buttons
 
 @blade
 <x-md.cta                                                            
     href="/demos/pagination?variant=full"                                    
-    label="look under the table section to see how pagination looks, play around with the control to demo all the 4 morphs of the ui there"
+    label="Look under the table section to see how pagination looks. Play around with controls to demo all 4 UI variations."
     ctaLabel="Visit The Demo"
 />
 @endblade
+
 ## Usage with Table Component
 
 The pagination component integrates seamlessly with the table component.
 
 ### Basic Integration
-
 ```blade
 <x-ui.table :paginator="$users">
     <x-ui.table.header>
@@ -137,7 +136,6 @@ The pagination component integrates seamlessly with the table component.
 ### Specifying Pagination Variant
 
 Control the pagination variant through the table component:
-
 ```blade
 <x-ui.table 
     :paginator="$users" 
@@ -147,34 +145,34 @@ Control the pagination variant through the table component:
 </x-ui.table>
 ```
 
+## Customization
 
-### With Full Variant Per-Page Options
+### Per-Page Options
 
-pass your own `:options` prop to `pagination` component 
-
+Customize the available per-page options (default: 10, 20, 30, 40, 50):
 ```blade
-<x-ui.pagination :paginator="$users" :options="[10, 20, 30]" variant="full" />
-```
+<!-- Standalone pagination -->
+<x-ui.pagination 
+    :paginator="$users" 
+    :options="[10, 20, 30]" 
+    variant="full" 
+/>
 
-or 
-
-```
+<!-- With table component -->
 <x-ui.table 
     :paginator="$users" 
+    pagination:variant="full"
     :pagination:options="[10, 20, 30]"
 >
     <!-- Table content -->
 </x-ui.table>
 ```
 
-for tables
-
-
+> **Note:** The `$perPage` property defaults to 15. It's only interactive (user-changeable) when using length-aware pagination with the `full` variant, which includes a per-page selector.
 
 ### Reset Pagination on Filter Change
-
 ```php
-use App\Livewire\Concerns\WithPagination;
+use Src\Components\Livewire\Concerns\WithPagination;
 
 class UsersTable extends Component
 {
@@ -199,9 +197,11 @@ class UsersTable extends Component
     }
 }
 ```
+
 ## Component Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `paginator` | `Paginator\|LengthAwarePaginator\|CursorPaginator` | `null` | Laravel paginator instance (required) |
 | `variant` | `string` | `'default'` | Visual variant: `'default'` or `'full'` |
+| `options` | `array` | `[10, 20, 30, 40, 50]` | Per-page options (full variant only) |
