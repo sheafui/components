@@ -84,21 +84,11 @@ Add pagination to your table by passing a Laravel paginator to table component.
 First, create a Livewire component that uses the `App\Livewire\Concerns\WithPagination` trait:
 
 ```php
-// ...
-class UsersTable extends Component
-{
-    use App\Livewire\Concerns\WithPagination;
-
-    public function render()
-    {
-        $users = User::query()->paginate();
-            // or (if you using length aware paginator with full variant)
-            // ->paginate($this->perPage);
-        return view('livewire.users-table', [
-            'users' => $users,
-        ]);
-    }
-}
+    use \App\Livewire\Concerns\WithPagination;
+    // livewire class side 
+    $users = User::query()->paginate();
+        // or (if you using length aware paginator with full variant)
+        // ->paginate($this->perPage);
 ```
 
 ### The View
