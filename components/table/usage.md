@@ -585,9 +585,9 @@ class Theorems extends Component
 ```
 
 
-#### Step 2: Update the View
+#### Step 2: Updates on the View
 
-Let's make `mathematicien`, `year` and `dificulty` sortable, while making sort by year special by using the `dropdown` sorting variant for sorting:
+Let's make `mathematicien`, `year` and `Difficulty` sortable, while making sort by year special by using the `dropdown` sorting variant for sorting:
 
 ```blade
  <x-ui.table.header>
@@ -599,10 +599,10 @@ Let's make `mathematicien`, `year` and `dificulty` sortable, while making sort b
             Theorem
         </x-ui.table.head>
         <x-ui.table.head
-            column="mathematician"
+{+            column="mathematician"
             sortable
             :currentSortBy="$sortBy"
-            :currentSortDir="$sortDir"
+            :currentSortDir="$sortDir"+}
         >
             Mathematician
         </x-ui.table.head>
@@ -610,19 +610,19 @@ Let's make `mathematicien`, `year` and `dificulty` sortable, while making sort b
             Field
         </x-ui.table.head>
         <x-ui.table.head
-            column="year_discovered"
+{+            column="year_discovered"
             sortable
             variant="dropdown"
             :currentSortBy="$sortBy"
-            :currentSortDir="$sortDir"
+            :currentSortDir="$sortDir"+}
         >
             Year
         </x-ui.table.head>
         <x-ui.table.head
-            column="difficulty_level"
+{+            column="difficulty_level"
             sortable
             :currentSortBy="$sortBy"
-            :currentSortDir="$sortDir"
+            :currentSortDir="$sortDir"+}
 
         >
             Difficulty
@@ -633,17 +633,6 @@ Let's make `mathematicien`, `year` and `dificulty` sortable, while making sort b
     </x-ui.table.columns>
 </x-ui.table.header>
 ```
-
-#### How It Works
-
-The `WithSorting` trait provides:
-
-- `sortByColumn($column, $dir = null)` - Handles sort toggling
-- `clearSorting()` - Resets sorting state
-- `applySorting($query)` - Applies sort to the query
-- `sortableColumns()` - Whitelist of sortable columns
-
-Clicking a sortable header cycles through: **asc → desc → no sort**.
 
 ### Add Search
 
