@@ -6,9 +6,9 @@ name: 'table'
 
 ## Introduction
 
-The `table` component provides a powerful, composable system for building feature-rich data tables. Built with Livewire and Alpine.js, it offers pagination, sorting, searching, selection, bulk actions, column visibility controls, drag-and-drop reordering, and more—all with excellent accessibility and a clean, modern design.
+The `table` component provides a powerful, composable system for building feature-rich data tables. Built with Livewire and Alpine.js, it offers pagination, sorting, searching, selection, bulk actions, column visibility controls, drag-and-drop reordering, and more all with excellent accessibility and a clean, modern design.
 
-Unlike monolithic table libraries, our approach uses **composable traits** on the backend and **slot-based components** on the frontend, giving you complete control over your table's structure and behavior while maintaining clean, reusable code.
+Our approach uses **composable traits** on the backend and **slot-based components** on the frontend, giving you complete control over your table's structure and behavior while maintaining clean, reusable code.
 
 ## Installation
 
@@ -32,7 +32,6 @@ Let's start with a simple static table without any dynamic features.
                 <x-ui.table.head>Role</x-ui.table.head>
             </x-ui.table.columns>
         </x-ui.table.header>
-
         <x-ui.table.rows>
             <x-ui.table.row>
                 <x-ui.table.cell>Alice Johnson</x-ui.table.cell>
@@ -86,7 +85,7 @@ First, create a Livewire component that uses the `App\Livewire\Concerns\WithPagi
 ```php
     use \App\Livewire\Concerns\WithPagination;
     // livewire class side 
-    $users = User::query()->paginate();
+    $theorems = User::query()->paginate();
         // or (if you using length aware paginator with full variant)
         // ->paginate($this->perPage);
 ```
@@ -95,7 +94,7 @@ First, create a Livewire component that uses the `App\Livewire\Concerns\WithPagi
 
 ```blade
 <div>
-    <x-ui.table :paginator="$users">
+    <x-ui.table :paginator="$theorems">
        <!-- table contents... -->
     </x-ui.table>
 </div>
@@ -114,19 +113,59 @@ The `App\Livewire\Concerns\WithPagination` trait includes a `$perPage` property 
 />
 @endblade
 
-## Feature Guides
-in this guide I am going to walk throught using this data-table component with bunch of others to create a stunning data tables, I am going to list list of math theorems and thier founding year and the mathematiciens behind them..., 
+## Sorting 
+This component includes everything you need to add sorting to your tables. To enable sorting, first add the `App\Livewire\Concerns\WithSorting` trait to your Livewire component like this:
 
-### Stickiness
+```php
+{~
+use App\Models\User;
+use App\Livewire\Concerns\WithSorting;
+use App\Livewire\Concerns\WithPagination;
+class Theorems extends Component
+{ ~}
+    {+
+    use WithSorting;+}
+
+    public function render()
+    {
+        $users = User::query()
+{+            ->when(filled($this->sortBy), function ($query) {
+                return $this->applySorting($query);
+            })+}
+            ->paginate();
+
+        return view('livewire.users', [
+            'users' => $users,
+        ]);
+    }
+}
+```
+In your table header view, mark sortable columns and pass the current sort state like this:
+
+```blade
+<x-ui.table.head
+{+    column="name"
+    sortable
+    :currentSortBy="$sortBy"
+    :currentSortDir="$sortDir"+}
+>
+    name
+</x-ui.table.head>
+```
+- `column` should match your database column name.
+- `sortable` marks the column as sortable.
+- `currentSortBy` and `currentSortDir` are reactive Livewire properties tracking the current sort state.
+
+## Stickiness
 
 Make columns or headers stick to the viewport while scrolling.
 
-#### Sticky Header
+### Sticky Header
 
 Keep the header visible while scrolling through long tables:
 
 @blade
-<x-demo>
+<x-demo class="w-full">
     <x-ui.table class="max-h-64">
         <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
             <x-ui.table.columns>
@@ -135,7 +174,6 @@ Keep the header visible while scrolling through long tables:
                 <x-ui.table.head>Stock</x-ui.table.head>
             </x-ui.table.columns>
         </x-ui.table.header>
-
         <x-ui.table.rows>
             @for ($i = 1; $i <= 20; $i++)
                 <x-ui.table.row>
@@ -162,14 +200,14 @@ Keep the header visible while scrolling through long tables:
 </x-ui.table>
 ```
 
-#### Sticky Column
+### Sticky Column
 
 Make the first column stick when scrolling horizontally:
 
 @blade
 <x-demo>
     <x-ui.table>
-        <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
+        <x-ui.table.header class="dark:bg-neutral-900 bg-white">
             <x-ui.table.columns>
                 <x-ui.table.head 
                     sticky 
@@ -181,9 +219,9 @@ Make the first column stick when scrolling horizontally:
                 <x-ui.table.head>Department</x-ui.table.head>
                 <x-ui.table.head>Location</x-ui.table.head>
                 <x-ui.table.head>Start Date</x-ui.table.head>
+                <x-ui.table.head>End Date</x-ui.table.head>
             </x-ui.table.columns>
         </x-ui.table.header>
-
         <x-ui.table.rows>
             <x-ui.table.row>
                 <x-ui.table.cell 
@@ -196,6 +234,7 @@ Make the first column stick when scrolling horizontally:
                 <x-ui.table.cell>Engineering</x-ui.table.cell>
                 <x-ui.table.cell>San Francisco, CA</x-ui.table.cell>
                 <x-ui.table.cell>2023-01-15</x-ui.table.cell>
+                <x-ui.table.cell>2029-01-15</x-ui.table.cell>
             </x-ui.table.row>
             <x-ui.table.row>
                 <x-ui.table.cell 
@@ -208,6 +247,7 @@ Make the first column stick when scrolling horizontally:
                 <x-ui.table.cell>Marketing</x-ui.table.cell>
                 <x-ui.table.cell>New York, NY</x-ui.table.cell>
                 <x-ui.table.cell>2022-08-20</x-ui.table.cell>
+                <x-ui.table.cell>2028-08-20</x-ui.table.cell>
             </x-ui.table.row>
         </x-ui.table.rows>
     </x-ui.table>
@@ -240,7 +280,255 @@ Make the first column stick when scrolling horizontally:
 </x-ui.table.rows>
 ```
 
-> **Note:** When using sticky columns, always apply a background color to prevent content overlap during scrolling.
+> **Note:** When using sticky header, columns, always apply a background color to prevent content overlap during scrolling.
+
+
+## Feature Guides
+in this guide I am going to walk throught using this data-table component with bunch of others to create a stunning data tables, I am going to list list of math theorems and thier founding year and the mathematiciens behind them..., 
+
+### Setup Theorem Model  
+
+at first we need a `Theorem` model with (id, name, mathematician, field, year_discovered, difficulty_level, is_proven, statement and applications), we are using sushi for this demo wich our `App\Models\Theorem` looks like this: 
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Src\Components\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Sushi\Sushi;
+
+class Theorem extends Model
+{
+    use Sushi;
+
+    protected $casts = [
+        'year_discovered' => 'integer',
+        'difficulty_level' => 'integer',
+        'is_proven' => 'boolean',
+    ];
+
+    protected function getRows(): array
+    {
+        return [
+            ['id' => 1, 'name' => 'Pythagorean Theorem', 'mathematician' => 'Pythagoras', 'field' => 'Geometry', 'year_discovered' => -500, 'difficulty_level' => 2, 'is_proven' => true, 'statement' => 'In a right triangle, a² + b² = c²', 'applications' => 'Architecture, Navigation'],
+            ['id' => 2, 'name' => 'Fundamental Theorem of Calculus', 'mathematician' => 'Isaac Newton & Gottfried Leibniz', 'field' => 'Analysis', 'year_discovered' => 1666, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Links differentiation and integration', 'applications' => 'Physics, Engineering'],
+            ['id' => 3, 'name' => 'Fermat\'s Last Theorem', 'mathematician' => 'Andrew Wiles', 'field' => 'Number Theory', 'year_discovered' => 1995, 'difficulty_level' => 10, 'is_proven' => true, 'statement' => 'No three positive integers satisfy aⁿ + bⁿ = cⁿ for n > 2', 'applications' => 'Pure Mathematics'],
+            ['id' => 4, 'name' => 'Gödel\'s Incompleteness Theorems', 'mathematician' => 'Kurt Gödel', 'field' => 'Logic', 'year_discovered' => 1931, 'difficulty_level' => 9, 'is_proven' => true, 'statement' => 'Any consistent formal system has unprovable truths', 'applications' => 'Computer Science, Philosophy'],
+            ['id' => 5, 'name' => 'Euler\'s Identity', 'mathematician' => 'Leonhard Euler', 'field' => 'Complex Analysis', 'year_discovered' => 1748, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'e^(iπ) + 1 = 0', 'applications' => 'Signal Processing, Quantum Mechanics'],
+            ['id' => 6, 'name' => 'Central Limit Theorem', 'mathematician' => 'Pierre-Simon Laplace', 'field' => 'Probability', 'year_discovered' => 1810, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Sum of random variables approaches normal distribution', 'applications' => 'Statistics, Data Science'],
+            ['id' => 7, 'name' => 'Riemann Hypothesis', 'mathematician' => 'Bernhard Riemann', 'field' => 'Number Theory', 'year_discovered' => 1859, 'difficulty_level' => 10, 'is_proven' => false, 'statement' => 'All non-trivial zeros of ζ(s) have real part 1/2', 'applications' => 'Prime Number Distribution'],
+            ['id' => 8, 'name' => 'Cauchy\'s Integral Theorem', 'mathematician' => 'Augustin-Louis Cauchy', 'field' => 'Complex Analysis', 'year_discovered' => 1825, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Integral of holomorphic function over closed curve is zero', 'applications' => 'Engineering, Physics'],
+            ['id' => 9, 'name' => 'Banach Fixed-Point Theorem', 'mathematician' => 'Stefan Banach', 'field' => 'Functional Analysis', 'year_discovered' => 1922, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Contraction mappings have unique fixed points', 'applications' => 'Differential Equations'],
+            ['id' => 10, 'name' => 'Nash Equilibrium Theorem', 'mathematician' => 'John Nash', 'field' => 'Game Theory', 'year_discovered' => 1950, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Every finite game has a mixed strategy equilibrium', 'applications' => 'Economics, Political Science'],
+            ['id' => 11, 'name' => 'Stokes\' Theorem', 'mathematician' => 'George Stokes', 'field' => 'Vector Calculus', 'year_discovered' => 1854, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Relates surface integral to line integral', 'applications' => 'Fluid Dynamics, Electromagnetism'],
+            ['id' => 12, 'name' => 'Brouwer Fixed-Point Theorem', 'mathematician' => 'L.E.J. Brouwer', 'field' => 'Topology', 'year_discovered' => 1911, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Continuous function from ball to itself has fixed point', 'applications' => 'Economics, Differential Equations'],
+            ['id' => 13, 'name' => 'Four Color Theorem', 'mathematician' => 'Kenneth Appel & Wolfgang Haken', 'field' => 'Graph Theory', 'year_discovered' => 1976, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Any planar map needs at most 4 colors', 'applications' => 'Cartography, Computer Science'],
+            ['id' => 14, 'name' => 'Poincaré Conjecture', 'mathematician' => 'Grigori Perelman', 'field' => 'Topology', 'year_discovered' => 2003, 'difficulty_level' => 10, 'is_proven' => true, 'statement' => 'Every simply connected 3-manifold is homeomorphic to 3-sphere', 'applications' => 'Cosmology, Shape of Universe'],
+            ['id' => 15, 'name' => 'Law of Large Numbers', 'mathematician' => 'Jakob Bernoulli', 'field' => 'Probability', 'year_discovered' => 1713, 'difficulty_level' => 5, 'is_proven' => true, 'statement' => 'Sample average converges to expected value', 'applications' => 'Statistics, Machine Learning'],
+            ['id' => 16, 'name' => 'Fundamental Theorem of Algebra', 'mathematician' => 'Carl Friedrich Gauss', 'field' => 'Algebra', 'year_discovered' => 1799, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Every polynomial has at least one complex root', 'applications' => 'Control Theory, Signal Processing'],
+            ['id' => 17, 'name' => 'Green\'s Theorem', 'mathematician' => 'George Green', 'field' => 'Vector Calculus', 'year_discovered' => 1828, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Relates line integral to double integral', 'applications' => 'Fluid Mechanics, Electrostatics'],
+            ['id' => 18, 'name' => 'Spectral Theorem', 'mathematician' => 'David Hilbert', 'field' => 'Linear Algebra', 'year_discovered' => 1906, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Normal operators have orthonormal eigenbasis', 'applications' => 'Quantum Mechanics, Principal Component Analysis'],
+            ['id' => 19, 'name' => 'Bolzano-Weierstrass Theorem', 'mathematician' => 'Bernard Bolzano & Karl Weierstrass', 'field' => 'Analysis', 'year_discovered' => 1817, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Bounded sequence has convergent subsequence', 'applications' => 'Real Analysis, Optimization'],
+            ['id' => 20, 'name' => 'Hahn-Banach Theorem', 'mathematician' => 'Hans Hahn & Stefan Banach', 'field' => 'Functional Analysis', 'year_discovered' => 1927, 'difficulty_level' => 9, 'is_proven' => true, 'statement' => 'Bounded linear functionals can be extended', 'applications' => 'Optimization, Economics'],
+            ['id' => 21, 'name' => 'Intermediate Value Theorem', 'mathematician' => 'Bernard Bolzano', 'field' => 'Analysis', 'year_discovered' => 1817, 'difficulty_level' => 4, 'is_proven' => true, 'statement' => 'Continuous function takes all intermediate values', 'applications' => 'Root Finding, Numerical Analysis'],
+            ['id' => 22, 'name' => 'Cayley-Hamilton Theorem', 'mathematician' => 'Arthur Cayley & William Hamilton', 'field' => 'Linear Algebra', 'year_discovered' => 1858, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Every matrix satisfies its characteristic equation', 'applications' => 'Control Systems, Matrix Functions'],
+            ['id' => 23, 'name' => 'Liouville\'s Theorem', 'mathematician' => 'Joseph Liouville', 'field' => 'Complex Analysis', 'year_discovered' => 1844, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Bounded entire function is constant', 'applications' => 'Complex Analysis, Physics'],
+            ['id' => 24, 'name' => 'Prime Number Theorem', 'mathematician' => 'Jacques Hadamard & Charles de la Vallée-Poussin', 'field' => 'Number Theory', 'year_discovered' => 1896, 'difficulty_level' => 9, 'is_proven' => true, 'statement' => 'π(x) ~ x/ln(x) as x → ∞', 'applications' => 'Cryptography, Number Distribution'],
+            ['id' => 25, 'name' => 'Bayes\' Theorem', 'mathematician' => 'Thomas Bayes', 'field' => 'Probability', 'year_discovered' => 1763, 'difficulty_level' => 5, 'is_proven' => true, 'statement' => 'P(A|B) = P(B|A)P(A)/P(B)', 'applications' => 'Machine Learning, Medical Diagnosis'],
+            ['id' => 26, 'name' => 'Divergence Theorem', 'mathematician' => 'Carl Friedrich Gauss', 'field' => 'Vector Calculus', 'year_discovered' => 1813, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Flux through surface equals volume integral of divergence', 'applications' => 'Electromagnetism, Fluid Dynamics'],
+            ['id' => 27, 'name' => 'Noether\'s Theorem', 'mathematician' => 'Emmy Noether', 'field' => 'Mathematical Physics', 'year_discovered' => 1915, 'difficulty_level' => 9, 'is_proven' => true, 'statement' => 'Every symmetry has a corresponding conservation law', 'applications' => 'Particle Physics, General Relativity'],
+            ['id' => 28, 'name' => 'Cantor\'s Theorem', 'mathematician' => 'Georg Cantor', 'field' => 'Set Theory', 'year_discovered' => 1891, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Power set is strictly larger than original set', 'applications' => 'Foundations of Mathematics'],
+            ['id' => 29, 'name' => 'Mean Value Theorem', 'mathematician' => 'Augustin-Louis Cauchy', 'field' => 'Analysis', 'year_discovered' => 1823, 'difficulty_level' => 5, 'is_proven' => true, 'statement' => 'f\'(c) = (f(b) - f(a))/(b - a) for some c', 'applications' => 'Optimization, Error Analysis'],
+            ['id' => 30, 'name' => 'Isoperimetric Inequality', 'mathematician' => 'Jakob Steiner', 'field' => 'Geometry', 'year_discovered' => 1838, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Circle encloses maximum area for given perimeter', 'applications' => 'Optimization, Calculus of Variations'],
+            ['id' => 31, 'name' => 'Collatz Conjecture', 'mathematician' => 'Lothar Collatz', 'field' => 'Number Theory', 'year_discovered' => 1937, 'difficulty_level' => 10, 'is_proven' => false, 'statement' => 'All sequences reach 1 via 3n+1 or n/2', 'applications' => 'Dynamical Systems'],
+            ['id' => 32, 'name' => 'P vs NP Problem', 'mathematician' => 'Stephen Cook', 'field' => 'Complexity Theory', 'year_discovered' => 1971, 'difficulty_level' => 10, 'is_proven' => false, 'statement' => 'Can every verified solution be found quickly?', 'applications' => 'Computer Science, Cryptography'],
+            ['id' => 33, 'name' => 'Riesz Representation Theorem', 'mathematician' => 'Frigyes Riesz', 'field' => 'Functional Analysis', 'year_discovered' => 1907, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Continuous linear functionals representable as integrals', 'applications' => 'Quantum Mechanics, PDEs'],
+            ['id' => 34, 'name' => 'Rolle\'s Theorem', 'mathematician' => 'Michel Rolle', 'field' => 'Analysis', 'year_discovered' => 1691, 'difficulty_level' => 4, 'is_proven' => true, 'statement' => 'f\'(c) = 0 for some c if f(a) = f(b)', 'applications' => 'Calculus, Root Finding'],
+            ['id' => 35, 'name' => 'Goldbach Conjecture', 'mathematician' => 'Christian Goldbach', 'field' => 'Number Theory', 'year_discovered' => 1742, 'difficulty_level' => 10, 'is_proven' => false, 'statement' => 'Every even integer > 2 is sum of two primes', 'applications' => 'Number Theory Research'],
+        ];
+    }
+}
+
+```
+
+> this is just a demo that's why we choose array models, your case will use real laravel modes capabilities, but all the docs is the same regardless of the data source 
+
+### First Working Datatable
+
+
+Include the `App\Livewire\Concerns\WithPagination` trait in your Livewire component:
+
+```php
+
+use App\Models\Theorem;
+use App\Livewire\Concerns\WithSorting;
+use App\Livewire\Concerns\WithPagination;
+
+class Theorems extends Component
+{
+{+  use WithPagination;+}
+
+    public function render()
+    {
+{+      $theorems = $this->baseQuery()->paginate($this->perPage);+}
+
+        return view('livewire.theorems', [
+            'theorems' => $theorems,
+        ]);
+    }
+
+{+  protected function baseQuery(): Builder
+    {
+        return Theorem::query();
+    }+}
+}
+```
+
+- we're using our custom `WithPagination` trait, for extra feature (`$perPage` property and it's updated hook 🙂), We're using `Livewire\WithPagination` underneath
+- we also extract our `baseQuery` function wich we're going to use it heavly in comming sections.
+
+for the view side is simple as:
+
+```blade
+<x-ui.table 
+    :paginator="$paginator"  
+    pagination:variant="full"
+    loadOn="pagination, search, sorting"
+>
+    <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
+        <x-ui.table.columns withCheckAll>
+            <x-ui.table.head sticky class="dark:bg-neutral-900 bg-white">
+                #ID
+            </x-ui.table.head>
+            <x-ui.table.head>
+                Theorem
+            </x-ui.table.head>
+            <x-ui.table.head
+                column="mathematician"
+                sortable
+                :currentSortBy="$sortBy"
+                :currentSortDir="$sortDir"
+            >
+                Mathematician
+            </x-ui.table.head>
+            <x-ui.table.head>
+                Field
+            </x-ui.table.head>
+            <x-ui.table.head
+                column="year_discovered"
+                sortable
+                variant="dropdown"
+                :currentSortBy="$sortBy"
+                :currentSortDir="$sortDir"
+            >
+                Year
+            </x-ui.table.head>
+            <x-ui.table.head
+                column="difficulty_level"
+                sortable
+                :currentSortBy="$sortBy"
+                :currentSortDir="$sortDir"
+
+            >
+                Difficulty
+            </x-ui.table.head>
+            <x-ui.table.head>
+                Status
+            </x-ui.table.head>
+        </x-ui.table.columns>
+    </x-ui.table.header>
+
+    <x-ui.table.rows>
+        @forelse($paginator as $theorem)
+            <x-ui.table.row 
+                :key="$theorem->id"
+            >
+                <x-ui.table.cell sticky class="dark:bg-neutral-950 bg-neutral-50">
+                    {{ $theorem->id }}
+                </x-ui.table.cell>
+                <x-ui.table.cell class="dark:bg-neutral-950 bg-neutral-50">
+                    <div class="max-w-xs">
+                        <div class="font-medium text-neutral-900 dark:text-neutral-100">
+                            {{ $theorem->name }}
+                        </div>
+                        <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1 line-clamp-2">
+                            {{ $theorem->statement }}
+                        </div>
+                    </div>
+                </x-ui.table.cell>
+                
+                <x-ui.table.cell>
+                    <div class="text-sm text-neutral-700 dark:text-neutral-300">
+                        {{ $theorem->mathematician }}
+                    </div>
+                </x-ui.table.cell>
+                
+                <x-ui.table.cell>
+                    @php
+                        <!-- this is a dump way, but for a demo I will leave it like this -->
+                        $fieldColors = [
+                            'Number Theory' => 'purple',
+                            'Analysis' => 'blue',
+                            'Geometry' => 'green',
+                            'Algebra' => 'red',
+                            'Topology' => 'orange',
+                            'Probability' => 'pink',
+                            'Complex Analysis' => 'cyan',
+                            'Functional Analysis' => 'indigo',
+                            'Vector Calculus' => 'teal',
+                            'Game Theory' => 'violet',
+                            'Graph Theory' => 'lime',
+                            'Logic' => 'amber',
+                            'Linear Algebra' => 'rose',
+                            'Set Theory' => 'fuchsia',
+                            'Mathematical Physics' => 'sky',
+                            'Complexity Theory' => 'emerald',
+                        ];
+                        $color = $fieldColors[$theorem->field] ?? 'neutral';
+                    @endphp
+                    <x-ui.badge :color="$color" size="sm" variant="outline">
+                        {{ $theorem->field }}
+                    </x-ui.badge>
+                </x-ui.table.cell>
+                
+                <x-ui.table.cell>
+                    <div class="text-sm font-mono text-neutral-600 dark:text-neutral-400">
+                        {{ $theorem->year_discovered < 0 ? abs($theorem->year_discovered) . ' BC' : $theorem->year_discovered }}
+                    </div>
+                </x-ui.table.cell>
+                
+                <x-ui.table.cell>
+                    <div class="flex items-center gap-1">
+                        @for($i = 1; $i <= min($theorem->difficulty_level, 10); $i++)
+                            <svg class="size-3 {{ $i <= 3 ? 'text-green-500' : ($i <= 6 ? 'text-yellow-500' : 'text-red-500') }}" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        @endfor
+                    </div>
+                    <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                        Level {{ $theorem->difficulty_level }}
+                    </div>
+                </x-ui.table.cell>
+                
+                <x-ui.table.cell>
+                    @if($theorem->is_proven)
+                        <x-ui.badge icon="check-circle" color="green" size="sm" variant="outline">
+                            Proven
+                        </x-ui.badge>
+                    @else
+                        <x-ui.badge icon="exclamation-triangle" color="orange" size="sm" variant="outline">
+                            Conjecture
+                        </x-ui.badge>
+                    @endif
+                </x-ui.table.cell>
+            </x-ui.table.row>
+        @endforelse
+    </x-ui.table.rows>
+</x-ui.table>
+```
 
 ### Add Sorting
 
@@ -248,42 +536,41 @@ Enable column sorting with visual indicators and flexible behavior.
 
 #### Step 1: Add the Trait
 
-Include the `WithSorting` trait in your Livewire component:
+Include the `App\Livewire\Concerns\WithSorting` trait in your Livewire component:
 
 ```php
-<?php
+use App\Models\Theorem;
+use App\Livewire\Concerns\WithSorting;
+use App\Livewire\Concerns\WithPagination;
 
-namespace App\Livewire;
-
-use App\Models\User;
-use Livewire\Component;
-use Src\Components\Livewire\Concerns\WithSorting;
-use Src\Components\Livewire\Concerns\WithPagination;
-
-class UsersTable extends Component
+class Theorems extends Component
 {
+    {+
+    use WithSorting;+}
     use WithPagination;
-    use WithSorting;
 
     public function render()
     {
-        $users = User::query()
-            ->when(filled($this->sortBy), function ($query) {
+        $theorems = $this->baseQuery()
+{+            ->when(filled($this->sortBy), function ($query) {
                 return $this->applySorting($query);
-            })
+            })+}
             ->paginate($this->perPage);
 
-        return view('livewire.users-table', [
-            'users' => $users,
+        return view('livewire.theorems', [
+            'theorems' => $theorems,
         ]);
     }
-
-    protected function sortableColumns(): array
+    protected function baseQuery(): Builder
     {
-        return ['name', 'email', 'created_at'];
+        return Theorem::query();
     }
 }
 ```
+
+`$this->sortBy` and `$this->applySorting()` are coming from that `WithSorting` trait.
+
+> Note, if you want to restrict sorting on the backend side you can use the `sortableColumns()` method on the component class 
 
 #### Step 2: Update the View
 
@@ -450,8 +737,8 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Livewire\Component;
-use Src\Components\Livewire\Concerns\WithPagination;
-use Src\Components\Livewire\Concerns\WithSearch;
+use App\Livewire\Concerns\WithPagination;
+use App\Livewire\Concerns\WithSearch;
 
 class UsersTable extends Component
 {
@@ -460,14 +747,14 @@ class UsersTable extends Component
 
     public function render()
     {
-        $users = User::query()
+        $theorems = User::query()
             ->when(filled($this->searchQuery), function ($query) {
                 return $this->applySearch($query);
             })
             ->paginate($this->perPage);
 
-        return view('livewire.users-table', [
-            'users' => $users,
+        return view('livewire.theorems', [
+            'theorems' => $theorems,
         ]);
     }
 
@@ -494,12 +781,12 @@ class UsersTable extends Component
 Use the table's `top` slot to add a search field:
 
 ```blade
-<x-ui.table :paginator="$users">
+<x-ui.table :paginator="$theorems">
     <x-slot name="top" class="flex justify-between">
         <div class="ml-auto">
             <x-ui.input 
                 class="w-64 [&_input]:bg-transparent" 
-                placeholder="Search users..." 
+                placeholder="Search theorems..." 
                 leftIcon="magnifying-glass" 
                 wire:model.live.debounce.300ms="searchQuery"
             />
@@ -574,7 +861,7 @@ Provide helpful feedback when no results are found.
                     </x-ui.empty.media>
 
                     <x-ui.empty.contents>
-                        <h3 class="text-lg font-semibold">No users found</h3>
+                        <h3 class="text-lg font-semibold">No theorems found</h3>
                         <p class="text-sm text-neutral-500">
                             Try adjusting your search or filters.
                         </p>
@@ -588,7 +875,7 @@ Provide helpful feedback when no results are found.
 
 ```blade
 <x-ui.table.rows>
-    @forelse ($users as $user)
+    @forelse ($theorems as $user)
         <x-ui.table.row wire:key="user-{{ $user->id }}">
             <x-ui.table.cell>{{ $user->name }}</x-ui.table.cell>
             <x-ui.table.cell>{{ $user->email }}</x-ui.table.cell>
@@ -601,7 +888,7 @@ Provide helpful feedback when no results are found.
                 </x-ui.empty.media>
 
                 <x-ui.empty.contents>
-                    <h3 class="text-lg font-semibold">No users found</h3>
+                    <h3 class="text-lg font-semibold">No theorems found</h3>
                     <p class="text-sm text-neutral-500">
                         Try adjusting your search or create a new user.
                     </p>
@@ -627,7 +914,7 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Livewire\Component;
-use Src\Components\Livewire\Concerns\WithSelection;
+use App\Livewire\Concerns\WithSelection;
 
 class UsersTable extends Component
 {
@@ -635,15 +922,15 @@ class UsersTable extends Component
 
     public function render()
     {
-        $users = User::query()->paginate($this->perPage);
+        $theorems = User::query()->paginate($this->perPage);
 
         // Store visible IDs for "select all" functionality
-        $this->visibleIds = $users->pluck('id')
+        $this->visibleIds = $theorems->pluck('id')
             ->map(fn ($id) => (string) $id)
             ->toArray();
 
-        return view('livewire.users-table', [
-            'users' => $users,
+        return view('livewire.theorems', [
+            'theorems' => $theorems,
         ]);
     }
 }
@@ -662,7 +949,7 @@ Enable the "check all" header and add checkboxes to rows:
 </x-ui.table.header>
 
 <x-ui.table.rows>
-    @foreach ($users as $user)
+    @foreach ($theorems as $user)
         <x-ui.table.row 
             wire:key="user-{{ $user->id }}"
             :checkboxId="$user->id"
@@ -704,8 +991,8 @@ namespace App\Livewire;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\Attributes\Renderless;
-use Src\Components\Livewire\Concerns\WithSelection;
-use Src\Components\Livewire\Concerns\CanExportCsv;
+use App\Livewire\Concerns\WithSelection;
+use App\Livewire\Concerns\CanExportCsv;
 
 class UsersTable extends Component
 {
@@ -715,13 +1002,13 @@ class UsersTable extends Component
     #[Renderless]
     public function exportSelected()
     {
-        $users = User::query();
+        $theorems = User::query();
 
         if (filled($this->selectedIds)) {
-            $users = $users->whereIn('id', $this->selectedIds);
+            $theorems = $theorems->whereIn('id', $this->selectedIds);
         }
 
-        return $this->csv($users->get());
+        return $this->csv($theorems->get());
     }
 }
 ```
@@ -731,7 +1018,7 @@ class UsersTable extends Component
 Use the `top` slot to add bulk action controls:
 
 ```blade
-<x-ui.table :paginator="$users">
+<x-ui.table :paginator="$theorems">
     <x-slot name="top" class="flex justify-between gap-4">
         <!-- Bulk Actions Dropdown -->
         <div x-show="$wire.selectedIds.length > 0">
@@ -758,7 +1045,7 @@ Use the `top` slot to add bulk action controls:
                         icon="trash"
                         variant="danger"
                         wire:click="deleteSelected"
-                        wire:confirm="Are you sure you want to delete the selected users?"
+                        wire:confirm="Are you sure you want to delete the selected theorems?"
                     >
                         Delete Selected
                     </x-ui.dropdown.item>
@@ -791,7 +1078,7 @@ public function deleteSelected()
     // Validate that IDs are valid
     $this->validate([
         'selectedIds' => 'required|array|min:1',
-        'selectedIds.*' => 'integer|exists:users,id',
+        'selectedIds.*' => 'integer|exists:theorems,id',
     ]);
 
     // Optional: Add authorization
@@ -806,7 +1093,7 @@ public function deleteSelected()
 
     // Notify user
     $this->dispatch('notify', [
-        'message' => "{$deleted} users deleted successfully",
+        'message' => "{$deleted} theorems deleted successfully",
         'type' => 'success'
     ]);
 }
@@ -821,7 +1108,7 @@ Override methods in the `CanExportCsv` trait to customize the export:
 ```php
 protected function getCsvFilename(): string
 {
-    return 'users_export_' . now()->format('Y-m-d_His') . '.csv';
+    return 'theorems_export_' . now()->format('Y-m-d_His') . '.csv';
 }
 
 protected function getExportableColumns(): array
@@ -833,7 +1120,7 @@ protected function getExportableColumns(): array
 
 ### Add Column Visibility
 
-Let users show/hide columns dynamically.
+Let theorems show/hide columns dynamically.
 
 @blade
 <x-demo>
@@ -908,10 +1195,10 @@ Let users show/hide columns dynamically.
 
 ```blade
 <div x-data="{ 
-    visibleCols: $persist(['name', 'email', 'role']).as('users-table-visible-columns')
+    visibleCols: $persist(['name', 'email', 'role']).as('theorems-table-visible-columns')
 }">
     <!-- Column Visibility Dropdown -->
-    <x-ui.table :paginator="$users">
+    <x-ui.table :paginator="$theorems">
         <x-slot name="top" class="flex justify-between">
             <div class="ml-auto">
                 <x-ui.dropdown checkbox position="bottom-end">
@@ -955,7 +1242,7 @@ Let users show/hide columns dynamically.
         </x-ui.table.header>
 
         <x-ui.table.rows>
-            @foreach ($users as $user)
+            @foreach ($theorems as $user)
                 <x-ui.table.row wire:key="user-{{ $user->id }}">
                     <x-ui.table.cell x-show="visibleCols.includes('name')">
                         {{ $user->name }}
@@ -995,7 +1282,7 @@ Add the `draggable` attribute to your table:
 
 ```blade
 <x-ui.table 
-    :paginator="$users"
+    :paginator="$theorems"
     draggable
 >
     <!-- Table content... -->
@@ -1039,12 +1326,12 @@ class UsersTable extends Component
 
     public function render()
     {
-        $users = User::query()
+        $theorems = User::query()
             ->orderBy('sort_order')
             ->paginate($this->perPage);
 
-        return view('livewire.users-table', [
-            'users' => $users,
+        return view('livewire.theorems', [
+            'theorems' => $theorems,
         ]);
     }
 }
@@ -1073,7 +1360,7 @@ Implement advanced filtering with multiple criteria.
 ```php
 <?php
 
-namespace Src\Components\Livewire\Concerns;
+namespace App\Livewire\Concerns;
 
 trait WithFilters
 {
@@ -1112,8 +1399,8 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Livewire\Component;
-use Src\Components\Livewire\Concerns\WithFilters;
-use Src\Components\Livewire\Concerns\WithPagination;
+use App\Livewire\Concerns\WithFilters;
+use App\Livewire\Concerns\WithPagination;
 
 class UsersTable extends Component
 {
@@ -1122,14 +1409,14 @@ class UsersTable extends Component
 
     public function render()
     {
-        $users = User::query()
+        $theorems = User::query()
             ->when(filled($this->filters), function ($query) {
                 return $this->applyFilters($query);
             })
             ->paginate($this->perPage);
 
-        return view('livewire.users-table', [
-            'users' => $users,
+        return view('livewire.theorems', [
+            'theorems' => $theorems,
         ]);
     }
 }
@@ -1138,7 +1425,7 @@ class UsersTable extends Component
 #### Step 3: Add Filter UI
 
 ```blade
-<x-ui.table :paginator="$users">
+<x-ui.table :paginator="$theorems">
     <x-slot name="top" class="flex justify-between gap-4">
         <!-- Filter Dropdowns -->
         <div class="flex gap-2">
@@ -1349,7 +1636,7 @@ Customize the table's appearance with utility classes and variants.
 
 ```blade
 <x-ui.table 
-    :paginator="$users"
+    :paginator="$theorems"
     wire:loading
     wire:target="searchQuery,sortByColumn"
     loadOnPagination
@@ -1378,11 +1665,11 @@ use App\Models\Component as ComponentModel;
 use Illuminate\View\View;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
-use Src\Components\Livewire\Concerns\CanExportCsv;
-use Src\Components\Livewire\Concerns\WithPagination;
-use Src\Components\Livewire\Concerns\WithSearch;
-use Src\Components\Livewire\Concerns\WithSelection;
-use Src\Components\Livewire\Concerns\WithSorting;
+use App\Livewire\Concerns\CanExportCsv;
+use App\Livewire\Concerns\WithPagination;
+use App\Livewire\Concerns\WithSearch;
+use App\Livewire\Concerns\WithSelection;
+use App\Livewire\Concerns\WithSorting;
 
 class ComponentsTable extends Component
 {
@@ -1657,7 +1944,7 @@ class ComponentsTable extends Component
 
 ## Component Props
 
-### Table
+### table
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -1672,14 +1959,14 @@ class ComponentsTable extends Component
 | `wire:target` | string | `null` | Specific Livewire actions to track |
 | `class` | string | `''` | Additional CSS classes |
 
-### Table.Header
+### table.header
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `sticky` | boolean | `false` | Make header stick to top while scrolling |
 | `class` | string | `''` | Additional CSS classes |
 
-### Table.Head
+### table.head
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -1691,7 +1978,7 @@ class ComponentsTable extends Component
 | `sticky` | boolean | `false` | Make column stick while scrolling horizontally |
 | `class` | string | `''` | Additional CSS classes |
 
-### Table.Row
+### table.row
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -1699,7 +1986,7 @@ class ComponentsTable extends Component
 | `checkboxId` | string\|int\|null | `null` | ID for checkbox selection |
 | `class` | string | `''` | Additional CSS classes |
 
-### Table.Cell
+### table.cell
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -1711,7 +1998,7 @@ class ComponentsTable extends Component
 ### WithPagination
 
 ```php
-use Src\Components\Livewire\Concerns\WithPagination;
+use App\Livewire\Concerns\WithPagination;
 
 public int $perPage = 15;
 ```
@@ -1719,7 +2006,7 @@ public int $perPage = 15;
 ### WithSearch
 
 ```php
-use Src\Components\Livewire\Concerns\WithSearch;
+use App\Livewire\Concerns\WithSearch;
 
 public string $searchQuery = '';
 
@@ -1732,7 +2019,7 @@ protected function applySearch($query)
 ### WithSorting
 
 ```php
-use Src\Components\Livewire\Concerns\WithSorting;
+use App\Livewire\Concerns\WithSorting;
 
 public string $sortBy = '';
 public string $sortDir = 'asc';
@@ -1746,7 +2033,7 @@ protected function sortableColumns(): array
 ### WithSelection
 
 ```php
-use Src\Components\Livewire\Concerns\WithSelection;
+use App\Livewire\Concerns\WithSelection;
 
 public array $selectedIds = [];
 public array $visibleIds = [];
@@ -1755,7 +2042,7 @@ public array $visibleIds = [];
 ### CanExportCsv
 
 ```php
-use Src\Components\Livewire\Concerns\CanExportCsv;
+use App\Livewire\Concerns\CanExportCsv;
 
 #[Renderless]
 public function exportToCsv()
@@ -1784,7 +2071,7 @@ wire:model.live.debounce.300ms="searchQuery"
 
 **3. Eager Load Relationships**
 ```php
-$users = User::with('role', 'department')
+$theorems = User::with('role', 'department')
     ->paginate($this->perPage);
 ```
 
@@ -1805,7 +2092,7 @@ public function deleteSelected()
 {
     $this->validate([
         'selectedIds' => 'required|array|min:1',
-        'selectedIds.*' => 'integer|exists:users,id',
+        'selectedIds.*' => 'integer|exists:theorems,id',
     ]);
     
     // Safe to proceed
@@ -1908,14 +2195,14 @@ Ensure you're setting `visibleIds` in your render method:
 ```php
 public function render()
 {
-    $users = User::query()->paginate($this->perPage);
+    $theorems = User::query()->paginate($this->perPage);
     
     // This is crucial for checkbox sync
-    $this->visibleIds = $users->pluck('id')
+    $this->visibleIds = $theorems->pluck('id')
         ->map(fn ($id) => (string) $id)
         ->toArray();
         
-    return view('livewire.users-table', ['users' => $users]);
+    return view('livewire.theorems', ['theorems' => $theorems]);
 }
 ```
 
