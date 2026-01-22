@@ -227,6 +227,10 @@ then binding to an input that you can put in the top of the table
 ```
 
 see the search on the guide below for real layout. 
+## Selection
+
+the component cames with all logic you need to add select rows and select all functionality for handling bulk actions...
+
 
 ## Loading Logic
 due the nature of datatables are usually data heavy.
@@ -374,7 +378,7 @@ First, create a`Theorem` model with fields: (id, name, mathematician, field, yea
 
 declare(strict_types=1);
 
-namespace Src\Components\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Sushi\Sushi;
@@ -778,12 +782,7 @@ Provide helpful feedback when no results are found. use our [empty state compone
 <x-demo>
     <x-ui.table>
         <x-ui.table.header>
-            <x-ui.table.columns>
-                <x-ui.table.head>Name</x-ui.table.head>
-                <x-ui.table.head>Email</x-ui.table.head>
-            </x-ui.table.columns>
         </x-ui.table.header>
-
         <x-ui.table.rows>
             <x-ui.table.empty>
                 <x-ui.empty>
@@ -807,10 +806,7 @@ Provide helpful feedback when no results are found. use our [empty state compone
 ```blade
 <x-ui.table.rows>
     @forelse ($theorems as $user)
-        <x-ui.table.row wire:key="user-{{ $user->id }}">
-            <x-ui.table.cell>{{ $user->name }}</x-ui.table.cell>
-            <x-ui.table.cell>{{ $user->email }}</x-ui.table.cell>
-        </x-ui.table.row>
+       <!-- hidden contents -->
     @empty
 {+      <x-ui.table.empty>
             <x-ui.empty>
@@ -844,10 +840,16 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Livewire\Component;
+
+use App\Livewire\Concerns\CanExportCsv;
 use App\Livewire\Concerns\WithSelection;
 
 class Theorems extends Component
 {
+{~    use CanExportCsv;
+    use WithPagination;
+    use WithSearch;
+    use WithSorting;~}
 {+  use WithSelection;+}
 
     public function render()
@@ -892,7 +894,7 @@ Enable the "check all" header and add checkboxes to rows:
 
 ### Bulk Actions (Delete and CSV Export Example)
 
-Perform actions on multiple selected rows.
+let add a checkbox button that shows only when there is selected rows.
 
 #### Step 1: Add the CSV Export Trait
 
@@ -917,7 +919,7 @@ class UsersTable extends Component
     #[Renderless]
     public function exportSelected()
     {
-        $theorems = User::query();
+        $theorems = $this->baseQuery();
 
         if (filled($this->selectedIds)) {
             $theorems = $theorems->whereIn('id', $this->selectedIds);
