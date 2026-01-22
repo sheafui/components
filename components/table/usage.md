@@ -214,6 +214,8 @@ class Theorems extends Component
 }
 ```
 
+the `applySearch` is up to you to implement...
+
 then binding to an input that you can put in the top of the table 
 
 ```blade
@@ -635,6 +637,15 @@ class Theorems extends Component
 Let's make `mathematicien`, `year` and `Difficulty` sortable, while making sort by year special by using the `dropdown` sorting variant for sorting:
 
 ```blade
+
+<x-ui.table 
+    :paginator="$theorems"  
+    pagination:variant="full"
+    loadOn="
+        pagination,
+        {+sorting,+}
+    "
+>
  <x-ui.table.header>
     <x-ui.table.columns>
         <!-- other headers -->
@@ -676,7 +687,7 @@ Let's make `mathematicien`, `year` and `Difficulty` sortable, while making sort 
 
 ### Add Search
 
-Enable real-time search across your table data.
+Enable real-time search across your table data,
 
 #### Step 1: Add the Trait
 
@@ -700,9 +711,12 @@ class UsersTable extends Component
     public function render()
     {
         $theorems = User::query()
-            ->when(filled($this->searchQuery), function ($query) {
-                return $this->applySearch($query);
+            ->when(filled($this->sortBy), function ($query) {
+                return $this->applySorting($query);
             })
+{+           ->when(filled($this->searchQuery), function ($query) {
+                return $this->applySearch($query);
+            })+}
             ->paginate($this->perPage);
 
         return view('livewire.theorems', [
@@ -710,90 +724,55 @@ class UsersTable extends Component
         ]);
     }
 
-    protected function applySearch($query)
+{+    protected function applySearch($query)
     {
-        $search = str_replace(
-            ['\\', '%', '_'], 
-            ['\\\\', '\\%', '\\_'], 
-            $this->searchQuery
-        );
-        
-        return $query->where(function($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%");
-        });
-    }
+        return $query->where('name', 'like', '%'.$this->searchQuery.'%')
+            ->orWhere('mathematician', 'like', '%'.$this->searchQuery.'%')
+            ->orWhere('field', 'like', '%'.$this->searchQuery.'%')
+            ->orWhere('statemen', 'like', '%'.$this->searchQuery.'%');
+    }+}
 }
 ```
 
-> **Security Note:** Always escape LIKE wildcards (`%`, `_`) and wrap OR conditions in a closure to prevent SQL logic bugs.
 
 #### Step 2: Add the Search Input
 
-Use the table's `top` slot to add a search field:
+first let's wrap our table and all of filters logic into the `table.container` blade component, wich is responsible for manaing padding between pagination table and filters in a good way,
 
 ```blade
-<x-ui.table :paginator="$theorems">
-    <x-slot name="top" class="flex justify-between">
+{+<x-ui.table.container+}
+{+ 
+    <div 
+        class="flex items-center"
+    >
+        {{-- SEARCH INPUT --}}
         <div class="ml-auto">
             <x-ui.input 
-                class="w-64 [&_input]:bg-transparent" 
-                placeholder="Search theorems..." 
+                class="[&_input]:bg-transparent" <!-- target underline input and make it transparent...  -->    
+                placeholder="search..." 
                 leftIcon="magnifying-glass" 
-                wire:model.live.debounce.300ms="searchQuery"
+                wire:model.live="searchQuery"
             />
         </div>
-    </x-slot>
-    
-    <!-- Table content... -->
-</x-ui.table>
-```
-
-#### Optimizing Search Performance
-
-**Use Debouncing:**
-
-```blade
-wire:model.live.debounce.300ms="searchQuery"
-```
-
-This reduces server requests by waiting 300ms after the user stops typing.
-
-**Use Model Scopes:**
-
-Instead of putting search logic in the component, create a reusable scope:
-
-```php
-// App/Models/User.php
-public function scopeSearch($query, string $search)
-{
-    $search = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search);
-    
-    return $query->where(function($q) use ($search) {
-        $q->where('name', 'like', "%{$search}%")
-          ->orWhere('email', 'like', "%{$search}%");
-    });
-}
-
-// In your component
-protected function applySearch($query)
-{
-    return $query->search($this->searchQuery);
-}
-```
-
-**Use Full-Text Search for Large Datasets:**
-
-```php
-protected function applySearch($query)
-{
-    return $query->whereFullText(['name', 'email'], $this->searchQuery);
-}
+    </div>
++}
+    <x-ui.table 
+        :paginator="$theorems"  
+        pagination:variant="full"
+        loadOn="
+            pagination,
+            {+search,+}
+            sorting
+        "
+    >
+        <!-- other contents -->
+    </x-ui.table>
+{+</x-ui.table.container+}
 ```
 
 ### Handle Empty States
 
-Provide helpful feedback when no results are found.
+Provide helpful feedback when no results are found. use our [empty state component](/docs/components/empty) 
 
 @blade
 <x-demo>
@@ -833,12 +812,11 @@ Provide helpful feedback when no results are found.
             <x-ui.table.cell>{{ $user->email }}</x-ui.table.cell>
         </x-ui.table.row>
     @empty
-        <x-ui.table.empty>
+{+      <x-ui.table.empty>
             <x-ui.empty>
                 <x-ui.empty.media>
                     <x-ui.icon name="inbox" class="size-10" />
                 </x-ui.empty.media>
-
                 <x-ui.empty.contents>
                     <h3 class="text-lg font-semibold">No theorems found</h3>
                     <p class="text-sm text-neutral-500">
@@ -846,7 +824,7 @@ Provide helpful feedback when no results are found.
                     </p>
                 </x-ui.empty.contents>
             </x-ui.empty>
-        </x-ui.table.empty>
+        </x-ui.table.empty>+}
     @endforelse
 </x-ui.table.rows>
 ```
@@ -868,18 +846,18 @@ use App\Models\User;
 use Livewire\Component;
 use App\Livewire\Concerns\WithSelection;
 
-class UsersTable extends Component
+class Theorems extends Component
 {
-    use WithSelection;
+{+  use WithSelection;+}
 
     public function render()
     {
-        $theorems = User::query()->paginate($this->perPage);
+        $theorems = $this->baseQuery()->...();
 
         // Store visible IDs for "select all" functionality
-        $this->visibleIds = $theorems->pluck('id')
+{+       $this->visibleIds = $theorems->pluck('id')
             ->map(fn ($id) => (string) $id)
-            ->toArray();
+            ->toArray();+}
 
         return view('livewire.theorems', [
             'theorems' => $theorems,
@@ -893,18 +871,17 @@ class UsersTable extends Component
 Enable the "check all" header and add checkboxes to rows:
 
 ```blade
-<x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
-    <x-ui.table.columns withCheckAll>
-        <x-ui.table.head>Name</x-ui.table.head>
-        <x-ui.table.head>Email</x-ui.table.head>
-    </x-ui.table.columns>
-</x-ui.table.header>
+<x-ui.table.columns 
+{+   withCheckAll+}
+>
+</x-ui.table.columns>
 
+<!-- aaaand -->
 <x-ui.table.rows>
     @foreach ($theorems as $user)
         <x-ui.table.row 
-            wire:key="user-{{ $user->id }}"
-            :checkboxId="$user->id"
+           wire:key="user-{{ $user->id }}"
+{+          :checkboxId="$user->id"+}
         >
             <x-ui.table.cell>{{ $user->name }}</x-ui.table.cell>
             <x-ui.table.cell>{{ $user->email }}</x-ui.table.cell>
@@ -913,21 +890,7 @@ Enable the "check all" header and add checkboxes to rows:
 </x-ui.table.rows>
 ```
 
-#### How It Works
-
-The checkbox system uses Alpine.js for smooth client-side interactions:
-
-- Clicking the header checkbox toggles all visible rows
-- Individual checkboxes update the selection state
-- The header shows an indeterminate state when some (but not all) rows are selected
-- Selected IDs are stored in the `$selectedIds` array (as strings)
-
-**The header checkbox has three states:**
-- **Checked** - All visible rows selected
-- **Indeterminate** - Some rows selected
-- **Unchecked** - No rows selected
-
-### Bulk Actions (CSV Export Example)
+### Bulk Actions (Delete and CSV Export Example)
 
 Perform actions on multiple selected rows.
 
