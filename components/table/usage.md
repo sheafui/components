@@ -8,7 +8,7 @@ name: 'table'
 
 The `table` component provides a powerful, composable system for building feature-rich data tables. Built with Livewire and Alpine.js, it offers pagination, sorting, searching, selection, bulk actions, column visibility controls, drag-and-drop reordering, and more all with excellent accessibility and a clean, modern design.
 
-Our approach uses **composable traits** on the backend and **slot-based components** on the frontend, giving you complete control over your table's structure and behavior while maintaining clean, reusable code.
+Our approach uses **composable traits** on the backend and **blade components** on the frontend, giving you complete control over your table's structure and behavior while maintaining clean, reusable code.
 
 ## Installation
 
@@ -229,7 +229,51 @@ then binding to an input that you can put in the top of the table
 see the search on the guide below for real layout. 
 ## Selection
 
-the component cames with all logic you need to add select rows and select all functionality for handling bulk actions...
+the component cames with all logic you need to add select rows and select all functionality for handling bulk actions..., To enable selection, first add the `App\Livewire\Concerns\WithSelection` trait to your Livewire component like this:
+
+```php
+{~
+use App\Models\User;
+use App\Livewire\Concerns\WithSelection;
+class Theorems extends Component
+{ ~}
+    {+
+    use WithSelection;+}
+
+    public function render()
+    {
+        $users = User::query()->....->paginate();
+
+        // this is crucial, it tell us about the visible rows on the page 
+{+       $this->visibleIds = $theorems->pluck('id')
+            ->map(fn ($id) => (string) $id)
+            ->toArray();+}
+
+        return view('livewire.users', [
+            'users' => $users,
+        ]);
+    }
+}
+```
+
+then on the view add the `:checkboxId` to each `table.row` blade component to show show the checkbox on the start of the row, then to add check all functionality add `checkAll` to the `table.columns` blade component  
+
+```blade
+<x-ui.table.columns
+{+    withCheckAll+}
+>
+    <!-- other heads components -->
+</x-ui.table.columns>
+
+<!-- AND  -->
+
+<x-ui.table.row 
+{+    :checkboxId="$user->id"+} 
+    :key="$user->id"
+>...</x-ui.table.row>
+```
+
+see the search on the guide below for real layout. 
 
 
 ## Loading Logic
@@ -879,13 +923,12 @@ Enable the "check all" header and add checkboxes to rows:
 
 <!-- aaaand -->
 <x-ui.table.rows>
-    @foreach ($theorems as $user)
+    @foreach ($theorems as $theorem)
         <x-ui.table.row 
-           wire:key="user-{{ $user->id }}"
-{+          :checkboxId="$user->id"+}
+           :key="{{ $theorem->id }}"
+{+          :checkboxId="$theorem->id"+}
         >
-            <x-ui.table.cell>{{ $user->name }}</x-ui.table.cell>
-            <x-ui.table.cell>{{ $user->email }}</x-ui.table.cell>
+            <!--...-->
         </x-ui.table.row>
     @endforeach
 </x-ui.table.rows>
@@ -1029,7 +1072,7 @@ Let theorems show/hide columns dynamically.
 
 @blade
 <x-demo>
-    <div x-data="{ visibleCols: ['name', 'email', 'role'] }">
+    <div x-data="{ hiddenColumns: ['name', 'email', 'role'] }">
         <div class="mb-4 flex justify-end">
             <x-ui.dropdown checkbox position="bottom-end">
                 <x-slot:button>
@@ -1258,144 +1301,7 @@ Add event dispatch to the sortable container:
 
 ### Add Filters
 
-Implement advanced filtering with multiple criteria.
-
-#### Step 1: Create a Filter Trait
-
-```php
-<?php
-
-namespace App\Livewire\Concerns;
-
-trait WithFilters
-{
-    public array $filters = [];
-
-    public function applyFilters($query)
-    {
-        foreach ($this->filters as $field => $value) {
-            if (filled($value)) {
-                $query->where($field, $value);
-            }
-        }
-
-        return $query;
-    }
-
-    public function resetFilters()
-    {
-        $this->filters = [];
-        $this->resetPage();
-    }
-
-    public function updatedFilters()
-    {
-        $this->resetPage();
-    }
-}
-```
-
-#### Step 2: Use in Component
-
-```php
-<?php
-
-namespace App\Livewire;
-
-use App\Models\User;
-use Livewire\Component;
-use App\Livewire\Concerns\WithFilters;
-use App\Livewire\Concerns\WithPagination;
-
-class UsersTable extends Component
-{
-    use WithPagination;
-    use WithFilters;
-
-    public function render()
-    {
-        $theorems = User::query()
-            ->when(filled($this->filters), function ($query) {
-                return $this->applyFilters($query);
-            })
-            ->paginate($this->perPage);
-
-        return view('livewire.theorems', [
-            'theorems' => $theorems,
-        ]);
-    }
-}
-```
-
-#### Step 3: Add Filter UI
-
-```blade
-<x-ui.table :paginator="$theorems">
-    <x-slot name="top" class="flex justify-between gap-4">
-        <!-- Filter Dropdowns -->
-        <div class="flex gap-2">
-            <x-ui.select 
-                wire:model.live="filters.role"
-                placeholder="All Roles"
-            >
-                <option value="">All Roles</option>
-                <option value="admin">Admin</option>
-                <option value="editor">Editor</option>
-                <option value="viewer">Viewer</option>
-            </x-ui.select>
-
-            <x-ui.select 
-                wire:model.live="filters.status"
-                placeholder="All Statuses"
-            >
-                <option value="">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-            </x-ui.select>
-
-            <x-ui.button 
-                wire:click="resetFilters"
-                variant="ghost"
-                icon="x-mark"
-            >
-                Clear Filters
-            </x-ui.button>
-        </div>
-
-        <!-- Search -->
-        <div class="ml-auto">
-            <x-ui.input 
-                wire:model.live.debounce.300ms="searchQuery"
-                placeholder="Search..."
-                leftIcon="magnifying-glass"
-            />
-        </div>
-    </x-slot>
-    
-    <!-- Table content... -->
-</x-ui.table>
-```
-
-#### Advanced Filter Example with Date Ranges
-
-```php
-public function applyFilters($query)
-{
-    if (filled($this->filters['role'])) {
-        $query->where('role', $this->filters['role']);
-    }
-
-    if (filled($this->filters['date_from'])) {
-        $query->where('created_at', '>=', $this->filters['date_from']);
-    }
-
-    if (filled($this->filters['date_to'])) {
-        $query->where('created_at', '<=', $this->filters['date_to']);
-    }
-
-    return $query;
-}
-```
+Implement advanced filtering with multiple criteria going to add docs for this after adding this capability to the core of the component...
 
 ### Playing with Table Design
 
