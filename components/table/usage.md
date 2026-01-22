@@ -181,6 +181,51 @@ and pass the users collection to the `paginator` prop on the view:
 />
 @endblade
 
+## Search 
+This component includes everything you need to add search to your tables. To enable search, first add the `App\Livewire\Concerns\WithSorting` trait to your Livewire component like this:
+
+```php
+{~
+use App\Models\User;
+use App\Livewire\Concerns\WithSearch;
+use App\Livewire\Concerns\WithPagination;
+class Theorems extends Component
+{ ~}
+    {+
+    use WithSearch;+}
+
+    public function render()
+    {
+        $users = User::query()
+{+            ->when(filled($this->searchQuery), function ($query) {
+                return $this->applySearch($query);
+            })+}
+            ->paginate();
+
+        return view('livewire.users', [
+            'users' => $users,
+        ]);
+    }
+
+{+  protected function applySearch($query)
+    {
+        return $query->where('name', 'like', '%'.$this->searchQuery.'%');
+    }+}
+}
+```
+
+then binding to an input that you can put in the top of the table 
+
+```blade
+ <x-ui.input 
+    placeholder="search..." 
+    leftIcon="magnifying-glass" 
+{+    wire:model.live="searchQuery" <!-- this is what's important-->+}
+/>
+```
+
+see the search on the guide below for real layout. 
+
 ## Loading Logic
 due the nature of datatables are usually data heavy.
 
@@ -592,12 +637,7 @@ Let's make `mathematicien`, `year` and `Difficulty` sortable, while making sort 
 ```blade
  <x-ui.table.header>
     <x-ui.table.columns>
-        <x-ui.table.head>
-            #ID
-        </x-ui.table.head>
-        <x-ui.table.head>
-            Theorem
-        </x-ui.table.head>
+        <!-- other headers -->
         <x-ui.table.head
 {+            column="mathematician"
             sortable
