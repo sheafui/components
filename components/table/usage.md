@@ -156,6 +156,29 @@ In your table header view, mark sortable columns and pass the current sort state
 - `sortable` marks the column as sortable.
 - `currentSortBy` and `currentSortDir` are reactive Livewire properties tracking the current sort state.
 
+### Sorting variants
+There are two sorting variants:
+
+- `default`: shows sorting icons on hover and cycles sorting on click.
+- `dropdown`: opens a menu where the user explicitly chooses the sorting direction.
+
+```blade
+<x-ui.table.head
+{~    column="name"
+    sortable
+    :currentSortBy="$sortBy"
+    :currentSortDir="$sortDir"~}
+{+    variant="default" <!-- default --> +} 
+    <!-- or -->
+{+    variant="dropdown"+}
+>
+    name
+</x-ui.table.head>
+```
+You can see these variants in action on our interactive [Math Theorems demo](/demos/datatables).
+Sorting by year uses the dropdown variant, while mathematician and difficulty columns use the default variant.
+
+
 ## Stickiness
 
 Make columns or headers stick to the viewport while scrolling.
