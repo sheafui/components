@@ -846,8 +846,7 @@ use App\Livewire\Concerns\WithSelection;
 
 class Theorems extends Component
 {
-{~    use CanExportCsv;
-    use WithPagination;
+{~    use WithPagination;
     use WithSearch;
     use WithSorting;~}
 {+  use WithSelection;+}
@@ -894,7 +893,7 @@ Enable the "check all" header and add checkboxes to rows:
 
 ### Bulk Actions (Delete and CSV Export Example)
 
-let add a checkbox button that shows only when there is selected rows.
+let add a checkbox button that shows only when there is selected rows. going to add delete and export to csv the selected rows
 
 #### Step 1: Add the CSV Export Trait
 
@@ -905,28 +904,40 @@ Include the `CanExportCsv` trait:
 
 namespace App\Livewire;
 
-use App\Models\User;
-use Livewire\Component;
-use Livewire\Attributes\Renderless;
-use App\Livewire\Concerns\WithSelection;
-use App\Livewire\Concerns\CanExportCsv;
-
-class UsersTable extends Component
+class Theorems extends Component
 {
-    use WithSelection;
-    use CanExportCsv;
+{~   
+    use WithPagination;
+    use WithSearch;
+    use WithSorting;
+    use WithSelection;~}
+{+  use CanExportCsv;+}
 
-    #[Renderless]
+{+    #[Renderless]
     public function exportSelected()
     {
         $theorems = $this->baseQuery();
-
         if (filled($this->selectedIds)) {
             $theorems = $theorems->whereIn('id', $this->selectedIds);
         }
-
+        // + apply filters like search and sorting if you want 
+        // then convert them into csv...  
         return $this->csv($theorems->get());
-    }
+    }+}
+
+    // other parts...
+
+{+    public function deleteSelected()
+    {
+
+        // ⚠️ don't forget validation & authorizations
+
+        // Gate::authorize('delete-theorem', User::class);
+        this->baseQuery()->whereIn('id',$this->selectedIds)->delete()
+
+        // you may clear selection after deletes 
+        $this->deselectAll();
+    }+}
 }
 ```
 
@@ -935,104 +946,81 @@ class UsersTable extends Component
 Use the `top` slot to add bulk action controls:
 
 ```blade
-<x-ui.table :paginator="$theorems">
-    <x-slot name="top" class="flex justify-between gap-4">
-        <!-- Bulk Actions Dropdown -->
-        <div x-show="$wire.selectedIds.length > 0">
-            <x-ui.dropdown position="bottom-start" :offset="1">
+<x-ui.table.container>
+    <div 
+        class="flex items-center"
+    >
+{+        {{-- BULK ACTIONS --}}
+        <div
+            style="display:none;" 
+            wire:show="selectedIds.length"
+        >
+            <x-ui.dropdown position="bottom-start">
                 <x-slot:button class="justify-center">
+                    <!-- desktop button -->
                     <x-ui.button 
                         icon="ellipsis-vertical" 
                         variant="soft"
-                        class="rounded-box outline dark:outline-white/20 outline-neutral-900/20"
+                        size="sm"
+                        class="
+                            rounded-box mr-2 [@media(width<40rem)]:hidden outline 
+                            dark:outline-white/20 outline-neutral-900/10 
+                            dark:ring-white/15 ring-neutral-900/15 
+                            [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm
+                        " 
                     >
-                        Bulk Actions
+                        bulk action
                     </x-ui.button>
+                    <!-- mobile button (icon only) -->                            
+                    <x-ui.button 
+                        icon="ellipsis-vertical" 
+                        variant="soft"
+                        size="sm"
+                        class="
+                            rounded-box mr-2 sm:hidden outline dark:outline-white/20
+                            outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 
+                            [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm
+                        " 
+                    />
                 </x-slot:button>
                 
                 <x-slot:menu>
                     <x-ui.dropdown.item 
                         icon="arrow-down-on-square"
-                        wire:click="exportSelected"
+                        wire:click="toCsv"
                     >
-                        Export Selected to CSV
+                        export selected csv
                     </x-ui.dropdown.item>
                     
                     <x-ui.dropdown.item 
                         icon="trash"
                         variant="danger"
                         wire:click="deleteSelected"
-                        wire:confirm="Are you sure you want to delete the selected theorems?"
+                        wire:confirm="are you sure you want to delete ?"
                     >
-                        Delete Selected
+                        delete selected
                     </x-ui.dropdown.item>
                 </x-slot:menu>
             </x-ui.dropdown>
         </div>
++}
 
-        <!-- Search Input -->
+        {{-- SEARCH INPUT --}}
         <div class="ml-auto">
             <x-ui.input 
-                class="w-64" 
-                placeholder="Search..." 
+                class="[&_input]:bg-transparent"  
+                placeholder="search..." 
                 leftIcon="magnifying-glass" 
-                wire:model.live.debounce.300ms="searchQuery"
+                wire:model.live="searchQuery"
             />
         </div>
-    </x-slot>
-    
-    <!-- Table content... -->
-</x-ui.table>
-```
-
-#### Implementing Delete Action
-
-Add a delete method with proper validation:
-
-```php
-public function deleteSelected()
-{
-    // Validate that IDs are valid
-    $this->validate([
-        'selectedIds' => 'required|array|min:1',
-        'selectedIds.*' => 'integer|exists:theorems,id',
-    ]);
-
-    // Optional: Add authorization
-    // Gate::authorize('delete-multiple', User::class);
-
-    $deleted = User::query()
-        ->whereIn('id', $this->selectedIds)
-        ->delete();
-
-    // Clear selection
-    $this->selectedIds = [];
-
-    // Notify user
-    $this->dispatch('notify', [
-        'message' => "{$deleted} theorems deleted successfully",
-        'type' => 'success'
-    ]);
-}
-```
-
-> **Security:** Always validate `selectedIds` to prevent client-side manipulation. Never trust data from the frontend!
-
-#### Customizing CSV Export
-
-Override methods in the `CanExportCsv` trait to customize the export:
-
-```php
-protected function getCsvFilename(): string
-{
-    return 'theorems_export_' . now()->format('Y-m-d_His') . '.csv';
-}
-
-protected function getExportableColumns(): array
-{
-    // Limit which columns are exported
-    return ['id', 'name', 'email', 'created_at'];
-}
+    </div>
+    <x-ui.table
+        ...
+    >
+        <!-- other parts -->
+    </x-ui.table>
+</x-ui.table.container>
 ```
 
 ### Add Column Visibility
