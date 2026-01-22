@@ -74,44 +74,6 @@ Let's start with a simple static table without any dynamic features.
 </x-ui.table>
 ```
 
-## Pagination
-
-Add pagination to your table by passing a Laravel paginator to table component.
-
-### Creating the Livewire Component
-
-First, create a Livewire component that uses the `App\Livewire\Concerns\WithPagination` trait:
-
-```php
-    use \App\Livewire\Concerns\WithPagination;
-    // livewire class side 
-    $theorems = User::query()->paginate();
-        // or (if you using length aware paginator with full variant)
-        // ->paginate($this->perPage);
-```
-
-### The View
-
-```blade
-<div>
-    <x-ui.table :paginator="$theorems">
-       <!-- table contents... -->
-    </x-ui.table>
-</div>
-```
-
-### Customizing Items Per Page
-
-The `App\Livewire\Concerns\WithPagination` trait includes a `$perPage` property that defaults to 15. You can override it in the trait, don't forget the code is yours tweack it as you want.
-
-### More About Pagination ? 
-@blade
-<x-md.cta                                                            
-    href="/docs/components/pagination"                                    
-    label="the pagination component has a very detailled documentations and demoing parts there"
-    ctaLabel="Visit Docs"
-/>
-@endblade
 
 ## Sorting 
 This component includes everything you need to add sorting to your tables. To enable sorting, first add the `App\Livewire\Concerns\WithSorting` trait to your Livewire component like this:
@@ -140,6 +102,8 @@ class Theorems extends Component
     }
 }
 ```
+`$this->sortBy` and `$this->applySorting()` are coming from that `WithSorting` trait.
+
 In your table header view, mark sortable columns and pass the current sort state like this:
 
 ```blade
@@ -155,6 +119,9 @@ In your table header view, mark sortable columns and pass the current sort state
 - `column` should match your database column name.
 - `sortable` marks the column as sortable.
 - `currentSortBy` and `currentSortDir` are reactive Livewire properties tracking the current sort state.
+
+> Note, if you want to restrict sorting on the backend side you can use the `sortableColumns()` method on the component class 
+
 
 ### Sorting variants
 There are two sorting variants:
@@ -177,6 +144,45 @@ There are two sorting variants:
 ```
 You can see these variants in action on our interactive [Math Theorems demo](/demos/datatables).
 Sorting by year uses the dropdown variant, while mathematician and difficulty columns use the default variant.
+
+## Pagination
+
+Add pagination to your table by passing a Laravel paginator to table component.
+
+First, create a Livewire component that uses the `App\Livewire\Concerns\WithPagination` trait:
+
+```php
+    use \App\Livewire\Concerns\WithPagination;
+    // livewire class side 
+    $users = User::query()
+{+        ->paginate();+}
+        // or (if you using length aware paginator with full variant)
+{+        ->paginate($this->perPage);+}
+```
+and pass the users collection to the `paginator` prop on the view:
+
+```blade
+<div>
+    <x-ui.table 
+{+        :paginator="$users"+}
+    >
+       <!-- table contents... -->
+    </x-ui.table>
+</div>
+```
+
+
+### More About Pagination ? 
+@blade
+<x-md.cta                                                            
+    href="/docs/components/pagination"                                    
+    label="the pagination component has a very detailled documentations and demoing parts there"
+    ctaLabel="Visit Docs"
+/>
+@endblade
+
+## Loading Logic
+due the nature of datatables are usually data heavy.
 
 
 ## Stickiness
@@ -306,12 +312,15 @@ Make the first column stick when scrolling horizontally:
 > **Note:** When using sticky header, columns, always apply a background color to prevent content overlap during scrolling.
 
 
-## Feature Guides
-in this guide I am going to walk throught using this data-table component with bunch of others to create a stunning data tables, I am going to list list of math theorems and thier founding year and the mathematiciens behind them..., 
+## Implementation Guide
 
-### Setup Theorem Model  
+### Overview
 
-at first we need a `Theorem` model with (id, name, mathematician, field, year_discovered, difficulty_level, is_proven, statement and applications), we are using sushi for this demo wich our `App\Models\Theorem` looks like this: 
+This guide walks you through using the data table component alongside other utilities to create a polished, feature-rich data table. We'll display a list of mathematical theorems, including their discovery year and the mathematicians behind them.
+
+### Setup Theorems Data
+
+First, create a`Theorem` model with fields: (id, name, mathematician, field, year_discovered, difficulty_level, is_proven, statement and applications), For this demo, we use the Sushi package with an in-memory array model. Our `App\Models\Theorem` looks like this: 
 
 ```php
 <?php
@@ -377,12 +386,12 @@ class Theorem extends Model
 
 ```
 
-> this is just a demo that's why we choose array models, your case will use real laravel modes capabilities, but all the docs is the same regardless of the data source 
+> This is a demo using array-based models for simplicity. Your real application will use standard Laravel Eloquent models, but the integration remains the same regardless of data source.
 
-### First Working Datatable
+### Table with Pagination
 
 
-Include the `App\Livewire\Concerns\WithPagination` trait in your Livewire component:
+Add the `App\Livewire\Concerns\WithPagination` trait to your Livewire component to enable pagination:
 
 ```php
 
@@ -410,52 +419,34 @@ class Theorems extends Component
 }
 ```
 
-- we're using our custom `WithPagination` trait, for extra feature (`$perPage` property and it's updated hook 🙂), We're using `Livewire\WithPagination` underneath
-- we also extract our `baseQuery` function wich we're going to use it heavly in comming sections.
+- We use a custom `WithPagination` trait that extends Livewire's native pagination with `$perPage` property and reactive updates.
+- The `baseQuery` method encapsulates the core query builder, making it reusable for sorting, filtering, and other operations in later steps.
 
-for the view side is simple as:
+The view integrates pagination, displays theorem details with badges and icons:
 
 ```blade
 <x-ui.table 
-    :paginator="$paginator"  
-    pagination:variant="full"
-    loadOn="pagination, search, sorting"
+{+    :paginator="$theorems"  +}
+{+    pagination:variant="full"+}
 >
-    <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
-        <x-ui.table.columns withCheckAll>
-            <x-ui.table.head sticky class="dark:bg-neutral-900 bg-white">
-                #ID
+    <x-ui.table.header>
+        <x-ui.table.columns>
+            <x-ui.table.head>
+                ID
             </x-ui.table.head>
             <x-ui.table.head>
                 Theorem
             </x-ui.table.head>
-            <x-ui.table.head
-                column="mathematician"
-                sortable
-                :currentSortBy="$sortBy"
-                :currentSortDir="$sortDir"
-            >
+            <x-ui.table.head>
                 Mathematician
             </x-ui.table.head>
             <x-ui.table.head>
                 Field
             </x-ui.table.head>
-            <x-ui.table.head
-                column="year_discovered"
-                sortable
-                variant="dropdown"
-                :currentSortBy="$sortBy"
-                :currentSortDir="$sortDir"
-            >
+            <x-ui.table.head>
                 Year
             </x-ui.table.head>
-            <x-ui.table.head
-                column="difficulty_level"
-                sortable
-                :currentSortBy="$sortBy"
-                :currentSortDir="$sortDir"
-
-            >
+            <x-ui.table.head>
                 Difficulty
             </x-ui.table.head>
             <x-ui.table.head>
@@ -548,6 +539,8 @@ for the view side is simple as:
                     @endif
                 </x-ui.table.cell>
             </x-ui.table.row>
+        @empty
+        <!-- to implement in upcoming section -->
         @endforelse
     </x-ui.table.rows>
 </x-ui.table>
@@ -591,148 +584,55 @@ class Theorems extends Component
 }
 ```
 
-`$this->sortBy` and `$this->applySorting()` are coming from that `WithSorting` trait.
-
-> Note, if you want to restrict sorting on the backend side you can use the `sortableColumns()` method on the component class 
 
 #### Step 2: Update the View
 
-Mark columns as sortable and pass the current sort state:
+Let's make `mathematicien`, `year` and `dificulty` sortable, while making sort by year special by using the `dropdown` sorting variant for sorting:
 
 ```blade
-<x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
+ <x-ui.table.header>
     <x-ui.table.columns>
-        <x-ui.table.head 
-            column="name"
-            sortable
-            :currentSortBy="$sortBy"
-            :currentSortDir="$sortDir"
-        >
-            Name
+        <x-ui.table.head>
+            #ID
         </x-ui.table.head>
-        
-        <x-ui.table.head 
-            column="email"
-            sortable
-            :currentSortBy="$sortBy"
-            :currentSortDir="$sortDir"
-        >
-            Email
+        <x-ui.table.head>
+            Theorem
         </x-ui.table.head>
-        
-        <x-ui.table.head 
-            column="created_at"
+        <x-ui.table.head
+            column="mathematician"
             sortable
             :currentSortBy="$sortBy"
             :currentSortDir="$sortDir"
         >
-            Created At
+            Mathematician
+        </x-ui.table.head>
+        <x-ui.table.head>
+            Field
+        </x-ui.table.head>
+        <x-ui.table.head
+            column="year_discovered"
+            sortable
+            variant="dropdown"
+            :currentSortBy="$sortBy"
+            :currentSortDir="$sortDir"
+        >
+            Year
+        </x-ui.table.head>
+        <x-ui.table.head
+            column="difficulty_level"
+            sortable
+            :currentSortBy="$sortBy"
+            :currentSortDir="$sortDir"
+
+        >
+            Difficulty
+        </x-ui.table.head>
+        <x-ui.table.head>
+            Status
         </x-ui.table.head>
     </x-ui.table.columns>
 </x-ui.table.header>
 ```
-
-#### Sorting Variants
-
-The table supports two sorting variants: `default` (click to toggle) and `dropdown` (menu-based).
-
-**Default Variant:**
-
-@blade
-<x-demo>
-    <x-ui.table>
-        <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
-            <x-ui.table.columns>
-                <x-ui.table.head 
-                    column="product"
-                    sortable
-                    currentSortBy="product"
-                    currentSortDir="asc"
-                >
-                    Product
-                </x-ui.table.head>
-                <x-ui.table.head 
-                    column="price"
-                    sortable
-                    currentSortBy=""
-                    currentSortDir="asc"
-                >
-                    Price
-                </x-ui.table.head>
-            </x-ui.table.columns>
-        </x-ui.table.header>
-        <x-ui.table.rows>
-            <x-ui.table.row>
-                <x-ui.table.cell>Widget A</x-ui.table.cell>
-                <x-ui.table.cell>$29.99</x-ui.table.cell>
-            </x-ui.table.row>
-        </x-ui.table.rows>
-    </x-ui.table>
-</x-demo>
-@endblade
-
-```blade
-<x-ui.table.head 
-    column="name"
-    sortable
-    variant="default"
-    :currentSortBy="$sortBy"
-    :currentSortDir="$sortDir"
->
-    Name
-</x-ui.table.head>
-```
-
-**Dropdown Variant:**
-
-@blade
-<x-demo>
-    <x-ui.table>
-        <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
-            <x-ui.table.columns>
-                <x-ui.table.head 
-                    column="product"
-                    sortable
-                    variant="dropdown"
-                    currentSortBy="product"
-                    currentSortDir="desc"
-                >
-                    Product
-                </x-ui.table.head>
-                <x-ui.table.head 
-                    column="price"
-                    sortable
-                    variant="dropdown"
-                    currentSortBy=""
-                    currentSortDir="asc"
-                >
-                    Price
-                </x-ui.table.head>
-            </x-ui.table.columns>
-        </x-ui.table.header>
-        <x-ui.table.rows>
-            <x-ui.table.row>
-                <x-ui.table.cell>Widget A</x-ui.table.cell>
-                <x-ui.table.cell>$29.99</x-ui.table.cell>
-            </x-ui.table.row>
-        </x-ui.table.rows>
-    </x-ui.table>
-</x-demo>
-@endblade
-
-```blade
-<x-ui.table.head 
-    column="name"
-    sortable
-    variant="dropdown"
-    :currentSortBy="$sortBy"
-    :currentSortDir="$sortDir"
->
-    Name
-</x-ui.table.head>
-```
-
-The dropdown variant provides "Sort Ascending", "Sort Descending", and "Clear Sort" options.
 
 #### How It Works
 
