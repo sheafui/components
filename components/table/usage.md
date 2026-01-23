@@ -290,8 +290,30 @@ then if you want to operations on the selected Ids you can do it like so:
 ```
 
 ## Loading Logic
-due the nature of datatables are usually data heavy.
+due the nature of datatables are usually data heavy. this component cames with pre-pretty way to handle that 
 
+to enable loading indicators just add `wire:loading` to the table component, and for convenience we have make easy to enable loading on sorting,searching, pagination by passing them coma separated to the `loadOn` prop to the table component 
+
+```blade
+<x-ui.table 
+{+    wire:loading+}
+>
+```
+if you want to add loading on sorting, search, pagination requests you can use the `loadOn` prop
+```blade
+<x-ui.table 
+{+    wire:loading
+    loadOn="pagination, search, sorting"+}
+>
+```
+
+to add other target you can use `wire:target` as you would with in regurar usage.
+```blade
+<x-ui.table 
+{+    wire:loading
+    wire:target="test,archiveSomethings,...."+}
+>
+```
 
 ## Stickiness
 
