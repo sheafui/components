@@ -78,6 +78,8 @@ Let's start with a simple static table without any dynamic features.
 
 ## Sorting
 
+### Usage
+
 Add column sorting with visual indicators and flexible behavior. To enable sorting, first add the `App\Livewire\Concerns\WithSorting` trait to your Livewire component:
 
 ```php
@@ -151,7 +153,39 @@ There are two sorting variants:
 
 You can see these variants in action on our interactive [Math Theorems demo](/demos/datatables). Sorting by year uses the dropdown variant, while mathematician and difficulty columns use the default variant.
 
+### Sorting Algorithm
+
+By default, sorting uses Eloquent’s native `orderBy` method.
+
+For advanced cases, you may override sorting per column by defining a custom sorting algorithm in your Livewire component using `sortUsingAlgorithm`.
+
+If a custom algorithm handles the active column, it is applied.
+If not, the system falls back automatically to the default SQL sorting.
+
+```php
+public function sortUsingAlgorithm($query, string $column, string $direction): ?Builder
+{
+    if ($column === 'status') {
+        return $query->orderByRaw("
+            CASE
+                WHEN status = 'in_dev' THEN 1
+                WHEN status = 'done' THEN 2
+                WHEN status = 'production' THEN 3
+            END {$direction}
+        ");
+    }
+
+    return null;
+}
+```
+**the contract**
+
+* Return a `Builder` when the column is handled.
+* Return `null` to delegate to the default sorter.
+
 ---
+
+
 
 ## Pagination
 
@@ -353,6 +387,163 @@ To add other targets, you can use `wire:target` as you would in regular usage:
     <!-- table content... -->
 </x-ui.table>
 ```
+
+## Ordering
+
+Ordering allows users to rearrange table rows visually and persist the new order on the backend.
+
+### Usage
+
+To enable row reordering, mark the table as reorderable.
+
+```blade
+<x-ui.table 
+{+    reorderable+}
+>
+    <!-- table contents -->
+</x-ui.table>
+```
+
+Each table row must expose its current order value. This value determines the row’s position.
+
+```blade
+<x-ui.table.rows>
+    @forelse($users as $user)
+        <x-ui.table.row 
+            :checkboxId="$user->id" 
+{+            :order="$user->order"+} 
+            :key="$user->id"
+        >
+            <!-- ... -->
+        </x-ui.table.row>
+    @endforelse
+</x-ui.table.rows>
+```
+
+When a row is moved, the table emits the moved item identifier and its target position.
+
+
+### Backend Handling
+
+By default, the table expects a `handleReordering` method on the Livewire component to persist changes.
+
+```php
+{~
+use App\Models\User;
+use App\Livewire\Concerns\WithSorting;
+use App\Livewire\Concerns\WithPagination;
+
+class UsersTable extends Component
+{~}
+    public function render()
+    {
+        $users = User::query()
+            ->when(filled($this->sortBy), function ($query) {
+                return $this->applySorting($query);
+            })
+            ->paginate();
+
+        return view('livewire.users-table', [
+            'users' => $users,
+        ]);
+    }
+
+{+    public function handleReordering($item, $position)
+    {
+        // save changes based on $item and $position
+    }+}
+}
+```
+
+If you prefer a different method name, update the `x-sort="$wire.handleReordering"` binding on `table.rows`.
+
+
+### Ordering Algorithm
+
+**Concept**
+
+The ordering system is based on a single invariant:
+
+> At any time, each row has a unique numeric `order` value.
+
+Reordering an item consists of moving it to a new position and shifting all affected rows accordingly.
+
+**Pseudo Algorithm**
+
+1. Fetch the moved item
+2. If the target position equals the current one, stop
+3. Temporarily move the item out of the ordering range
+4. Shift affected rows up or down
+5. Assign the target order to the moved item
+6. Commit atomically
+
+**Database Implementation Example**
+
+Below is implementation of this algorithm in db level.
+
+```php
+public const MAX_ORDER = 4294967295;
+
+public function reorderUsers(int $item, int $position)
+{
+    $user = $this->User::query()->findOrFail($item);
+
+    $this->move($user, $position);
+}
+
+protected function move($user, int $position): void
+{
+    DB::transaction(function () use ($user, $position) {
+        $oldOrder = $user->order;
+        $newOrder = $position;
+
+        if ($oldOrder === $newOrder) {
+            return;
+        }
+
+        // temporarily move out of range 
+        $user->update(['order' => self::MAX_ORDER]);
+
+        $min = min($oldOrder, $newOrder);
+        $max = max($oldOrder, $newOrder);
+
+        $isDraggedDown = $oldOrder < $newOrder;
+
+        $this->baseQuery()
+            ->whereBetween('order', [$min, $max])
+            ->where('id', '!=', $user->id)
+            ->update([
+                'order' => DB::raw('`order` '.($isDraggedDown ? '-1' : '+1')),
+            ]);
+
+        $user->update([
+            'order' => $newOrder,
+        ]);
+    });
+}
+```
+
+maybe there is better way? please let me.
+
+### Order Normalization
+
+Over time, deletes or interrupted updates can introduce gaps or inconsistencies.
+Normalization rebuilds the ordering sequence deterministically.
+
+```php
+public function arrange()
+{
+    DB::transaction(function () {
+        $order = 0;
+
+        foreach ($this->baseQuery()->orderBy('order')->get() as $user) {
+            $user->update(['order' => $order++]);
+        }
+    });
+}
+```
+
+This operation is optional but recommended for long lived datasets, you can randomly re-arrange after each re-order operation happens
 
 ---
 
