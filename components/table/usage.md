@@ -6,9 +6,9 @@ name: 'table'
 
 ## Introduction
 
-The `table` component provides a powerful, composable system for building feature-rich data tables. Built with Livewire and Alpine.js, it offers pagination, sorting, searching, selection, bulk actions, column visibility controls, drag-and-drop reordering, and more all with excellent accessibility and a clean, modern design.
+The `table` component provides a powerful, composable system for building feature-rich data tables. Built with Livewire and Alpine.js, it offers pagination, sorting, searching, selection, bulk actions, column visibility controls, and more all with excellent accessibility and a clean, modern design.
 
-Our approach uses **composable traits** on the backend and **blade components** on the frontend, giving you complete control over your table's structure and behavior while maintaining clean, reusable code.
+Our approach uses **composable traits** on the backend and **Blade components** on the frontend, giving you complete control over your table's structure and behavior while maintaining clean, reusable code.
 
 ## Installation
 
@@ -74,17 +74,20 @@ Let's start with a simple static table without any dynamic features.
 </x-ui.table>
 ```
 
+---
 
-## Sorting 
-This component includes everything you need to add sorting to your tables. To enable sorting, first add the `App\Livewire\Concerns\WithSorting` trait to your Livewire component like this:
+## Sorting
+
+Add column sorting with visual indicators and flexible behavior. To enable sorting, first add the `App\Livewire\Concerns\WithSorting` trait to your Livewire component:
 
 ```php
 {~
 use App\Models\User;
 use App\Livewire\Concerns\WithSorting;
 use App\Livewire\Concerns\WithPagination;
-class Theorems extends Component
-{ ~}
+
+class UsersTable extends Component
+{~}
     {+
     use WithSorting;+}
 
@@ -96,15 +99,16 @@ class Theorems extends Component
             })+}
             ->paginate();
 
-        return view('livewire.users', [
+        return view('livewire.users-table', [
             'users' => $users,
         ]);
     }
 }
 ```
-`$this->sortBy` and `$this->applySorting()` are coming from that `WithSorting` trait.
 
-In your table header view, mark sortable columns and pass the current sort state like this:
+The `$this->sortBy` and `$this->applySorting()` methods come from the `WithSorting` trait.
+
+In your table header view, mark sortable columns and pass the current sort state:
 
 ```blade
 <x-ui.table.head
@@ -113,21 +117,23 @@ In your table header view, mark sortable columns and pass the current sort state
     :currentSortBy="$sortBy"
     :currentSortDir="$sortDir"+}
 >
-    name
+    Name
 </x-ui.table.head>
 ```
-- `column` should match your database column name.
-- `sortable` marks the column as sortable.
-- `currentSortBy` and `currentSortDir` are reactive Livewire properties tracking the current sort state.
 
-> Note, if you want to restrict sorting on the backend side you can use the `sortableColumns()` method on the component class 
+**Key attributes:**
+- `column` — Database column name
+- `sortable` — Marks the column as sortable
+- `currentSortBy` and `currentSortDir` — Reactive Livewire properties tracking sort state
 
+> **Note:** If you want to restrict sorting on the backend, you can use the `sortableColumns()` method on the component class.
 
-### Sorting variants
+### Sorting Variants
+
 There are two sorting variants:
 
-- `default`: shows sorting icons on hover and cycles sorting on click.
-- `dropdown`: opens a menu where the user explicitly chooses the sorting direction.
+- **`default`** — Shows sorting icons on hover and cycles sorting on click
+- **`dropdown`** — Opens a menu where the user explicitly chooses the sorting direction
 
 ```blade
 <x-ui.table.head
@@ -135,62 +141,79 @@ There are two sorting variants:
     sortable
     :currentSortBy="$sortBy"
     :currentSortDir="$sortDir"~}
-{+    variant="default" <!-- default --> +} 
+{+    variant="default" <!-- default -->+}
     <!-- or -->
 {+    variant="dropdown"+}
 >
-    name
+    Name
 </x-ui.table.head>
 ```
-You can see these variants in action on our interactive [Math Theorems demo](/demos/datatables).
-Sorting by year uses the dropdown variant, while mathematician and difficulty columns use the default variant.
+
+You can see these variants in action on our interactive [Math Theorems demo](/demos/datatables). Sorting by year uses the dropdown variant, while mathematician and difficulty columns use the default variant.
+
+---
 
 ## Pagination
 
-Add pagination to your table by passing a Laravel paginator to table component.
+Add pagination to your table by passing a Laravel paginator to the table component.
 
 First, create a Livewire component that uses the `App\Livewire\Concerns\WithPagination` trait:
 
 ```php
-    use \App\Livewire\Concerns\WithPagination;
-    // livewire class side 
-    $users = User::query()
-{+        ->paginate();+}
-        // or (if you using length aware paginator with full variant)
-{+        ->paginate($this->perPage);+}
+use App\Livewire\Concerns\WithPagination;
+
+class UsersTable extends Component
+{
+    use WithPagination;
+
+    public function render()
+    {
+        $users = User::query()
+{+            ->paginate();+}
+            // or (if using length-aware paginator with full variant)
+{+            ->paginate($this->perPage);+}
+
+        return view('livewire.users-table', [
+            'users' => $users,
+        ]);
+    }
+}
 ```
-and pass the users collection to the `paginator` prop on the view:
+
+Then pass the paginator to the `paginator` prop in the view:
 
 ```blade
-<div>
-    <x-ui.table 
-{+        :paginator="$users"+}
-    >
-       <!-- table contents... -->
-    </x-ui.table>
-</div>
+<x-ui.table 
+{+    :paginator="$users"+}
+>
+    <!-- table contents... -->
+</x-ui.table>
 ```
 
+### More About Pagination
 
-### More About Pagination ? 
 @blade
 <x-md.cta                                                            
     href="/docs/components/pagination"                                    
-    label="the pagination component has a very detailled documentations and demoing parts there"
+    label="The pagination component has very detailed documentation and demos there"
     ctaLabel="Visit Docs"
 />
 @endblade
 
-## Search 
-This component includes everything you need to add search to your tables. To enable search, first add the `App\Livewire\Concerns\WithSorting` trait to your Livewire component like this:
+---
+
+## Search
+
+Enable real-time search across your table data. To enable search, first add the `App\Livewire\Concerns\WithSearch` trait to your Livewire component:
 
 ```php
 {~
 use App\Models\User;
 use App\Livewire\Concerns\WithSearch;
 use App\Livewire\Concerns\WithPagination;
-class Theorems extends Component
-{ ~}
+
+class UsersTable extends Component
+{~}
     {+
     use WithSearch;+}
 
@@ -202,118 +225,136 @@ class Theorems extends Component
             })+}
             ->paginate();
 
-        return view('livewire.users', [
+        return view('livewire.users-table', [
             'users' => $users,
         ]);
     }
 
-{+  protected function applySearch($query)
+{+    protected function applySearch($query)
     {
         return $query->where('name', 'like', '%'.$this->searchQuery.'%');
     }+}
 }
 ```
 
-the `applySearch` is up to you to implement...
+The `applySearch()` method is where you define your search logic.
 
-then binding to an input that you can put in the top of the table 
+Then bind an input to the search query:
 
 ```blade
- <x-ui.input 
-    placeholder="search..." 
+<x-ui.input 
+    placeholder="Search..." 
     leftIcon="magnifying-glass" 
-{+    wire:model.live="searchQuery" <!-- this is what's important-->+}
+{+    wire:model.live="searchQuery" <!-- this is what's important -->+}
 />
 ```
 
-see the search on the guide below for real layout. 
+See the search implementation in the complete guide below for a real-world layout.
+
+---
+
 ## Selection
 
-the component cames with all logic you need to add select rows and select all functionality for handling bulk actions..., To enable selection, first add the `App\Livewire\Concerns\WithSelection` trait to your Livewire component like this:
+The component comes with all the logic you need to add row selection and "select all" functionality for handling bulk actions. To enable selection, first add the `App\Livewire\Concerns\WithSelection` trait to your Livewire component:
 
 ```php
 {~
 use App\Models\User;
 use App\Livewire\Concerns\WithSelection;
-class Theorems extends Component
-{ ~}
+
+class UsersTable extends Component
+{~}
     {+
     use WithSelection;+}
 
     public function render()
     {
-        $users = User::query()->....->paginate();
+        $users = User::query()->paginate();
 
-        // this is crucial, it tell us about the visible rows on the page 
-{+       $this->visibleIds = $theorems->pluck('id')
+        // This is crucial - it tells us about the visible rows on the page
+{+        $this->visibleIds = $users->pluck('id')
             ->map(fn ($id) => (string) $id)
             ->toArray();+}
 
-        return view('livewire.users', [
+        return view('livewire.users-table', [
             'users' => $users,
         ]);
     }
 }
 ```
 
-then on the view add the `:checkboxId` to each `table.row` blade component to show show the checkbox on the start of the row, then to add check all functionality add `checkAll` to the `table.columns` blade component  
+Then in the view, add `:checkboxId` to each `table.row` component to show the checkbox at the start of the row. To add "check all" functionality, add `withCheckAll` to the `table.columns` component:
 
 ```blade
 <x-ui.table.columns
 {+    withCheckAll+}
 >
-    <!-- other heads components -->
+    <!-- other head components -->
 </x-ui.table.columns>
 
-<!-- AND  -->
+<!-- AND -->
 
 <x-ui.table.row 
-{+    :checkboxId="$user->id"+} 
+{+    :checkboxId="$user->id"+}
     :key="$user->id"
->...</x-ui.table.row>
+>
+    <!-- cells... -->
+</x-ui.table.row>
 ```
 
-then if you want to operations on the selected Ids you can do it like so: 
+Now you can perform operations on the selected IDs like this:
 
 ```php
-    public function deleteSelected()
-    {
-        User::query()->whereIn('id',$this->selectedIds)->delete()
-    }
-    
-    public function archiveSelected()
-    {
-        User::query()->whereIn('id',$this->selectedIds)->each->archive()
-    }
+public function deleteSelected()
+{
+    User::query()->whereIn('id', $this->selectedIds)->delete();
+}
 
-    // ...
+public function archiveSelected()
+{
+    User::query()->whereIn('id', $this->selectedIds)->each->archive();
+}
 ```
 
-## Loading Logic
-due the nature of datatables are usually data heavy. this component cames with pre-pretty way to handle that 
+---
 
-to enable loading indicators just add `wire:loading` to the table component, and for convenience we have make easy to enable loading on sorting,searching, pagination by passing them coma separated to the `loadOn` prop to the table component 
+## Loading States
+
+Due to the nature of datatables being usually data-heavy, this component comes with a clean way to handle loading states.
+
+To enable loading indicators, just add `wire:loading` to the table component:
 
 ```blade
 <x-ui.table 
 {+    wire:loading+}
 >
+    <!-- table content... -->
+</x-ui.table>
 ```
-if you want to add loading on sorting, search, pagination requests you can use the `loadOn` prop
+
+For convenience, we've made it easy to enable loading on sorting, searching, and pagination by passing them comma-separated to the `loadOn` prop:
+
 ```blade
 <x-ui.table 
 {+    wire:loading
     loadOn="pagination, search, sorting"+}
 >
+    <!-- table content... -->
+</x-ui.table>
 ```
 
-to add other target you can use `wire:target` as you would with in regurar usage.
+To add other targets, you can use `wire:target` as you would in regular usage:
+
 ```blade
 <x-ui.table 
 {+    wire:loading
-    wire:target="test,archiveSomethings,...."+}
+    wire:target="customAction, archiveSomething"+}
 >
+    <!-- table content... -->
+</x-ui.table>
 ```
+
+---
 
 ## Stickiness
 
@@ -439,18 +480,21 @@ Make the first column stick when scrolling horizontally:
 </x-ui.table.rows>
 ```
 
-> **Note:** When using sticky header, columns, always apply a background color to prevent content overlap during scrolling.
+> **Note:** When using sticky headers or columns, always apply a background color to prevent content overlap during scrolling.
 
+---
 
 ## Implementation Guide
 
 ### Overview
 
-This guide walks you through using the data table component alongside other utilities to create a polished, feature-rich data table. We'll display a list of mathematical theorems, including their discovery year and the mathematicians behind them.
+This guide walks you through building a polished, feature-rich data table using the table component alongside other utilities. We'll display a list of mathematical theorems, including their discovery year and the mathematicians behind them.
 
 ### Setup Theorems Data
 
-First, create a`Theorem` model with fields: (id, name, mathematician, field, year_discovered, difficulty_level, is_proven, statement and applications), For this demo, we use the Sushi package with an in-memory array model. Our `App\Models\Theorem` looks like this: 
+First, create a `Theorem` model with fields: `id`, `name`, `mathematician`, `field`, `year_discovered`, `difficulty_level`, `is_proven`, `statement`, and `applications`. 
+
+For this demo, we use the Sushi package with an in-memory array model. Our `App\Models\Theorem` looks like this:
 
 ```php
 <?php
@@ -477,123 +521,74 @@ class Theorem extends Model
         return [
             ['id' => 1, 'name' => 'Pythagorean Theorem', 'mathematician' => 'Pythagoras', 'field' => 'Geometry', 'year_discovered' => -500, 'difficulty_level' => 2, 'is_proven' => true, 'statement' => 'In a right triangle, a² + b² = c²', 'applications' => 'Architecture, Navigation'],
             ['id' => 2, 'name' => 'Fundamental Theorem of Calculus', 'mathematician' => 'Isaac Newton & Gottfried Leibniz', 'field' => 'Analysis', 'year_discovered' => 1666, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Links differentiation and integration', 'applications' => 'Physics, Engineering'],
-            ['id' => 3, 'name' => 'Fermat\'s Last Theorem', 'mathematician' => 'Andrew Wiles', 'field' => 'Number Theory', 'year_discovered' => 1995, 'difficulty_level' => 10, 'is_proven' => true, 'statement' => 'No three positive integers satisfy aⁿ + bⁿ = cⁿ for n > 2', 'applications' => 'Pure Mathematics'],
-            ['id' => 4, 'name' => 'Gödel\'s Incompleteness Theorems', 'mathematician' => 'Kurt Gödel', 'field' => 'Logic', 'year_discovered' => 1931, 'difficulty_level' => 9, 'is_proven' => true, 'statement' => 'Any consistent formal system has unprovable truths', 'applications' => 'Computer Science, Philosophy'],
-            ['id' => 5, 'name' => 'Euler\'s Identity', 'mathematician' => 'Leonhard Euler', 'field' => 'Complex Analysis', 'year_discovered' => 1748, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'e^(iπ) + 1 = 0', 'applications' => 'Signal Processing, Quantum Mechanics'],
-            ['id' => 6, 'name' => 'Central Limit Theorem', 'mathematician' => 'Pierre-Simon Laplace', 'field' => 'Probability', 'year_discovered' => 1810, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Sum of random variables approaches normal distribution', 'applications' => 'Statistics, Data Science'],
-            ['id' => 7, 'name' => 'Riemann Hypothesis', 'mathematician' => 'Bernhard Riemann', 'field' => 'Number Theory', 'year_discovered' => 1859, 'difficulty_level' => 10, 'is_proven' => false, 'statement' => 'All non-trivial zeros of ζ(s) have real part 1/2', 'applications' => 'Prime Number Distribution'],
-            ['id' => 8, 'name' => 'Cauchy\'s Integral Theorem', 'mathematician' => 'Augustin-Louis Cauchy', 'field' => 'Complex Analysis', 'year_discovered' => 1825, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Integral of holomorphic function over closed curve is zero', 'applications' => 'Engineering, Physics'],
-            ['id' => 9, 'name' => 'Banach Fixed-Point Theorem', 'mathematician' => 'Stefan Banach', 'field' => 'Functional Analysis', 'year_discovered' => 1922, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Contraction mappings have unique fixed points', 'applications' => 'Differential Equations'],
-            ['id' => 10, 'name' => 'Nash Equilibrium Theorem', 'mathematician' => 'John Nash', 'field' => 'Game Theory', 'year_discovered' => 1950, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Every finite game has a mixed strategy equilibrium', 'applications' => 'Economics, Political Science'],
-            ['id' => 11, 'name' => 'Stokes\' Theorem', 'mathematician' => 'George Stokes', 'field' => 'Vector Calculus', 'year_discovered' => 1854, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Relates surface integral to line integral', 'applications' => 'Fluid Dynamics, Electromagnetism'],
-            ['id' => 12, 'name' => 'Brouwer Fixed-Point Theorem', 'mathematician' => 'L.E.J. Brouwer', 'field' => 'Topology', 'year_discovered' => 1911, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Continuous function from ball to itself has fixed point', 'applications' => 'Economics, Differential Equations'],
-            ['id' => 13, 'name' => 'Four Color Theorem', 'mathematician' => 'Kenneth Appel & Wolfgang Haken', 'field' => 'Graph Theory', 'year_discovered' => 1976, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Any planar map needs at most 4 colors', 'applications' => 'Cartography, Computer Science'],
-            ['id' => 14, 'name' => 'Poincaré Conjecture', 'mathematician' => 'Grigori Perelman', 'field' => 'Topology', 'year_discovered' => 2003, 'difficulty_level' => 10, 'is_proven' => true, 'statement' => 'Every simply connected 3-manifold is homeomorphic to 3-sphere', 'applications' => 'Cosmology, Shape of Universe'],
-            ['id' => 15, 'name' => 'Law of Large Numbers', 'mathematician' => 'Jakob Bernoulli', 'field' => 'Probability', 'year_discovered' => 1713, 'difficulty_level' => 5, 'is_proven' => true, 'statement' => 'Sample average converges to expected value', 'applications' => 'Statistics, Machine Learning'],
-            ['id' => 16, 'name' => 'Fundamental Theorem of Algebra', 'mathematician' => 'Carl Friedrich Gauss', 'field' => 'Algebra', 'year_discovered' => 1799, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Every polynomial has at least one complex root', 'applications' => 'Control Theory, Signal Processing'],
-            ['id' => 17, 'name' => 'Green\'s Theorem', 'mathematician' => 'George Green', 'field' => 'Vector Calculus', 'year_discovered' => 1828, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Relates line integral to double integral', 'applications' => 'Fluid Mechanics, Electrostatics'],
-            ['id' => 18, 'name' => 'Spectral Theorem', 'mathematician' => 'David Hilbert', 'field' => 'Linear Algebra', 'year_discovered' => 1906, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Normal operators have orthonormal eigenbasis', 'applications' => 'Quantum Mechanics, Principal Component Analysis'],
-            ['id' => 19, 'name' => 'Bolzano-Weierstrass Theorem', 'mathematician' => 'Bernard Bolzano & Karl Weierstrass', 'field' => 'Analysis', 'year_discovered' => 1817, 'difficulty_level' => 6, 'is_proven' => true, 'statement' => 'Bounded sequence has convergent subsequence', 'applications' => 'Real Analysis, Optimization'],
-            ['id' => 20, 'name' => 'Hahn-Banach Theorem', 'mathematician' => 'Hans Hahn & Stefan Banach', 'field' => 'Functional Analysis', 'year_discovered' => 1927, 'difficulty_level' => 9, 'is_proven' => true, 'statement' => 'Bounded linear functionals can be extended', 'applications' => 'Optimization, Economics'],
-            ['id' => 21, 'name' => 'Intermediate Value Theorem', 'mathematician' => 'Bernard Bolzano', 'field' => 'Analysis', 'year_discovered' => 1817, 'difficulty_level' => 4, 'is_proven' => true, 'statement' => 'Continuous function takes all intermediate values', 'applications' => 'Root Finding, Numerical Analysis'],
-            ['id' => 22, 'name' => 'Cayley-Hamilton Theorem', 'mathematician' => 'Arthur Cayley & William Hamilton', 'field' => 'Linear Algebra', 'year_discovered' => 1858, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Every matrix satisfies its characteristic equation', 'applications' => 'Control Systems, Matrix Functions'],
-            ['id' => 23, 'name' => 'Liouville\'s Theorem', 'mathematician' => 'Joseph Liouville', 'field' => 'Complex Analysis', 'year_discovered' => 1844, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Bounded entire function is constant', 'applications' => 'Complex Analysis, Physics'],
-            ['id' => 24, 'name' => 'Prime Number Theorem', 'mathematician' => 'Jacques Hadamard & Charles de la Vallée-Poussin', 'field' => 'Number Theory', 'year_discovered' => 1896, 'difficulty_level' => 9, 'is_proven' => true, 'statement' => 'π(x) ~ x/ln(x) as x → ∞', 'applications' => 'Cryptography, Number Distribution'],
-            ['id' => 25, 'name' => 'Bayes\' Theorem', 'mathematician' => 'Thomas Bayes', 'field' => 'Probability', 'year_discovered' => 1763, 'difficulty_level' => 5, 'is_proven' => true, 'statement' => 'P(A|B) = P(B|A)P(A)/P(B)', 'applications' => 'Machine Learning, Medical Diagnosis'],
-            ['id' => 26, 'name' => 'Divergence Theorem', 'mathematician' => 'Carl Friedrich Gauss', 'field' => 'Vector Calculus', 'year_discovered' => 1813, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Flux through surface equals volume integral of divergence', 'applications' => 'Electromagnetism, Fluid Dynamics'],
-            ['id' => 27, 'name' => 'Noether\'s Theorem', 'mathematician' => 'Emmy Noether', 'field' => 'Mathematical Physics', 'year_discovered' => 1915, 'difficulty_level' => 9, 'is_proven' => true, 'statement' => 'Every symmetry has a corresponding conservation law', 'applications' => 'Particle Physics, General Relativity'],
-            ['id' => 28, 'name' => 'Cantor\'s Theorem', 'mathematician' => 'Georg Cantor', 'field' => 'Set Theory', 'year_discovered' => 1891, 'difficulty_level' => 7, 'is_proven' => true, 'statement' => 'Power set is strictly larger than original set', 'applications' => 'Foundations of Mathematics'],
-            ['id' => 29, 'name' => 'Mean Value Theorem', 'mathematician' => 'Augustin-Louis Cauchy', 'field' => 'Analysis', 'year_discovered' => 1823, 'difficulty_level' => 5, 'is_proven' => true, 'statement' => 'f\'(c) = (f(b) - f(a))/(b - a) for some c', 'applications' => 'Optimization, Error Analysis'],
-            ['id' => 30, 'name' => 'Isoperimetric Inequality', 'mathematician' => 'Jakob Steiner', 'field' => 'Geometry', 'year_discovered' => 1838, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Circle encloses maximum area for given perimeter', 'applications' => 'Optimization, Calculus of Variations'],
-            ['id' => 31, 'name' => 'Collatz Conjecture', 'mathematician' => 'Lothar Collatz', 'field' => 'Number Theory', 'year_discovered' => 1937, 'difficulty_level' => 10, 'is_proven' => false, 'statement' => 'All sequences reach 1 via 3n+1 or n/2', 'applications' => 'Dynamical Systems'],
-            ['id' => 32, 'name' => 'P vs NP Problem', 'mathematician' => 'Stephen Cook', 'field' => 'Complexity Theory', 'year_discovered' => 1971, 'difficulty_level' => 10, 'is_proven' => false, 'statement' => 'Can every verified solution be found quickly?', 'applications' => 'Computer Science, Cryptography'],
-            ['id' => 33, 'name' => 'Riesz Representation Theorem', 'mathematician' => 'Frigyes Riesz', 'field' => 'Functional Analysis', 'year_discovered' => 1907, 'difficulty_level' => 8, 'is_proven' => true, 'statement' => 'Continuous linear functionals representable as integrals', 'applications' => 'Quantum Mechanics, PDEs'],
-            ['id' => 34, 'name' => 'Rolle\'s Theorem', 'mathematician' => 'Michel Rolle', 'field' => 'Analysis', 'year_discovered' => 1691, 'difficulty_level' => 4, 'is_proven' => true, 'statement' => 'f\'(c) = 0 for some c if f(a) = f(b)', 'applications' => 'Calculus, Root Finding'],
-            ['id' => 35, 'name' => 'Goldbach Conjecture', 'mathematician' => 'Christian Goldbach', 'field' => 'Number Theory', 'year_discovered' => 1742, 'difficulty_level' => 10, 'is_proven' => false, 'statement' => 'Every even integer > 2 is sum of two primes', 'applications' => 'Number Theory Research'],
+            // ... (rest of theorems)
         ];
     }
 }
-
 ```
 
-> This is a demo using array-based models for simplicity. Your real application will use standard Laravel Eloquent models, but the integration remains the same regardless of data source.
+> **Note:** This demo uses array-based models for simplicity. Your real application will use standard Laravel Eloquent models, but the integration remains the same regardless of data source.
 
 ### Table with Pagination
-
 
 Add the `App\Livewire\Concerns\WithPagination` trait to your Livewire component to enable pagination:
 
 ```php
-
 use App\Models\Theorem;
-use App\Livewire\Concerns\WithSorting;
 use App\Livewire\Concerns\WithPagination;
+use Illuminate\Database\Eloquent\Builder;
 
 class Theorems extends Component
 {
-{+  use WithPagination;+}
+{+    use WithPagination;+}
 
     public function render()
     {
-{+      $theorems = $this->baseQuery()->paginate($this->perPage);+}
+{+        $theorems = $this->baseQuery()->paginate($this->perPage);+}
 
         return view('livewire.theorems', [
             'theorems' => $theorems,
         ]);
     }
 
-{+  protected function baseQuery(): Builder
+{+    protected function baseQuery(): Builder
     {
         return Theorem::query();
     }+}
 }
 ```
 
-- We use a custom `WithPagination` trait that extends Livewire's native pagination with `$perPage` property and reactive updates.
-- The `baseQuery` method encapsulates the core query builder, making it reusable for sorting, filtering, and other operations in later steps.
+**Key points:**
+- We use a custom `WithPagination` trait that extends Livewire's native pagination with a `$perPage` property and reactive updates
+- The `baseQuery()` method encapsulates the core query builder, making it reusable for sorting, filtering, and other operations in later steps
 
-The view integrates pagination, displays theorem details with badges and icons:
+The view integrates pagination and displays theorem details with badges and icons:
 
 ```blade
 <x-ui.table 
-{+    :paginator="$theorems"  +}
+{+    :paginator="$theorems"+}
 {+    pagination:variant="full"+}
 >
     <x-ui.table.header>
         <x-ui.table.columns>
-            <x-ui.table.head>
-                ID
-            </x-ui.table.head>
-            <x-ui.table.head>
-                Theorem
-            </x-ui.table.head>
-            <x-ui.table.head>
-                Mathematician
-            </x-ui.table.head>
-            <x-ui.table.head>
-                Field
-            </x-ui.table.head>
-            <x-ui.table.head>
-                Year
-            </x-ui.table.head>
-            <x-ui.table.head>
-                Difficulty
-            </x-ui.table.head>
-            <x-ui.table.head>
-                Status
-            </x-ui.table.head>
+            <x-ui.table.head>ID</x-ui.table.head>
+            <x-ui.table.head>Theorem</x-ui.table.head>
+            <x-ui.table.head>Mathematician</x-ui.table.head>
+            <x-ui.table.head>Field</x-ui.table.head>
+            <x-ui.table.head>Year</x-ui.table.head>
+            <x-ui.table.head>Difficulty</x-ui.table.head>
+            <x-ui.table.head>Status</x-ui.table.head>
         </x-ui.table.columns>
     </x-ui.table.header>
 
     <x-ui.table.rows>
-        @forelse($paginator as $theorem)
-            <x-ui.table.row 
-                :key="$theorem->id"
-            >
+        @forelse($theorems as $theorem)
+            <x-ui.table.row :key="$theorem->id">
                 <x-ui.table.cell sticky class="dark:bg-neutral-950 bg-neutral-50">
                     {{ $theorem->id }}
                 </x-ui.table.cell>
-                <x-ui.table.cell class="dark:bg-neutral-950 bg-neutral-50">
+                
+                <x-ui.table.cell>
                     <div class="max-w-xs">
                         <div class="font-medium text-neutral-900 dark:text-neutral-100">
                             {{ $theorem->name }}
@@ -612,24 +607,11 @@ The view integrates pagination, displays theorem details with badges and icons:
                 
                 <x-ui.table.cell>
                     @php
-                        <!-- this is a dump way, but for a demo I will leave it like this -->
                         $fieldColors = [
                             'Number Theory' => 'purple',
                             'Analysis' => 'blue',
                             'Geometry' => 'green',
-                            'Algebra' => 'red',
-                            'Topology' => 'orange',
-                            'Probability' => 'pink',
-                            'Complex Analysis' => 'cyan',
-                            'Functional Analysis' => 'indigo',
-                            'Vector Calculus' => 'teal',
-                            'Game Theory' => 'violet',
-                            'Graph Theory' => 'lime',
-                            'Logic' => 'amber',
-                            'Linear Algebra' => 'rose',
-                            'Set Theory' => 'fuchsia',
-                            'Mathematical Physics' => 'sky',
-                            'Complexity Theory' => 'emerald',
+                            // ... more field colors
                         ];
                         $color = $fieldColors[$theorem->field] ?? 'neutral';
                     @endphp
@@ -670,7 +652,7 @@ The view integrates pagination, displays theorem details with badges and icons:
                 </x-ui.table.cell>
             </x-ui.table.row>
         @empty
-        <!-- to implement in upcoming section -->
+            <!-- to implement in upcoming section -->
         @endforelse
     </x-ui.table.rows>
 </x-ui.table>
@@ -691,8 +673,7 @@ use App\Livewire\Concerns\WithPagination;
 
 class Theorems extends Component
 {
-    {+
-    use WithSorting;+}
+{+    use WithSorting;+}
     use WithPagination;
 
     public function render()
@@ -707,6 +688,7 @@ class Theorems extends Component
             'theorems' => $theorems,
         ]);
     }
+
     protected function baseQuery(): Builder
     {
         return Theorem::query();
@@ -714,63 +696,64 @@ class Theorems extends Component
 }
 ```
 
+#### Step 2: Update the View
 
-#### Step 2: Updates on the View
-
-Let's make `mathematicien`, `year` and `Difficulty` sortable, while making sort by year special by using the `dropdown` sorting variant for sorting:
+Let's make `mathematician`, `year`, and `difficulty` sortable, while making sort by year special by using the `dropdown` sorting variant:
 
 ```blade
-
 <x-ui.table 
-    :paginator="$theorems"  
+    :paginator="$theorems"
     pagination:variant="full"
-    loadOn="
-        pagination,
-        {+sorting,+}
-    "
+{+    loadOn="pagination, sorting"+}
 >
- <x-ui.table.header>
-    <x-ui.table.columns>
-        <!-- other headers -->
-        <x-ui.table.head
-{+            column="mathematician"
-            sortable
-            :currentSortBy="$sortBy"
-            :currentSortDir="$sortDir"+}
-        >
-            Mathematician
-        </x-ui.table.head>
-        <x-ui.table.head>
-            Field
-        </x-ui.table.head>
-        <x-ui.table.head
-{+            column="year_discovered"
-            sortable
-            variant="dropdown"
-            :currentSortBy="$sortBy"
-            :currentSortDir="$sortDir"+}
-        >
-            Year
-        </x-ui.table.head>
-        <x-ui.table.head
-{+            column="difficulty_level"
-            sortable
-            :currentSortBy="$sortBy"
-            :currentSortDir="$sortDir"+}
-
-        >
-            Difficulty
-        </x-ui.table.head>
-        <x-ui.table.head>
-            Status
-        </x-ui.table.head>
-    </x-ui.table.columns>
-</x-ui.table.header>
+    <x-ui.table.header>
+        <x-ui.table.columns>
+            <!-- other headers -->
+            <x-ui.table.head
+{+                column="mathematician"
+                sortable
+                :currentSortBy="$sortBy"
+                :currentSortDir="$sortDir"+}
+            >
+                Mathematician
+            </x-ui.table.head>
+            
+            <x-ui.table.head>
+                Field
+            </x-ui.table.head>
+            
+            <x-ui.table.head
+{+                column="year_discovered"
+                sortable
+                variant="dropdown"
+                :currentSortBy="$sortBy"
+                :currentSortDir="$sortDir"+}
+            >
+                Year
+            </x-ui.table.head>
+            
+            <x-ui.table.head
+{+                column="difficulty_level"
+                sortable
+                :currentSortBy="$sortBy"
+                :currentSortDir="$sortDir"+}
+            >
+                Difficulty
+            </x-ui.table.head>
+            
+            <x-ui.table.head>
+                Status
+            </x-ui.table.head>
+        </x-ui.table.columns>
+    </x-ui.table.header>
+    
+    <!-- table rows... -->
+</x-ui.table>
 ```
 
 ### Add Search
 
-Enable real-time search across your table data,
+Enable real-time search across your table data.
 
 #### Step 1: Add the Trait
 
@@ -781,23 +764,25 @@ Include the `WithSearch` trait:
 
 namespace App\Livewire;
 
-use App\Models\User;
+use App\Models\Theorem;
 use Livewire\Component;
 use App\Livewire\Concerns\WithPagination;
+use App\Livewire\Concerns\WithSorting;
 use App\Livewire\Concerns\WithSearch;
 
-class UsersTable extends Component
+class Theorems extends Component
 {
     use WithPagination;
-    use WithSearch;
+    use WithSorting;
+{+    use WithSearch;+}
 
     public function render()
     {
-        $theorems = User::query()
+        $theorems = $this->baseQuery()
             ->when(filled($this->sortBy), function ($query) {
                 return $this->applySorting($query);
             })
-{+           ->when(filled($this->searchQuery), function ($query) {
+{+            ->when(filled($this->searchQuery), function ($query) {
                 return $this->applySearch($query);
             })+}
             ->paginate($this->perPage);
@@ -812,50 +797,47 @@ class UsersTable extends Component
         return $query->where('name', 'like', '%'.$this->searchQuery.'%')
             ->orWhere('mathematician', 'like', '%'.$this->searchQuery.'%')
             ->orWhere('field', 'like', '%'.$this->searchQuery.'%')
-            ->orWhere('statemen', 'like', '%'.$this->searchQuery.'%');
+            ->orWhere('statement', 'like', '%'.$this->searchQuery.'%');
     }+}
+
+    protected function baseQuery(): Builder
+    {
+        return Theorem::query();
+    }
 }
 ```
 
-
 #### Step 2: Add the Search Input
 
-first let's wrap our table and all of filters logic into the `table.container` blade component, wich is responsible for manaing padding between pagination table and filters in a good way,
+First, let's wrap our table and all filter logic into the `table.container` Blade component, which is responsible for managing padding between pagination, table, and filters in a clean way:
 
 ```blade
-{+<x-ui.table.container+}
-{+ 
-    <div 
-        class="flex items-center"
-    >
+{+<x-ui.table.container>+}
+{+    <div class="flex items-center">
         {{-- SEARCH INPUT --}}
         <div class="ml-auto">
             <x-ui.input 
-                class="[&_input]:bg-transparent" <!-- target underline input and make it transparent...  -->    
-                placeholder="search..." 
+                class="[&_input]:bg-transparent" <!-- target underlying input and make it transparent -->
+                placeholder="Search..." 
                 leftIcon="magnifying-glass" 
                 wire:model.live="searchQuery"
             />
         </div>
-    </div>
-+}
+    </div>+}
+
     <x-ui.table 
-        :paginator="$theorems"  
+        :paginator="$theorems"
         pagination:variant="full"
-        loadOn="
-            pagination,
-            {+search,+}
-            sorting
-        "
+{+        loadOn="pagination, search, sorting"+}
     >
-        <!-- other contents -->
+        <!-- table contents... -->
     </x-ui.table>
-{+</x-ui.table.container+}
+{+</x-ui.table.container>+}
 ```
 
 ### Handle Empty States
 
-Provide helpful feedback when no results are found. use our [empty state component](/docs/components/empty) 
+Provide helpful feedback when no results are found using our [empty state component](/docs/components/empty):
 
 @blade
 <x-demo>
@@ -881,6 +863,8 @@ Provide helpful feedback when no results are found. use our [empty state compone
     </x-ui.table>
 </x-demo>
 @endblade
+
+
 
 ```blade
 <x-ui.table.rows>
@@ -917,25 +901,26 @@ Include the `WithSelection` trait:
 
 namespace App\Livewire;
 
-use App\Models\User;
+use App\Models\Theorem;
 use Livewire\Component;
-
-use App\Livewire\Concerns\CanExportCsv;
+use App\Livewire\Concerns\WithPagination;
+use App\Livewire\Concerns\WithSorting;
+use App\Livewire\Concerns\WithSearch;
 use App\Livewire\Concerns\WithSelection;
 
 class Theorems extends Component
 {
 {~    use WithPagination;
-    use WithSearch;
-    use WithSorting;~}
-{+  use WithSelection;+}
+    use WithSorting;
+    use WithSearch;~}
+{+    use WithSelection;+}
 
     public function render()
     {
         $theorems = $this->baseQuery()->...();
 
         // Store visible IDs for "select all" functionality
-{+       $this->visibleIds = $theorems->pluck('id')
+{+        $this->visibleIds = $theorems->pluck('id')
             ->map(fn ($id) => (string) $id)
             ->toArray();+}
 
@@ -952,18 +937,20 @@ Enable the "check all" header and add checkboxes to rows:
 
 ```blade
 <x-ui.table.columns 
-{+   withCheckAll+}
+{+    withCheckAll+}
 >
+    <!-- header cells... -->
 </x-ui.table.columns>
 
-<!-- aaaand -->
+<!-- AND -->
+
 <x-ui.table.rows>
     @foreach ($theorems as $theorem)
         <x-ui.table.row 
-           :key="{{ $theorem->id }}"
-{+          :checkboxId="$theorem->id"+}
+            :key="$theorem->id"
+{+            :checkboxId="$theorem->id"+}
         >
-            <!--...-->
+            <!-- cells... -->
         </x-ui.table.row>
     @endforeach
 </x-ui.table.rows>
@@ -971,7 +958,7 @@ Enable the "check all" header and add checkboxes to rows:
 
 ### Bulk Actions (Delete and CSV Export Example)
 
-let add a checkbox button that shows only when there is selected rows. going to add delete and export to csv the selected rows
+Let's add bulk action buttons that only show when there are selected rows. We'll implement delete and CSV export for the selected rows.
 
 #### Step 1: Add the CSV Export Trait
 
@@ -982,52 +969,56 @@ Include the `CanExportCsv` trait:
 
 namespace App\Livewire;
 
+use App\Livewire\Concerns\CanExportCsv;
+use Livewire\Attributes\Renderless;
+
 class Theorems extends Component
 {
-{~   
-    use WithPagination;
-    use WithSearch;
+{~    use WithPagination;
     use WithSorting;
+    use WithSearch;
     use WithSelection;~}
-{+  use CanExportCsv;+}
+{+    use CanExportCsv;+}
 
 {+    #[Renderless]
     public function exportSelected()
     {
         $theorems = $this->baseQuery();
+        
         if (filled($this->selectedIds)) {
             $theorems = $theorems->whereIn('id', $this->selectedIds);
         }
-        // + apply filters like search and sorting if you want 
-        // then convert them into csv...  
+        
+        // Apply filters like search and sorting if you want
+        // then convert them into CSV...
         return $this->csv($theorems->get());
     }+}
 
-    // other parts...
-
 {+    public function deleteSelected()
     {
+        // ⚠️ Don't forget validation & authorization
 
-        // ⚠️ don't forget validation & authorizations
+        // Gate::authorize('delete-theorem', Theorem::class);
+        
+        $this->baseQuery()
+            ->whereIn('id', $this->selectedIds)
+            ->delete();
 
-        // Gate::authorize('delete-theorem', User::class);
-        this->baseQuery()->whereIn('id',$this->selectedIds)->delete()
-
-        // you may clear selection after deletes 
+        // You may clear selection after deletes
         $this->deselectAll();
     }+}
+
+    // other methods...
 }
 ```
 
 #### Step 2: Add Bulk Actions UI
 
-Use the `top` slot to add bulk action controls:
+Add bulk action controls that appear when rows are selected:
 
 ```blade
 <x-ui.table.container>
-    <div 
-        class="flex items-center"
-    >
+    <div class="flex items-center">
 {+        {{-- BULK ACTIONS --}}
         <div
             style="display:none;" 
@@ -1047,9 +1038,10 @@ Use the `top` slot to add bulk action controls:
                             [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm
                         " 
                     >
-                        bulk action
+                        Bulk Actions
                     </x-ui.button>
-                    <!-- mobile button (icon only) -->                            
+                    
+                    <!-- mobile button (icon only) -->
                     <x-ui.button 
                         icon="ellipsis-vertical" 
                         variant="soft"
@@ -1065,45 +1057,43 @@ Use the `top` slot to add bulk action controls:
                 <x-slot:menu>
                     <x-ui.dropdown.item 
                         icon="arrow-down-on-square"
-                        wire:click="toCsv"
+                        wire:click="exportSelected"
                     >
-                        export selected csv
+                        Export Selected CSV
                     </x-ui.dropdown.item>
                     
                     <x-ui.dropdown.item 
                         icon="trash"
                         variant="danger"
                         wire:click="deleteSelected"
-                        wire:confirm="are you sure you want to delete ?"
+                        wire:confirm="Are you sure you want to delete?"
                     >
-                        delete selected
+                        Delete Selected
                     </x-ui.dropdown.item>
                 </x-slot:menu>
             </x-ui.dropdown>
-        </div>
-+}
+        </div>+}
 
         {{-- SEARCH INPUT --}}
         <div class="ml-auto">
             <x-ui.input 
-                class="[&_input]:bg-transparent"  
-                placeholder="search..." 
+                class="[&_input]:bg-transparent"
+                placeholder="Search..." 
                 leftIcon="magnifying-glass" 
                 wire:model.live="searchQuery"
             />
         </div>
     </div>
-    <x-ui.table
-        ...
-    >
-        <!-- other parts -->
+    
+    <x-ui.table ...>
+        <!-- table content... -->
     </x-ui.table>
 </x-ui.table.container>
 ```
 
 ### Add Column Visibility
 
-Let's make status and difficulty hiddeable columns on our theorems table well this is how.
+Let's make status and difficulty hideable columns in our theorems table. Here's how:
 
 @blade
 <x-demo>
@@ -1122,118 +1112,74 @@ Let's make status and difficulty hiddeable columns on our theorems table well th
                         class="rounded-box ml-2 outline dark:outline-white/20 outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm" 
                     />
                 </x-slot:button>
+                
                 <x-slot:menu>                        
                     <x-ui.dropdown.item readOnly>
-                        hidden columns
+                        Hidden Columns
                     </x-ui.dropdown.item> 
                     <x-ui.dropdown.separator/> 
-                    <x-ui.dropdown.item 
-                        x-model="hiddenCols" 
-                    >
-                        difficulty
+                    <x-ui.dropdown.item x-model="hiddenCols">
+                        Difficulty
                     </x-ui.dropdown.item> 
-                    <x-ui.dropdown.item 
-                        x-model="hiddenCols" 
-                    >
-                        status
+                    <x-ui.dropdown.item x-model="hiddenCols">
+                        Status
                     </x-ui.dropdown.item> 
                 </x-slot:menu>
             </x-ui.dropdown>
         </div>
+        
         <x-ui.table>
             <x-ui.table.header>
                 <x-ui.table.columns>
-                    <x-ui.table.head>
-                        #ID
-                    </x-ui.table.head>
-                    <x-ui.table.head>
-                        Therem
-                    </x-ui.table.head>
-                    <x-ui.table.head>
-                        Mathematician
-                    </x-ui.table.head>
-                    <x-ui.table.head>
-                        Field
-                    </x-ui.table.head>
-                    <x-ui.table.head>
-                        Year
-                    </x-ui.table.head>
-                    <x-ui.table.head
-                        x-show="!hiddenCols.includes('difficulty')"
-                        x-cloak
-                    >
+                    <x-ui.table.head>#ID</x-ui.table.head>
+                    <x-ui.table.head>Theorem</x-ui.table.head>
+                    <x-ui.table.head>Mathematician</x-ui.table.head>
+                    <x-ui.table.head>Field</x-ui.table.head>
+                    <x-ui.table.head>Year</x-ui.table.head>
+                    <x-ui.table.head x-show="!hiddenCols.includes('difficulty')" x-cloak>
                         Difficulty
                     </x-ui.table.head>
-                    <x-ui.table.head  
-                        x-show="!hiddenCols.includes('status')"
-                        x-cloak
-                    >
+                    <x-ui.table.head x-show="!hiddenCols.includes('status')" x-cloak>
                         Status
                     </x-ui.table.head>
                 </x-ui.table.columns>
             </x-ui.table.header>
+            
             <x-ui.table.rows>
                 <x-ui.table.row>
-                    <x-ui.table.cell>
-                        1
-                    </x-ui.table.cell>
-                    <x-ui.table.cell>
-                        Fundamental Theorem of Calculus
-                    </x-ui.table.cell>
-                    <x-ui.table.cell>
-                        Isaac Newton & Gottfried Leibniz
-                    </x-ui.table.cell>
+                    <x-ui.table.cell>1</x-ui.table.cell>
+                    <x-ui.table.cell>Fundamental Theorem of Calculus</x-ui.table.cell>
+                    <x-ui.table.cell>Isaac Newton & Gottfried Leibniz</x-ui.table.cell>
                     <x-ui.table.cell>
                         <x-ui.badge color="blue" variant="outline">
                             Analysis
                         </x-ui.badge>
                     </x-ui.table.cell>
-                    <x-ui.table.cell>
-                        1666
-                    </x-ui.table.cell>
-                    <x-ui.table.cell
-                        x-show="!hiddenCols.includes('difficulty')"
-                        x-cloak
-                    >
+                    <x-ui.table.cell>1666</x-ui.table.cell>
+                    <x-ui.table.cell x-show="!hiddenCols.includes('difficulty')" x-cloak>
                         7
                     </x-ui.table.cell>
-                    <x-ui.table.cell
-                        x-show="!hiddenCols.includes('status')"
-                        x-cloak
-                    >
+                    <x-ui.table.cell x-show="!hiddenCols.includes('status')" x-cloak>
                         <x-ui.badge color="green" variant="outline">
                             Proven
                         </x-ui.badge>
                     </x-ui.table.cell>
                 </x-ui.table.row>
+                
                 <x-ui.table.row>
-                    <x-ui.table.cell>
-                        2
-                    </x-ui.table.cell>
-                    <x-ui.table.cell>
-                        Fermat's Last Theorem
-                    </x-ui.table.cell>
-                    <x-ui.table.cell>
-                        Andrew Wiles
-                    </x-ui.table.cell>
+                    <x-ui.table.cell>2</x-ui.table.cell>
+                    <x-ui.table.cell>Fermat's Last Theorem</x-ui.table.cell>
+                    <x-ui.table.cell>Andrew Wiles</x-ui.table.cell>
                     <x-ui.table.cell>
                         <x-ui.badge color="pink" variant="outline">
                             Number Theory
                         </x-ui.badge>
                     </x-ui.table.cell>
-                    <x-ui.table.cell>
-                        1995
-                    </x-ui.table.cell>
-                    <x-ui.table.cell
-                        x-show="!hiddenCols.includes('difficulty')"
-                        x-cloak
-                    >
+                    <x-ui.table.cell>1995</x-ui.table.cell>
+                    <x-ui.table.cell x-show="!hiddenCols.includes('difficulty')" x-cloak>
                         10
                     </x-ui.table.cell>
-                    <x-ui.table.cell
-                        x-show="!hiddenCols.includes('status')"
-                        x-cloak
-                    >
+                    <x-ui.table.cell x-show="!hiddenCols.includes('status')" x-cloak>
                         <x-ui.badge color="green" variant="outline">
                             Proven
                         </x-ui.badge>
@@ -1246,159 +1192,124 @@ Let's make status and difficulty hiddeable columns on our theorems table well th
 @endblade
 
 ```blade
-  <x-ui.table.container x-data="{ hiddenCols: ['status', 'difficulty'] }">
-            <div 
-                class="flex items-center"
-            >
-                <!-- BULK ACTIONS CONTENT... -->
+<x-ui.table.container x-data="{ hiddenCols: ['status', 'difficulty'] }">
+    <div class="flex items-center">
+        <!-- BULK ACTIONS CONTENT... -->
+        <!-- SEARCH INPUT CONTENT... -->
 
-
-                <!-- INPUT CONTENT... -->
-
-{+                {{-- HIDDEN COLUMNS --}}
-                <x-ui.dropdown
-                    checkbox
-                    checkboxVariant
-                    position="bottom-end"
+{+        {{-- HIDDEN COLUMNS --}}
+        <x-ui.dropdown
+            checkbox
+            checkboxVariant
+            position="bottom-end"
+        >
+            <x-slot:button>
+                <x-ui.button 
+                    icon="view-columns" 
+                    variant="soft"
+                    size="sm"
+                    class="rounded-box ml-2 outline dark:outline-white/20 outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm" 
+                />
+            </x-slot:button>
+            
+            <x-slot:menu>                        
+                <x-ui.dropdown.item readOnly>
+                    Hidden Columns
+                </x-ui.dropdown.item> 
+                <x-ui.dropdown.separator/> 
+                <x-ui.dropdown.item x-model="hiddenCols">
+                    Difficulty
+                </x-ui.dropdown.item> 
+                <x-ui.dropdown.item x-model="hiddenCols">
+                    Status
+                </x-ui.dropdown.item> 
+            </x-slot:menu>
+        </x-ui.dropdown>+}
+    </div>
+    
+    <x-ui.table 
+        :paginator="$theorems"
+        pagination:variant="full"
+        loadOn="pagination, search, sorting"
+    >
+        <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
+            <x-ui.table.columns withCheckAll>
+                <x-ui.table.head sticky class="dark:bg-neutral-900 bg-white">
+                    #ID
+                </x-ui.table.head>
+                <x-ui.table.head>Theorem</x-ui.table.head>
+                <x-ui.table.head
+                    column="mathematician"
+                    sortable
+                    :currentSortBy="$sortBy"
+                    :currentSortDir="$sortDir"
                 >
-                    <x-slot:button>
-                        <x-ui.button 
-                            icon="view-columns" 
-                            variant="soft"
-                            size="sm"
-                            class="rounded-box ml-2 outline dark:outline-white/20 outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm" 
-                        />
-                    </x-slot:button>
-                    
-                    <x-slot:menu>                        
-                        <x-ui.dropdown.item readOnly>
-                            hidden columns
-                        </x-ui.dropdown.item> 
-                        <x-ui.dropdown.separator/> 
-                        <x-ui.dropdown.item 
-                            x-model="hiddenCols" 
-                        >
-                            difficulty
-                        </x-ui.dropdown.item> 
-                        <x-ui.dropdown.item 
-                            x-model="hiddenCols" 
-                        >
-                            status
-                        </x-ui.dropdown.item> 
-                    </x-slot:menu>
-                </x-ui.dropdown>+}
-            </div>
-            <!-- Demo Table -->
-            <x-ui.table 
-                :paginator="$paginator"  
-                pagination:variant="full"
-                loadOn="pagination, search, sorting"
-            >
-                <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
-                    <x-ui.table.columns withCheckAll>
-                        <x-ui.table.head sticky class="dark:bg-neutral-900 bg-white">
-                            #ID
-                        </x-ui.table.head>
-                        <x-ui.table.head>
-                            Theorem
-                        </x-ui.table.head>
-                        <x-ui.table.head
-                            column="mathematician"
-                            sortable
-                            :currentSortBy="$sortBy"
-                            :currentSortDir="$sortDir"
-                        >
-                            Mathematician
-                        </x-ui.table.head>
-                        <x-ui.table.head>
-                            Field
-                        </x-ui.table.head>
-                        <x-ui.table.head
-                            column="year_discovered"
-                            sortable
-                            variant="dropdown"
-                            :currentSortBy="$sortBy"
-                            :currentSortDir="$sortDir"
-                        >
-                            Year
-                        </x-ui.table.head>
-                        <x-ui.table.head
-                            column="difficulty_level"
-                            sortable
-                            :currentSortBy="$sortBy"
-                            :currentSortDir="$sortDir"
-{+                            x-show="!hiddenCols.includes('difficulty')"+}
-                        >
-                            Difficulty
-                        </x-ui.table.head>
-                        <x-ui.table.head  
-{+                            x-show="!hiddenCols.includes('status')"+}
-                        >
-                            Status
-                        </x-ui.table.head>
-                    </x-ui.table.columns>
-                </x-ui.table.header>
+                    Mathematician
+                </x-ui.table.head>
+                <x-ui.table.head>Field</x-ui.table.head>
+                <x-ui.table.head
+                    column="year_discovered"
+                    sortable
+                    variant="dropdown"
+                    :currentSortBy="$sortBy"
+                    :currentSortDir="$sortDir"
+                >
+                    Year
+                </x-ui.table.head>
+                <x-ui.table.head
+                    column="difficulty_level"
+                    sortable
+                    :currentSortBy="$sortBy"
+                    :currentSortDir="$sortDir"
+{+                    x-show="!hiddenCols.includes('difficulty')"+}
+                >
+                    Difficulty
+                </x-ui.table.head>
+                <x-ui.table.head  
+{+                    x-show="!hiddenCols.includes('status')"+}
+                >
+                    Status
+                </x-ui.table.head>
+            </x-ui.table.columns>
+        </x-ui.table.header>
 
-                <x-ui.table.rows>
-                    @forelse($paginator as $theorem)
-                        <x-ui.table.row 
-                            :checkboxId="$theorem->id" 
-                            :key="$theorem->id"
-                        >
-                            <x-ui.table.cell sticky class="dark:bg-neutral-950 bg-neutral-50">
-                                {{ $theorem->id }}
-                            </x-ui.table.cell>
-                            <x-ui.table.cell class="dark:bg-neutral-950 bg-neutral-50">
-                               <!-- name and statements.. -->
-                            </x-ui.table.cell>
-                            
-                            <x-ui.table.cell>
-                                <div class="text-sm text-neutral-700 dark:text-neutral-300">
-                                    {{ $theorem->mathematician }}
-                                </div>
-                            </x-ui.table.cell>
-                            
-                            <x-ui.table.cell>
-                               <!-- ... -->
-                                <x-ui.badge :color="$color" size="sm" variant="outline">
-                                    {{ $theorem->field }}
-                                </x-ui.badge>
-                            </x-ui.table.cell>
-                            
-                            <x-ui.table.cell>
-                                <div class="text-sm font-mono text-neutral-600 dark:text-neutral-400">
-                                    {{ $theorem->year_discovered < 0 ? abs($theorem->year_discovered) . ' BC' : $theorem->year_discovered }}
-                                </div>
-                            </x-ui.table.cell>
-                            
-                            <x-ui.table.cell 
-{+                                x-show="!hiddenCols.includes('difficulty')"+}
-                            >
-                                <!-- ... -->
-                                <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                                    Level {{ $theorem->difficulty_level }}
-                                </div>
-                            </x-ui.table.cell>
-                            
-                            <x-ui.table.cell  
-{+                                x-show="!hiddenCols.includes('status')"+}
-                            >
-                                @if($theorem->is_proven)
-                                    <x-ui.badge icon="check-circle" color="green" size="sm" variant="outline">
-                                        Proven
-                                    </x-ui.badge>
-                                @else
-                                    <x-ui.badge icon="exclamation-triangle" color="orange" size="sm" variant="outline">
-                                        Conjecture
-                                    </x-ui.badge>
-                                @endif
-                            </x-ui.table.cell>
-                        </x-ui.table.row>
-                    <!-- others parts  -->
-                    @endforelse
-                </x-ui.table.rows>
-            </x-ui.table>
-        </x-ui.table.container>
+        <x-ui.table.rows>
+            @forelse($theorems as $theorem)
+                <x-ui.table.row 
+                    :checkboxId="$theorem->id" 
+                    :key="$theorem->id"
+                >
+                    <!-- ID, Theorem, Mathematician, Field, Year cells... -->
+                    
+                    <x-ui.table.cell 
+{+                        x-show="!hiddenCols.includes('difficulty')"+}
+                    >
+                        <!-- difficulty stars -->
+                        <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                            Level {{ $theorem->difficulty_level }}
+                        </div>
+                    </x-ui.table.cell>
+                    
+                    <x-ui.table.cell  
+{+                        x-show="!hiddenCols.includes('status')"+}
+                    >
+                        @if($theorem->is_proven)
+                            <x-ui.badge icon="check-circle" color="green" size="sm" variant="outline">
+                                Proven
+                            </x-ui.badge>
+                        @else
+                            <x-ui.badge icon="exclamation-triangle" color="orange" size="sm" variant="outline">
+                                Conjecture
+                            </x-ui.badge>
+                        @endif
+                    </x-ui.table.cell>
+                </x-ui.table.row>
+            @empty
+                <!-- empty state... -->
+            @endforelse
+        </x-ui.table.rows>
+    </x-ui.table>
+</x-ui.table.container>
 ```
 
 #### Persisting Column Preferences
@@ -1413,94 +1324,13 @@ x-data="{
 
 This stores the user's column visibility choices in `localStorage`.
 
-### Add Re-Ordering
+---
 
-Enable drag-and-drop row reordering using Alpine's sort plugin.
-
-#### Step 1: Enable Draggable Mode
-
-Add the `draggable` attribute to your table:
-
-```blade
-<x-ui.table 
-    :paginator="$theorems"
-    draggable
->
-    <!-- Table content... -->
-</x-ui.table>
-```
-
-This automatically adds:
-- A drag handle column at the start
-- Sort functionality via Alpine's `x-sort` directive
-- Visual feedback during dragging
-
-#### Step 2: Handle Reorder Events
-
-Listen for reorder events in your Livewire component:
-
-```php
-<?php
-
-namespace App\Livewire;
-
-use App\Models\User;
-use Livewire\Component;
-
-class UsersTable extends Component
-{
-    protected $listeners = ['reorder' => 'handleReorder'];
-
-    public function handleReorder($orderedIds)
-    {
-        foreach ($orderedIds as $index => $id) {
-            User::where('id', $id)->update([
-                'sort_order' => $index + 1
-            ]);
-        }
-
-        $this->dispatch('notify', [
-            'message' => 'Order updated successfully',
-            'type' => 'success'
-        ]);
-    }
-
-    public function render()
-    {
-        $theorems = User::query()
-            ->orderBy('sort_order')
-            ->paginate($this->perPage);
-
-        return view('livewire.theorems', [
-            'theorems' => $theorems,
-        ]);
-    }
-}
-```
-
-#### Dispatch Reorder Event from Alpine
-
-Add event dispatch to the sortable container:
-
-```blade
-<x-ui.table.rows
-    x-on:sort="$wire.call('handleReorder', $event.detail.orderedIds)"
->
-    <!-- Rows... -->
-</x-ui.table.rows>
-```
-
-> **Note:** Row reordering works best with smaller datasets. For paginated tables, consider reordering within the current page only.
-
-### Add Filters
-
-Implement advanced filtering with multiple criteria going to add docs for this after adding this capability to the core of the component...
-
-### Playing with Table Design
+## Playing with Table Design
 
 Customize the table's appearance with utility classes and variants.
 
-#### Bordered Table
+### Bordered Table
 
 @blade
 <x-demo>
@@ -1535,7 +1365,7 @@ Customize the table's appearance with utility classes and variants.
 </x-ui.table>
 ```
 
-#### Striped Rows
+### Striped Rows
 
 @blade
 <x-demo>
@@ -1571,7 +1401,7 @@ Customize the table's appearance with utility classes and variants.
 </x-ui.table.rows>
 ```
 
-#### Hover Effects
+### Hover Effects
 
 @blade
 <x-demo>
@@ -1598,12 +1428,12 @@ Customize the table's appearance with utility classes and variants.
 @endblade
 
 ```blade
-<x-ui.table.row class="hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+<x-ui.table.row class="hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer">
     <!-- Cells... -->
 </x-ui.table.row>
 ```
 
-#### Compact Table
+### Compact Table
 
 @blade
 <x-demo>
@@ -1632,18 +1462,17 @@ Customize the table's appearance with utility classes and variants.
 ```blade
 <!-- Override cell padding for compact layout -->
 <x-ui.table.cell class="py-2">
-    {{ $user->name }}
+    {{ $theorem->name }}
 </x-ui.table.cell>
 ```
 
-#### Custom Loading States
+### Custom Loading States
 
 ```blade
 <x-ui.table 
     :paginator="$theorems"
     wire:loading
-    wire:target="searchQuery,sortByColumn"
-    loadOnPagination
+    loadOn="pagination, search, sorting"
 >
     <x-slot name="loading">
         <div class="flex items-center gap-2">
@@ -1656,295 +1485,7 @@ Customize the table's appearance with utility classes and variants.
 </x-ui.table>
 ```
 
-## Complete Example
-
-Here's a full-featured datatable combining all the features:
-
-```php
-<?php
-
-namespace App\Livewire;
-
-use App\Models\Component as ComponentModel;
-use Illuminate\View\View;
-use Livewire\Attributes\Renderless;
-use Livewire\Component;
-use App\Livewire\Concerns\CanExportCsv;
-use App\Livewire\Concerns\WithPagination;
-use App\Livewire\Concerns\WithSearch;
-use App\Livewire\Concerns\WithSelection;
-use App\Livewire\Concerns\WithSorting;
-
-class ComponentsTable extends Component
-{
-    use CanExportCsv;
-    use WithPagination;
-    use WithSearch;
-    use WithSelection;
-    use WithSorting;
-
-    #[Renderless]
-    public function exportToCsv()
-    {
-        $components = $this->baseQuery();
-
-        if (filled($this->searchQuery)) {
-            $components = $this->applySearch($components);
-        }
-
-        if (filled($this->sortBy)) {
-            $components = $this->applySorting($components);
-        }
-
-        if (filled($this->selectedIds)) {
-            $components = $this->applySelection($components);
-        }
-
-        return $this->csv($components->get());
-    }
-
-    public function deleteSelected()
-    {
-        $this->validate([
-            'selectedIds' => 'required|array|min:1',
-            'selectedIds.*' => 'integer|exists:components,id',
-        ]);
-
-        $deleted = $this->baseQuery()
-            ->whereIn('id', $this->selectedIds)
-            ->delete();
-
-        $this->selectedIds = [];
-
-        $this->dispatch('notify', [
-            'message' => "{$deleted} components deleted",
-            'type' => 'success'
-        ]);
-    }
-
-    public function render(): View
-    {
-        $components = $this->baseQuery()
-            ->when(filled($this->sortBy), fn($q) => $this->applySorting($q))
-            ->when(filled($this->searchQuery), fn($q) => $this->applySearch($q))
-            ->paginate($this->perPage);
-
-        $this->visibleIds = $components->pluck('id')
-            ->map(fn ($id) => (string) $id)
-            ->toArray();
-
-        return view('livewire.components-table', [
-            'components' => $components,
-        ]);
-    }
-
-    protected function applySearch($query)
-    {
-        $search = str_replace(
-            ['\\', '%', '_'], 
-            ['\\\\', '\\%', '\\_'], 
-            $this->searchQuery
-        );
-        
-        return $query->where(function($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%");
-        });
-    }
-
-    protected function sortableColumns(): array
-    {
-        return ['name', 'type', 'created_at'];
-    }
-
-    protected function baseQuery()
-    {
-        return ComponentModel::query();
-    }
-}
-```
-
-```blade
-<div 
-    x-data="{ 
-        visibleCols: $persist(['name', 'type', 'created_at', 'description']).as('components-table-cols')
-    }"
->
-    <x-ui.table 
-        :paginator="$components" 
-        pagination:variant="full"
-        wire:loading
-        wire:target="sortByColumn,searchQuery"
-        loadOnPagination
-        class="border border-neutral-900/5 dark:border-white/5 rounded-lg"
-    >
-        <x-slot name="top" class="flex justify-between gap-4">
-            <!-- Bulk Actions -->
-            <div x-show="$wire.selectedIds.length > 0">
-                <x-ui.dropdown position="bottom-start">
-                    <x-slot:button>
-                        <x-ui.button icon="ellipsis-vertical" variant="soft">
-                            Bulk Actions
-                        </x-ui.button>
-                    </x-slot:button>
-                    
-                    <x-slot:menu>
-                        <x-ui.dropdown.item 
-                            icon="arrow-down-on-square"
-                            wire:click="exportToCsv"
-                        >
-                            Export Selected CSV
-                        </x-ui.dropdown.item>
-                        
-                        <x-ui.dropdown.item 
-                            icon="trash"
-                            variant="danger"
-                            wire:click="deleteSelected"
-                            wire:confirm="Are you sure?"
-                        >
-                            Delete Selected
-                        </x-ui.dropdown.item>
-                    </x-slot:menu>
-                </x-ui.dropdown>
-            </div>
-
-            <!-- Search -->
-            <div class="ml-auto">
-                <x-ui.input 
-                    class="w-64" 
-                    placeholder="Search..." 
-                    leftIcon="magnifying-glass" 
-                    wire:model.live.debounce.300ms="searchQuery"
-                />
-            </div>
-
-            <!-- Column Visibility -->
-            <x-ui.dropdown checkbox position="bottom-end">
-                <x-slot:button>
-                    <x-ui.button icon="eye" variant="soft" size="sm">
-                        Columns
-                    </x-ui.button>
-                </x-slot:button>
-                
-                <x-slot:menu>
-                    <x-ui.dropdown.item x-model="visibleCols" value="name">
-                        Name
-                    </x-ui.dropdown.item>
-                    <x-ui.dropdown.item x-model="visibleCols" value="type">
-                        Type
-                    </x-ui.dropdown.item>
-                    <x-ui.dropdown.item x-model="visibleCols" value="created_at">
-                        Created At
-                    </x-ui.dropdown.item>
-                    <x-ui.dropdown.item x-model="visibleCols" value="description">
-                        Description
-                    </x-ui.dropdown.item>
-                </x-slot:menu>
-            </x-ui.dropdown>
-        </x-slot>
-
-        <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
-            <x-ui.table.columns withCheckAll>
-                <x-ui.table.head 
-                    column="name"
-                    sortable
-                    :currentSortBy="$sortBy"
-                    :currentSortDir="$sortDir"
-                    sticky 
-                    class="dark:bg-neutral-900 bg-white"
-                    x-show="visibleCols.includes('name')"
-                >
-                    Name
-                </x-ui.table.head>
-                
-                <x-ui.table.head x-show="visibleCols.includes('type')">
-                    Type
-                </x-ui.table.head>
-                
-                <x-ui.table.head 
-                    column="created_at"
-                    sortable
-                    :currentSortBy="$sortBy"
-                    :currentSortDir="$sortDir"
-                    x-show="visibleCols.includes('created_at')"
-                >
-                    Created At
-                </x-ui.table.head>
-                
-                <x-ui.table.head x-show="visibleCols.includes('description')">
-                    Description
-                </x-ui.table.head>
-
-                <x-ui.table.head />
-            </x-ui.table.columns>
-        </x-ui.table.header>
-
-        <x-ui.table.rows>
-            @forelse ($components as $component)
-                <x-ui.table.row 
-                    wire:key="component-{{ $component->id }}" 
-                    :checkboxId="$component->id"
-                >
-                    <x-ui.table.cell 
-                        sticky 
-                        class="dark:bg-neutral-950 bg-neutral-50"
-                        x-show="visibleCols.includes('name')"
-                    >
-                        {{ $component->name }}
-                    </x-ui.table.cell>
-                    
-                    <x-ui.table.cell x-show="visibleCols.includes('type')">
-                        {{ $component->type }}
-                    </x-ui.table.cell>
-                    
-                    <x-ui.table.cell x-show="visibleCols.includes('created_at')">
-                        {{ $component->created_at->format('M d, Y') }}
-                    </x-ui.table.cell>
-                    
-                    <x-ui.table.cell x-show="visibleCols.includes('description')">
-                        {{ str($component->description)->limit(100) }}
-                    </x-ui.table.cell>
-                    
-                    <x-ui.table.cell>
-                        <x-ui.dropdown position="bottom-start">
-                            <x-slot:button>
-                                <x-ui.button 
-                                    icon="ellipsis-horizontal" 
-                                    variant="ghost"
-                                    square
-                                />
-                            </x-slot:button>
-                            
-                            <x-slot:menu>
-                                <x-ui.dropdown.item icon="pencil">
-                                    Edit
-                                </x-ui.dropdown.item>
-                                <x-ui.dropdown.item icon="trash" variant="danger">
-                                    Delete
-                                </x-ui.dropdown.item>
-                            </x-slot:menu>
-                        </x-ui.dropdown>
-                    </x-ui.table.cell>
-                </x-ui.table.row>
-            @empty
-                <x-ui.table.empty>
-                    <x-ui.empty>
-                        <x-ui.empty.media>
-                            <x-ui.icon name="inbox" class="size-10" />
-                        </x-ui.empty.media>
-                        <x-ui.empty.contents>
-                            <h3 class="text-lg font-semibold">No results found</h3>
-                            <p class="text-sm text-neutral-500">
-                                Try adjusting your search or create a new component.
-                            </p>
-                        </x-ui.empty.contents>
-                    </x-ui.empty>
-                </x-ui.table.empty>
-            @endforelse
-        </x-ui.table.rows>
-    </x-ui.table>
-</div>
-```
+---
 
 ## Component Props
 
@@ -1954,13 +1495,18 @@ class ComponentsTable extends Component
 |------|------|---------|-------------|
 | `paginator` | Paginator\|null | `null` | Laravel paginator instance |
 | `pagination:variant` | string | `'full'` | Pagination style: `full`, `simple`, `compact` |
+| `loadOn` | string | `null` | Comma-separated list of actions to show loading: `pagination`, `search`, `sorting` |
 | `loading` | slot | `null` | Custom loading indicator |
-| `top` | slot | `null` | Content above the table (filters, search, etc.) |
 | `footer` | slot | `null` | Content below the table |
-| `draggable` | boolean | `false` | Enable drag-and-drop reordering |
-| `loadOnPagination` | boolean | `false` | Show loading state during pagination |
 | `wire:loading` | boolean | `false` | Enable Livewire loading states |
 | `wire:target` | string | `null` | Specific Livewire actions to track |
+| `class` | string | `''` | Additional CSS classes |
+
+### table.container
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `border` | boolean | `true` | Show container border |
 | `class` | string | `''` | Additional CSS classes |
 
 ### table.header
@@ -1969,6 +1515,12 @@ class ComponentsTable extends Component
 |------|------|---------|-------------|
 | `sticky` | boolean | `false` | Make header stick to top while scrolling |
 | `class` | string | `''` | Additional CSS classes |
+
+### table.columns
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `withCheckAll` | boolean | `false` | Add "select all" checkbox in header |
 
 ### table.head
 
@@ -1996,6 +1548,8 @@ class ComponentsTable extends Component
 |------|------|---------|-------------|
 | `sticky` | boolean | `false` | Make cell stick while scrolling horizontally |
 | `class` | string | `''` | Additional CSS classes |
+
+---
 
 ## Available Traits
 
@@ -2055,6 +1609,8 @@ public function exportToCsv()
 }
 ```
 
+---
+
 ## Tips & Best Practices
 
 ### Performance Optimization
@@ -2068,14 +1624,13 @@ wire:model.live.debounce.300ms="searchQuery"
 ```blade
 <x-ui.table 
     wire:loading
-    wire:target="searchQuery,sortByColumn"
-    loadOnPagination
+    loadOn="pagination, search, sorting"
 >
 ```
 
 **3. Eager Load Relationships**
 ```php
-$theorems = User::with('role', 'department')
+$theorems = Theorem::with('field', 'mathematician')
     ->paginate($this->perPage);
 ```
 
@@ -2123,7 +1678,7 @@ protected function applySearch($query)
 ```php
 protected function sortableColumns(): array
 {
-    return ['name', 'email', 'created_at'];
+    return ['name', 'mathematician', 'year_discovered', 'difficulty_level'];
 }
 ```
 
@@ -2131,7 +1686,7 @@ protected function sortableColumns(): array
 ```php
 public function deleteSelected()
 {
-    Gate::authorize('delete-multiple', User::class);
+    Gate::authorize('delete-multiple', Theorem::class);
     
     // Delete logic...
 }
@@ -2141,10 +1696,10 @@ public function deleteSelected()
 
 The table component is built with accessibility in mind:
 
-- **Keyboard Navigation**: Checkboxes and buttons are fully keyboard accessible
-- **Screen Reader Support**: Proper ARIA labels and semantic HTML
-- **Focus Management**: Clear focus indicators on interactive elements
-- **Sort Indicators**: Visual and semantic indicators for sort state
+- **Keyboard Navigation** — Checkboxes and buttons are fully keyboard accessible
+- **Screen Reader Support** — Proper ARIA labels and semantic HTML
+- **Focus Management** — Clear focus indicators on interactive elements
+- **Sort Indicators** — Visual and semantic indicators for sort state
 
 ### Common Patterns
 
@@ -2156,7 +1711,6 @@ public function resetAll()
     $this->sortBy = '';
     $this->sortDir = 'asc';
     $this->selectedIds = [];
-    $this->filters = [];
     $this->resetPage();
 }
 ```
@@ -2190,6 +1744,8 @@ public function export($exportType = 'selected')
 </x-ui.select>
 ```
 
+---
+
 ## Troubleshooting
 
 ### Checkboxes Not Syncing
@@ -2199,7 +1755,7 @@ Ensure you're setting `visibleIds` in your render method:
 ```php
 public function render()
 {
-    $theorems = User::query()->paginate($this->perPage);
+    $theorems = Theorem::query()->paginate($this->perPage);
     
     // This is crucial for checkbox sync
     $this->visibleIds = $theorems->pluck('id')
@@ -2212,7 +1768,7 @@ public function render()
 
 ### Search Not Resetting Pagination
 
-Make sure the `WithSearch` trait's `updatedSearchQuery` is working:
+Make sure the `WithSearch` trait's `updatedSearchQuery()` is working:
 
 ```php
 public function updatedSearchQuery()
