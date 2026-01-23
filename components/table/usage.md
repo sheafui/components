@@ -273,8 +273,21 @@ then on the view add the `:checkboxId` to each `table.row` blade component to sh
 >...</x-ui.table.row>
 ```
 
-see the search on the guide below for real layout. 
+then if you want to operations on the selected Ids you can do it like so: 
 
+```php
+    public function deleteSelected()
+    {
+        User::query()->whereIn('id',$this->selectedIds)->delete()
+    }
+    
+    public function archiveSelected()
+    {
+        User::query()->whereIn('id',$this->selectedIds)->each->archive()
+    }
+
+    // ...
+```
 
 ## Loading Logic
 due the nature of datatables are usually data heavy.
