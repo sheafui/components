@@ -698,6 +698,34 @@ when you've enable `reorderable` feature with sticky columns, adding background 
 
 This guide walks you through building a polished, feature-rich data table using the table component alongside other utilities. We'll display a list of mathematical theorems, including their discovery year and the mathematicians behind them.
 
+@blade
+<x-md.cta                                                            
+    href="/demos/data-tables"                                    
+    label="in this guide we're going to build a powerful datatable demo"
+    ctaLabel="Visit the Demo"
+/>
+@endblade
+
+---
+
+@blade
+<x-md.image                                                            
+    src="/images/demos/light/table.png"                                    
+    dark-src="/images/demos/dark/table.png"                                    
+    alt="theorems table"                                               
+    caption="Theorems Data Table Demo"                                   
+/>
+@endblade
+
+---
+@blade
+<x-md.cta                                                            
+    href="/docs/components/table#content-guides-full-code-source"                                    
+    label="Just Read and understand I've assemble all the code at the end for the demo"
+    ctaLabel="Go Below to Full Code"
+/>
+@endblade
+
 ### Setup Theorems Data
 
 First, create a `Theorem` model with fields: `id`, `name`, `mathematician`, `field`, `year_discovered`, `difficulty_level`, `is_proven`, `statement`, and `applications`. 
@@ -1533,6 +1561,541 @@ x-data="{
 This stores the user's column visibility choices in `localStorage`.
 
 ---
+
+### Adding Reordering
+To enable row reordering, mark the table as reorderable.
+
+```blade
+<x-ui.table 
+{+    reorderable+}
+>
+    <!-- table contents -->
+</x-ui.table>
+```
+
+Each table row must expose its current order value. This value determines the row’s position.
+
+```blade
+<x-ui.table.rows>
+    @forelse($users as $user)
+        <x-ui.table.row 
+            :checkboxId="$user->id" 
+{+            :order="$user->order"+} 
+            :key="$user->id"
+        >
+            <!-- ... -->
+        </x-ui.table.row>
+    @endforelse
+</x-ui.table.rows>
+```
+
+and let's implement the backend, in my case I going to use static array for orders to minize the complexity, but if you want real database example see the docs above.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+class Theorems extends Component
+{
+    // traits...
+
+{+    #[Session()]
+    public array $positions = [];+}
+{+
+    public function mount()
+    {
+        if (empty($this->positions)) {
+            $this->positions = $this->baseQuery()
+                ->pluck('id')
+                ->toArray();
+        }
+    }+}
+
+    public function render(): View
+    {
+        $theorems = $this->baseQuery()
+            ->when(filled($this->sortBy), function ($query) {
+                return $this->applySorting($query);
+            })
+            ->when(filled($this->searchQuery), function ($query) {
+                return $this->applySearch($query);
+            })
+{+            ->when(filled($this->positions), function ($query) {
+                return $this->applyPositionSorting($query);
+            })+}
+            ->paginate($this->perPage);
+        
+        // more stuff
+
+        return view('livewire.theorems', [
+            'theorems' => $theorems,
+        ]);
+    }
+
+   
+
+{+    public function handleReordering($item, $position)
+    {
+        $itemId = (int) $item;
+        // Remove item from current position
+        $positions = array_values(array_filter($this->positions, fn ($id) => $id !== $itemId));
+        // Insert at new position
+        array_splice($positions, $position, 0, [$itemId]);
+        $this->positions = $positions;
+    }+}
+
+{+    protected function applyPositionSorting(Builder $query): Builder
+    {
+        if (empty($this->positions)) {
+            return $query;
+        }
+        $case = 'CASE';
+        foreach ($this->positions as $index => $id) {
+            $case .= " WHEN id = {$id} THEN {$index}";
+        }
+        $case .= ' END';
+        return $query->orderByRaw($case);
+    }+}
+
+}
+
+```
+
+## Guide's Full Code Source 
+
+**Livewire/Theorems.php** livewire class component 
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Src\Components\Livewire\Demos;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\View\View;
+use Livewire\Attributes\Session;
+use Livewire\Component;
+use Livewire\Attributes\Renderless;
+use Src\Components\Livewire\Concerns\CanExportCsv;
+use Src\Components\Livewire\Concerns\WithPagination;
+use Src\Components\Livewire\Concerns\WithSearch;
+use Src\Components\Livewire\Concerns\WithSelection;
+use Src\Components\Livewire\Concerns\WithSorting;
+use Src\Components\Models\Theorem;
+
+class Theorems extends Component
+{
+    use CanExportCsv;
+    use WithPagination;
+    use WithSearch;
+    use WithSelection;
+    use WithSorting;
+
+    #[Session()]
+    public array $positions = [];
+
+    public function mount()
+    {
+        if (empty($this->positions)) {
+            $this->positions = $this->baseQuery()
+                ->pluck('id')
+                ->toArray();
+        }
+    }
+
+    public function render(): View
+    {
+        $theorems = $this->baseQuery()
+            ->when(filled($this->sortBy), function ($query) {
+                return $this->applySorting($query);
+            })
+            ->when(filled($this->searchQuery), function ($query) {
+                return $this->applySearch($query);
+            })
+            ->when(filled($this->positions), function ($query) {
+                return $this->applyPositionSorting($query);
+            })
+            ->paginate($this->perPage);
+
+        $this->visibleIds = $this->baseQuery()->pluck('id')->map(fn ($id) => (string) $id)->toArray();
+
+        usleep(500 * 1000);
+
+        return view('livewire.theorems', [
+            'theorems' => $theorems,
+        ]);
+    }
+
+    #[Renderless]
+    public function toCsv()
+    {
+        $theorems = $this->baseQuery();
+
+        if (filled($this->searchQuery)) {
+            $theorems = $this->applySearch($theorems);
+        }
+
+        if (filled($this->sortBy)) {
+            $theorems = $this->applySorting($theorems);
+        }
+
+        if (filled($this->selectedIds)) {
+            $theorems = $this->applySelection($theorems);
+        }
+
+        return $this->csv($theorems->get());
+    }
+
+    public function handleReordering($item, $position)
+    {
+        $itemId = (int) $item;
+
+        // Remove item from current position
+        $positions = array_values(array_filter($this->positions, fn ($id) => $id !== $itemId));
+
+        // Insert at new position
+        array_splice($positions, $position, 0, [$itemId]);
+
+        $this->positions = $positions;
+    }
+
+    public function deleteSelected()
+    {
+        this->baseQuery()->whereIn('id',$this->selectedIds)->delete()
+    }
+
+    protected function applyPositionSorting(Builder $query): Builder
+    {
+        if (empty($this->positions)) {
+            return $query;
+        }
+
+        $case = 'CASE';
+
+        foreach ($this->positions as $index => $id) {
+            $case .= " WHEN id = {$id} THEN {$index}";
+        }
+
+        $case .= ' END';
+
+        return $query->orderByRaw($case);
+    }
+
+    protected function baseQuery(): Builder
+    {
+        return Theorem::query();
+    }
+
+    protected function applySearch($query)
+    {
+        return $query->where('name', 'like', '%'.$this->searchQuery.'%')
+            ->orWhere('mathematician', 'like', '%'.$this->searchQuery.'%')
+            ->orWhere('field', 'like', '%'.$this->searchQuery.'%')
+            ->orWhere('statemen', 'like', '%'.$this->searchQuery.'%');
+    }
+}
+
+```
+
+**livewire/theorems.blade.php** livewire blade component
+
+```blade
+<div class="min-h-screen py-12 px-4 ">
+    <div class="md:sticky top-20 w-fit ">
+        <x-ui.theme-switcher variant="inline"/>
+    </div>
+        
+    <div class="max-w-6xl mx-auto space-y-8">
+         <!-- Header -->
+        <div class="text-center space-y-2 border border-dashed dark:border-white/15 border-neutral-950/35 py-6 rounded-box mb-20">
+            <h1 class="text-3xl font-bold text-neutral-900 dark:text-white">
+                Datatable Component
+            </h1>
+            <p class="text-neutral-600 dark:text-neutral-400">
+                Interactive demos for Datatable component capabilitites
+            </p>
+        </div>
+
+        <x-ui.table.container x-data="{ hiddenCols: ['status', 'difficulty'] }">
+            <div 
+                class="flex items-center"
+            >
+                {{-- BULK ACTIONS --}}
+                <div
+                    style="display:none;" 
+                    wire:show="selectedIds.length"
+                >
+                    <x-ui.dropdown position="bottom-start">
+                        <x-slot:button class="justify-center">
+                            <x-ui.button 
+                                icon="ellipsis-vertical" 
+                                variant="soft"
+                                size="sm"
+                                class="rounded-box mr-2 [@media(width<40rem)]:hidden outline dark:outline-white/20 outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm" 
+                            >
+                                bulk action
+                            </x-ui.button>
+                            
+                            <x-ui.button 
+                                icon="ellipsis-vertical" 
+                                variant="soft"
+                                size="sm"
+                                class="rounded-box mr-2 sm:hidden outline dark:outline-white/20 outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm" 
+                            />
+                        </x-slot:button>
+                        
+                        <x-slot:menu>
+                            <x-ui.dropdown.item 
+                                icon="arrow-down-on-square"
+                                wire:click="toCsv"
+                            >
+                                export selected csv
+                            </x-ui.dropdown.item>
+                            
+                            <x-ui.dropdown.item 
+                                icon="trash"
+                                variant="danger"
+                                wire:click="deleteSelected"
+                                wire:confirm="are you sure you want to delete ?"
+                            >
+                                delete selected
+                            </x-ui.dropdown.item>
+                        </x-slot:menu>
+                    </x-ui.dropdown>
+                </div>
+
+                {{-- SEARCH INPUT --}}
+                <div class="ml-auto">
+                    <x-ui.input 
+                        class="[&_input]:bg-transparent"  
+                        placeholder="search..." 
+                        leftIcon="magnifying-glass" 
+                        wire:model.live="searchQuery"
+                    />
+                </div>
+
+                {{-- FILTERS AND HIDDEN COLUMNS --}}
+                <x-ui.dropdown
+                    checkbox
+                    checkboxVariant
+                    position="bottom-end"
+                >
+                    <x-slot:button>
+                        <x-ui.button 
+                            icon="view-columns" 
+                            variant="soft"
+                            size="sm"
+                            class="rounded-box ml-2 outline dark:outline-white/20 outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm" 
+                        />
+                    </x-slot:button>
+                    
+                    <x-slot:menu>                        
+                        <x-ui.dropdown.item readOnly>
+                            hidden columns
+                        </x-ui.dropdown.item> 
+                        <x-ui.dropdown.separator/> 
+                        <x-ui.dropdown.item 
+                            x-model="hiddenCols" 
+                        >
+                            difficulty
+                        </x-ui.dropdown.item> 
+                        <x-ui.dropdown.item 
+                            x-model="hiddenCols" 
+                        >
+                            status
+                        </x-ui.dropdown.item> 
+                    </x-slot:menu>
+                </x-ui.dropdown>
+                <x-ui.dropdown
+                    checkbox
+                    checkboxVariant
+                    position="bottom-end"
+                >
+                    <x-slot:button>
+                        <x-ui.button 
+                            icon="funnel" 
+                            variant="soft"
+                            size="sm"
+                            class="rounded-box ml-2 outline dark:outline-white/20 outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm" 
+                        />
+                    </x-slot:button>
+                    
+                    <x-slot:menu>                        
+                        <x-ui.dropdown.item readOnly>
+                            Date Range
+                        </x-ui.dropdown.item> 
+                        <x-ui.dropdown.separator/> 
+                        <x-ui.dropdown.item>
+                            dificulty
+                        </x-ui.dropdown.item> 
+                    </x-slot:menu>
+                </x-ui.dropdown>
+            </div>
+            <!-- Demo Table -->
+            <x-ui.table 
+                :paginator="$paginator"  
+                pagination:variant="full"
+                wire:loading
+                reorderable
+                loadOn="pagination, search, sorting"
+            >
+                <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
+                    <x-ui.table.columns withCheckAll>
+                        <x-ui.table.head sticky class="dark:bg-neutral-900 bg-white">
+                            #ID
+                        </x-ui.table.head>
+                        <x-ui.table.head>
+                            Theorem
+                        </x-ui.table.head>
+                        <x-ui.table.head
+                            column="mathematician"
+                            sortable
+                            :currentSortBy="$sortBy"
+                            :currentSortDir="$sortDir"
+                        >
+                            Mathematician
+                        </x-ui.table.head>
+                        <x-ui.table.head>
+                            Field
+                        </x-ui.table.head>
+                        <x-ui.table.head
+                            column="year_discovered"
+                            sortable
+                            variant="dropdown"
+                            :currentSortBy="$sortBy"
+                            :currentSortDir="$sortDir"
+                        >
+                            Year
+                        </x-ui.table.head>
+                        <x-ui.table.head
+                            column="difficulty_level"
+                            sortable
+                            :currentSortBy="$sortBy"
+                            :currentSortDir="$sortDir"
+                            x-show="!hiddenCols.includes('difficulty')" x-cloak
+                        >
+                            Difficulty
+                        </x-ui.table.head>
+                        <x-ui.table.head  
+                            x-show="!hiddenCols.includes('status')" x-cloak
+                        >
+                            Status
+                        </x-ui.table.head>
+                    </x-ui.table.columns>
+                </x-ui.table.header>
+
+                <x-ui.table.rows>
+                    @forelse($paginator as $theorem)
+                        <x-ui.table.row 
+                            :checkboxId="$theorem->id" 
+                            :order="$theorem->id" 
+                            :key="$theorem->id"
+                        >
+                            <x-ui.table.cell sticky class="[body:not(.sorting)_&]:dark:bg-neutral-950 [body:not(.sorting)_&]:bg-neutral-50">
+                                {{ $theorem->id }}
+                            </x-ui.table.cell>
+                            <x-ui.table.cell>
+                                <div class="max-w-xs">
+                                    <div class="font-medium text-neutral-900 dark:text-neutral-100">
+                                        {{ $theorem->name }}
+                                    </div>
+                                    <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1 line-clamp-2">
+                                        {{ $theorem->statement }}
+                                    </div>
+                                </div>
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell>
+                                <div class="text-sm text-neutral-700 dark:text-neutral-300">
+                                    {{ $theorem->mathematician }}
+                                </div>
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell>
+                                @php
+                                    $fieldColors = [
+                                        'Number Theory' => 'purple',
+                                        'Analysis' => 'blue',
+                                        'Geometry' => 'green',
+                                        'Algebra' => 'red',
+                                        'Topology' => 'orange',
+                                        'Probability' => 'pink',
+                                        'Complex Analysis' => 'cyan',
+                                        'Functional Analysis' => 'indigo',
+                                        'Vector Calculus' => 'teal',
+                                        'Game Theory' => 'violet',
+                                        'Graph Theory' => 'lime',
+                                        'Logic' => 'amber',
+                                        'Linear Algebra' => 'rose',
+                                        'Set Theory' => 'fuchsia',
+                                        'Mathematical Physics' => 'sky',
+                                        'Complexity Theory' => 'emerald',
+                                    ];
+                                    $color = $fieldColors[$theorem->field] ?? 'neutral';
+                                @endphp
+                                <x-ui.badge :color="$color" size="sm" variant="outline">
+                                    {{ $theorem->field }}
+                                </x-ui.badge>
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell>
+                                <div class="text-sm font-mono text-neutral-600 dark:text-neutral-400">
+                                    {{ $theorem->year_discovered < 0 ? abs($theorem->year_discovered) . ' BC' : $theorem->year_discovered }}
+                                </div>
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell 
+                                x-show="!hiddenCols.includes('difficulty')" x-cloak
+                            >
+                                <div class="flex items-center gap-1">
+                                    @for($i = 1; $i <= min($theorem->difficulty_level, 10); $i++)
+                                        <svg class="size-3 {{ $i <= 3 ? 'text-green-500' : ($i <= 6 ? 'text-yellow-500' : 'text-red-500') }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    @endfor
+                                </div>
+                                <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                                    Level {{ $theorem->difficulty_level }}
+                                </div>
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell  
+                                x-show="!hiddenCols.includes('status')" x-cloak
+                            >
+                                @if($theorem->is_proven)
+                                    <x-ui.badge icon="check-circle" color="green" size="sm" variant="outline">
+                                        Proven
+                                    </x-ui.badge>
+                                @else
+                                    <x-ui.badge icon="exclamation-triangle" color="orange" size="sm" variant="outline">
+                                        Conjecture
+                                    </x-ui.badge>
+                                @endif
+                            </x-ui.table.cell>
+                        </x-ui.table.row>
+                    @empty
+                        <x-ui.table.empty>
+                            <x-ui.empty>
+                                <x-ui.empty.media>
+                                    <x-ui.icon name="inbox" class="size-10" />
+                                </x-ui.empty.media>
+                                <x-ui.empty.contents>
+                                    <h3 class="text-lg font-semibold">No theorems found</h3>
+                                    <p class="text-sm text-neutral-500">
+                                        The mathematical universe seems empty!
+                                    </p>
+                                </x-ui.empty.contents>
+                            </x-ui.empty>
+                        </x-ui.table.empty>
+                    @endforelse
+                </x-ui.table.rows>
+            </x-ui.table>
+        </x-ui.table.container>
+
+    </div>
+</div>
+```
 
 ## Design Cookbook
 
