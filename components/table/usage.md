@@ -1097,7 +1097,7 @@ Let's make status and difficulty hideable columns in our theorems table. Here's 
 
 @blade
 <x-demo>
-    <div x-data="{ hiddenCols: [] }" x-effect="() => console.log(hiddenCols)">
+    <div x-data="{ hiddenCols: [] }">
         <div class="mb-4 flex justify-end">
             <x-ui.dropdown
                 checkbox
@@ -1326,14 +1326,14 @@ This stores the user's column visibility choices in `localStorage`.
 
 ---
 
-## Playing with Table Design
+## Design Cookbook
 
 Customize the table's appearance with utility classes and variants.
 
 ### Bordered Table
 
 @blade
-<x-demo>
+<x-demo class="w-full">
     <x-ui.table class="border border-neutral-200 dark:border-neutral-800 rounded-lg">
         <x-ui.table.header>
             <x-ui.table.columns>
@@ -1364,11 +1364,30 @@ Customize the table's appearance with utility classes and variants.
     <!-- Table content... -->
 </x-ui.table>
 ```
+if you have dynamic data table, it recomended to add the border to the table container and let's the container manager the padding between pagination, filters, and the actual table data.
+
+just add the border prop to the container, you may tweack it on the container source code, the code is yours
+
+```blade
+<x-ui.table.container border>
+    <div 
+        class="flex items-center"
+    >
+        <!-- dynamic filters... -->
+    </div>
+
+    <!-- Demo Table -->
+    <x-ui.table >
+    <!-- table contents -->
+    </x-ui.table >
+</x-ui.table.container>
+```
+
 
 ### Striped Rows
 
 @blade
-<x-demo>
+<x-demo class="w-full">
     <x-ui.table>
         <x-ui.table.header>
             <x-ui.table.columns>
@@ -1404,7 +1423,7 @@ Customize the table's appearance with utility classes and variants.
 ### Hover Effects
 
 @blade
-<x-demo>
+<x-demo class="w-full">
     <x-ui.table>
         <x-ui.table.header>
             <x-ui.table.columns>
@@ -1436,7 +1455,7 @@ Customize the table's appearance with utility classes and variants.
 ### Compact Table
 
 @blade
-<x-demo>
+<x-demo class="w-full">
     <x-ui.table>
         <x-ui.table.header>
             <x-ui.table.columns>
@@ -1549,158 +1568,6 @@ Customize the table's appearance with utility classes and variants.
 | `sticky` | boolean | `false` | Make cell stick while scrolling horizontally |
 | `class` | string | `''` | Additional CSS classes |
 
----
-
-## Available Traits
-
-### WithPagination
-
-```php
-use App\Livewire\Concerns\WithPagination;
-
-public int $perPage = 15;
-```
-
-### WithSearch
-
-```php
-use App\Livewire\Concerns\WithSearch;
-
-public string $searchQuery = '';
-
-protected function applySearch($query)
-{
-    // Your search logic
-}
-```
-
-### WithSorting
-
-```php
-use App\Livewire\Concerns\WithSorting;
-
-public string $sortBy = '';
-public string $sortDir = 'asc';
-
-protected function sortableColumns(): array
-{
-    return ['name', 'email', 'created_at'];
-}
-```
-
-### WithSelection
-
-```php
-use App\Livewire\Concerns\WithSelection;
-
-public array $selectedIds = [];
-public array $visibleIds = [];
-```
-
-### CanExportCsv
-
-```php
-use App\Livewire\Concerns\CanExportCsv;
-
-#[Renderless]
-public function exportToCsv()
-{
-    return $this->csv($query->get());
-}
-```
-
----
-
-## Tips & Best Practices
-
-### Performance Optimization
-
-**1. Use Debouncing for Search**
-```blade
-wire:model.live.debounce.300ms="searchQuery"
-```
-
-**2. Add Loading States**
-```blade
-<x-ui.table 
-    wire:loading
-    loadOn="pagination, search, sorting"
->
-```
-
-**3. Eager Load Relationships**
-```php
-$theorems = Theorem::with('field', 'mathematician')
-    ->paginate($this->perPage);
-```
-
-**4. Use Query Scopes**
-```php
-// Instead of complex component logic
-protected function applySearch($query)
-{
-    return $query->search($this->searchQuery);
-}
-```
-
-### Security Best Practices
-
-**1. Always Validate Selected IDs**
-```php
-public function deleteSelected()
-{
-    $this->validate([
-        'selectedIds' => 'required|array|min:1',
-        'selectedIds.*' => 'integer|exists:theorems,id',
-    ]);
-    
-    // Safe to proceed
-}
-```
-
-**2. Escape Search Queries**
-```php
-protected function applySearch($query)
-{
-    $search = str_replace(
-        ['\\', '%', '_'], 
-        ['\\\\', '\\%', '\\_'], 
-        $this->searchQuery
-    );
-    
-    return $query->where(function($q) use ($search) {
-        // Safely use $search here
-    });
-}
-```
-
-**3. Whitelist Sortable Columns**
-```php
-protected function sortableColumns(): array
-{
-    return ['name', 'mathematician', 'year_discovered', 'difficulty_level'];
-}
-```
-
-**4. Add Authorization Checks**
-```php
-public function deleteSelected()
-{
-    Gate::authorize('delete-multiple', Theorem::class);
-    
-    // Delete logic...
-}
-```
-
-### Accessibility
-
-The table component is built with accessibility in mind:
-
-- **Keyboard Navigation** — Checkboxes and buttons are fully keyboard accessible
-- **Screen Reader Support** — Proper ARIA labels and semantic HTML
-- **Focus Management** — Clear focus indicators on interactive elements
-- **Sort Indicators** — Visual and semantic indicators for sort state
-
 ### Common Patterns
 
 **Reset All Filters**
@@ -1729,22 +1596,12 @@ public function export($exportType = 'selected')
     if (filled($this->searchQuery)) {
         $query = $this->applySearch($query);
     }
+
+    .....
     
     return $this->csv($query->get());
 }
 ```
-
-**Per-Page Selector**
-```blade
-<x-ui.select wire:model.live="perPage" class="w-32">
-    <option value="10">10</option>
-    <option value="25">25</option>
-    <option value="50">50</option>
-    <option value="100">100</option>
-</x-ui.select>
-```
-
----
 
 ## Troubleshooting
 
@@ -1766,36 +1623,6 @@ public function render()
 }
 ```
 
-### Search Not Resetting Pagination
-
-Make sure the `WithSearch` trait's `updatedSearchQuery()` is working:
-
-```php
-public function updatedSearchQuery()
-{
-    $this->resetPage();
-}
-```
-
-### Column Visibility Not Persisting
-
-Install and configure Alpine's persist plugin:
-
-```js
-import persist from '@alpinejs/persist'
-Alpine.plugin(persist)
-```
-
-Then use it in your component:
-```blade
-x-data="{ visibleCols: $persist(['name']).as('table-cols') }"
-```
-
-### Sorting Not Working
-
-1. Check the column name matches your database column
-2. Verify the column is in `sortableColumns()`
-3. Ensure you're passing `currentSortBy` and `currentSortDir` to the head component
 
 ## Related Components
 
