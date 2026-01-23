@@ -1217,10 +1217,10 @@ Let's make status and difficulty hideable columns in our theorems table. Here's 
                     Hidden Columns
                 </x-ui.dropdown.item> 
                 <x-ui.dropdown.separator/> 
-                <x-ui.dropdown.item x-model="hiddenCols">
+                <x-ui.dropdown.item value="difficulty" x-model="hiddenCols">
                     Difficulty
                 </x-ui.dropdown.item> 
-                <x-ui.dropdown.item x-model="hiddenCols">
+                <x-ui.dropdown.item value="status" x-model="hiddenCols">
                     Status
                 </x-ui.dropdown.item> 
             </x-slot:menu>
