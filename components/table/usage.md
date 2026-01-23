@@ -1762,7 +1762,7 @@ class Theorems extends Component
 
     public function deleteSelected()
     {
-        this->baseQuery()->whereIn('id',$this->selectedIds)->delete()
+        $this->baseQuery()->whereIn('id',$this->selectedIds)->delete()
     }
 
     protected function applyPositionSorting(Builder $query): Builder
