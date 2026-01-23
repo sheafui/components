@@ -1097,7 +1097,7 @@ Let's make status and difficulty hideable columns in our theorems table. Here's 
 
 @blade
 <x-demo>
-    <div x-data="{ hiddenCols: ['status', 'difficulty'] }">
+    <div x-data="{ hiddenCols: [] }" x-effect="() => console.log(hiddenCols)">
         <div class="mb-4 flex justify-end">
             <x-ui.dropdown
                 checkbox
@@ -1118,10 +1118,10 @@ Let's make status and difficulty hideable columns in our theorems table. Here's 
                         Hidden Columns
                     </x-ui.dropdown.item> 
                     <x-ui.dropdown.separator/> 
-                    <x-ui.dropdown.item x-model="hiddenCols">
+                    <x-ui.dropdown.item value="difficulty" x-model="hiddenCols">
                         Difficulty
                     </x-ui.dropdown.item> 
-                    <x-ui.dropdown.item x-model="hiddenCols">
+                    <x-ui.dropdown.item value="status" x-model="hiddenCols">
                         Status
                     </x-ui.dropdown.item> 
                 </x-slot:menu>
