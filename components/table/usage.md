@@ -482,6 +482,23 @@ Make the first column stick when scrolling horizontally:
 
 > **Note:** When using sticky headers or columns, always apply a background color to prevent content overlap during scrolling.
 
+
+when you've enable `reorderable` feature with sticky columns, adding background color to rows will kill the animated opacity for the sticky cell, so it's better to add the background only if there is not a sorting happenings and you can do that easily by using `[body:not(.sorting)_&]:` as a variant there.
+
+```blade
+<x-ui.table.row 
+    :checkboxId="$theorem->id" 
+    :key="$theorem->id"
+>
+    <x-ui.table.cell 
+        sticky 
+{+        class="[body:not(.sorting)_&]:dark:bg-neutral-950 [body:not(.sorting)_&]:bg-neutral-50"+}
+    >
+        {{ $theorem->id }}
+    </x-ui.table.cell>
+    <!-- .... -->
+</x-ui.table.row>
+```
 ---
 
 ## Implementation Guide
