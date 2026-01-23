@@ -1081,71 +1081,140 @@ Use the `top` slot to add bulk action controls:
 
 ### Add Column Visibility
 
-Let theorems show/hide columns dynamically.
+Let's make status and difficulty hiddeable columns on our theorems table well this is how.
 
 @blade
 <x-demo>
-    <div x-data="{ hiddenColumns: ['name', 'email', 'role'] }">
+    <div x-data="{ hiddenCols: ['status', 'difficulty'] }">
         <div class="mb-4 flex justify-end">
-            <x-ui.dropdown checkbox position="bottom-end">
+            <x-ui.dropdown
+                checkbox
+                checkboxVariant
+                position="bottom-end"
+            >
                 <x-slot:button>
                     <x-ui.button 
-                        icon="eye" 
+                        icon="view-columns" 
                         variant="soft"
                         size="sm"
-                    >
-                        Columns
-                    </x-ui.button>
+                        class="rounded-box ml-2 outline dark:outline-white/20 outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm" 
+                    />
                 </x-slot:button>
-                
-                <x-slot:menu>
-                    <x-ui.dropdown.item x-model="visibleCols" value="name">
-                        Name
-                    </x-ui.dropdown.item>
-                    <x-ui.dropdown.item x-model="visibleCols" value="email">
-                        Email
-                    </x-ui.dropdown.item>
-                    <x-ui.dropdown.item x-model="visibleCols" value="role">
-                        Role
-                    </x-ui.dropdown.item>
-                    <x-ui.dropdown.item x-model="visibleCols" value="status">
-                        Status
-                    </x-ui.dropdown.item>
+                <x-slot:menu>                        
+                    <x-ui.dropdown.item readOnly>
+                        hidden columns
+                    </x-ui.dropdown.item> 
+                    <x-ui.dropdown.separator/> 
+                    <x-ui.dropdown.item 
+                        x-model="hiddenCols" 
+                    >
+                        difficulty
+                    </x-ui.dropdown.item> 
+                    <x-ui.dropdown.item 
+                        x-model="hiddenCols" 
+                    >
+                        status
+                    </x-ui.dropdown.item> 
                 </x-slot:menu>
             </x-ui.dropdown>
         </div>
-
         <x-ui.table>
             <x-ui.table.header>
                 <x-ui.table.columns>
-                    <x-ui.table.head x-show="visibleCols.includes('name')">
-                        Name
+                    <x-ui.table.head>
+                        #ID
                     </x-ui.table.head>
-                    <x-ui.table.head x-show="visibleCols.includes('email')">
-                        Email
+                    <x-ui.table.head>
+                        Therem
                     </x-ui.table.head>
-                    <x-ui.table.head x-show="visibleCols.includes('role')">
-                        Role
+                    <x-ui.table.head>
+                        Mathematician
                     </x-ui.table.head>
-                    <x-ui.table.head x-show="visibleCols.includes('status')">
+                    <x-ui.table.head>
+                        Field
+                    </x-ui.table.head>
+                    <x-ui.table.head>
+                        Year
+                    </x-ui.table.head>
+                    <x-ui.table.head
+                        x-show="!hiddenCols.includes('difficulty')"
+                        x-cloak
+                    >
+                        Difficulty
+                    </x-ui.table.head>
+                    <x-ui.table.head  
+                        x-show="!hiddenCols.includes('status')"
+                        x-cloak
+                    >
                         Status
                     </x-ui.table.head>
                 </x-ui.table.columns>
             </x-ui.table.header>
-
             <x-ui.table.rows>
                 <x-ui.table.row>
-                    <x-ui.table.cell x-show="visibleCols.includes('name')">
-                        Alice Johnson
+                    <x-ui.table.cell>
+                        1
                     </x-ui.table.cell>
-                    <x-ui.table.cell x-show="visibleCols.includes('email')">
-                        alice@example.com
+                    <x-ui.table.cell>
+                        Fundamental Theorem of Calculus
                     </x-ui.table.cell>
-                    <x-ui.table.cell x-show="visibleCols.includes('role')">
-                        Admin
+                    <x-ui.table.cell>
+                        Isaac Newton & Gottfried Leibniz
                     </x-ui.table.cell>
-                    <x-ui.table.cell x-show="visibleCols.includes('status')">
-                        Active
+                    <x-ui.table.cell>
+                        <x-ui.badge color="blue" variant="outline">
+                            Analysis
+                        </x-ui.badge>
+                    </x-ui.table.cell>
+                    <x-ui.table.cell>
+                        1666
+                    </x-ui.table.cell>
+                    <x-ui.table.cell
+                        x-show="!hiddenCols.includes('difficulty')"
+                        x-cloak
+                    >
+                        7
+                    </x-ui.table.cell>
+                    <x-ui.table.cell
+                        x-show="!hiddenCols.includes('status')"
+                        x-cloak
+                    >
+                        <x-ui.badge color="green" variant="outline">
+                            Proven
+                        </x-ui.badge>
+                    </x-ui.table.cell>
+                </x-ui.table.row>
+                <x-ui.table.row>
+                    <x-ui.table.cell>
+                        2
+                    </x-ui.table.cell>
+                    <x-ui.table.cell>
+                        Fermat's Last Theorem
+                    </x-ui.table.cell>
+                    <x-ui.table.cell>
+                        Andrew Wiles
+                    </x-ui.table.cell>
+                    <x-ui.table.cell>
+                        <x-ui.badge color="pink" variant="outline">
+                            Number Theory
+                        </x-ui.badge>
+                    </x-ui.table.cell>
+                    <x-ui.table.cell>
+                        1995
+                    </x-ui.table.cell>
+                    <x-ui.table.cell
+                        x-show="!hiddenCols.includes('difficulty')"
+                        x-cloak
+                    >
+                        10
+                    </x-ui.table.cell>
+                    <x-ui.table.cell
+                        x-show="!hiddenCols.includes('status')"
+                        x-cloak
+                    >
+                        <x-ui.badge color="green" variant="outline">
+                            Proven
+                        </x-ui.badge>
                     </x-ui.table.cell>
                 </x-ui.table.row>
             </x-ui.table.rows>
@@ -1155,70 +1224,159 @@ Let theorems show/hide columns dynamically.
 @endblade
 
 ```blade
-<div x-data="{ 
-    visibleCols: $persist(['name', 'email', 'role']).as('theorems-table-visible-columns')
-}">
-    <!-- Column Visibility Dropdown -->
-    <x-ui.table :paginator="$theorems">
-        <x-slot name="top" class="flex justify-between">
-            <div class="ml-auto">
-                <x-ui.dropdown checkbox position="bottom-end">
+  <x-ui.table.container x-data="{ hiddenCols: ['status', 'difficulty'] }">
+            <div 
+                class="flex items-center"
+            >
+                <!-- BULK ACTIONS CONTENT... -->
+
+
+                <!-- INPUT CONTENT... -->
+
+{+                {{-- HIDDEN COLUMNS --}}
+                <x-ui.dropdown
+                    checkbox
+                    checkboxVariant
+                    position="bottom-end"
+                >
                     <x-slot:button>
                         <x-ui.button 
-                            icon="eye" 
+                            icon="view-columns" 
                             variant="soft"
                             size="sm"
-                        >
-                            Columns
-                        </x-ui.button>
+                            class="rounded-box ml-2 outline dark:outline-white/20 outline-neutral-900/10 dark:ring-white/15 ring-neutral-900/15 [[data-open]>&]:bg-white/5 [[data-open]>&]:ring-2 shadow-sm" 
+                        />
                     </x-slot:button>
                     
-                    <x-slot:menu>
-                        <x-ui.dropdown.item x-model="visibleCols" value="name">
-                            Name
-                        </x-ui.dropdown.item>
-                        <x-ui.dropdown.item x-model="visibleCols" value="email">
-                            Email
-                        </x-ui.dropdown.item>
-                        <x-ui.dropdown.item x-model="visibleCols" value="created_at">
-                            Created At
-                        </x-ui.dropdown.item>
+                    <x-slot:menu>                        
+                        <x-ui.dropdown.item readOnly>
+                            hidden columns
+                        </x-ui.dropdown.item> 
+                        <x-ui.dropdown.separator/> 
+                        <x-ui.dropdown.item 
+                            x-model="hiddenCols" 
+                        >
+                            difficulty
+                        </x-ui.dropdown.item> 
+                        <x-ui.dropdown.item 
+                            x-model="hiddenCols" 
+                        >
+                            status
+                        </x-ui.dropdown.item> 
                     </x-slot:menu>
-                </x-ui.dropdown>
+                </x-ui.dropdown>+}
             </div>
-        </x-slot>
+            <!-- Demo Table -->
+            <x-ui.table 
+                :paginator="$paginator"  
+                pagination:variant="full"
+                loadOn="pagination, search, sorting"
+            >
+                <x-ui.table.header sticky class="dark:bg-neutral-900 bg-white">
+                    <x-ui.table.columns withCheckAll>
+                        <x-ui.table.head sticky class="dark:bg-neutral-900 bg-white">
+                            #ID
+                        </x-ui.table.head>
+                        <x-ui.table.head>
+                            Theorem
+                        </x-ui.table.head>
+                        <x-ui.table.head
+                            column="mathematician"
+                            sortable
+                            :currentSortBy="$sortBy"
+                            :currentSortDir="$sortDir"
+                        >
+                            Mathematician
+                        </x-ui.table.head>
+                        <x-ui.table.head>
+                            Field
+                        </x-ui.table.head>
+                        <x-ui.table.head
+                            column="year_discovered"
+                            sortable
+                            variant="dropdown"
+                            :currentSortBy="$sortBy"
+                            :currentSortDir="$sortDir"
+                        >
+                            Year
+                        </x-ui.table.head>
+                        <x-ui.table.head
+                            column="difficulty_level"
+                            sortable
+                            :currentSortBy="$sortBy"
+                            :currentSortDir="$sortDir"
+{+                            x-show="!hiddenCols.includes('difficulty')"+}
+                        >
+                            Difficulty
+                        </x-ui.table.head>
+                        <x-ui.table.head  
+{+                            x-show="!hiddenCols.includes('status')"+}
+                        >
+                            Status
+                        </x-ui.table.head>
+                    </x-ui.table.columns>
+                </x-ui.table.header>
 
-        <x-ui.table.header>
-            <x-ui.table.columns>
-                <x-ui.table.head x-show="visibleCols.includes('name')">
-                    Name
-                </x-ui.table.head>
-                <x-ui.table.head x-show="visibleCols.includes('email')">
-                    Email
-                </x-ui.table.head>
-                <x-ui.table.head x-show="visibleCols.includes('created_at')">
-                    Created At
-                </x-ui.table.head>
-            </x-ui.table.columns>
-        </x-ui.table.header>
-
-        <x-ui.table.rows>
-            @foreach ($theorems as $user)
-                <x-ui.table.row wire:key="user-{{ $user->id }}">
-                    <x-ui.table.cell x-show="visibleCols.includes('name')">
-                        {{ $user->name }}
-                    </x-ui.table.cell>
-                    <x-ui.table.cell x-show="visibleCols.includes('email')">
-                        {{ $user->email }}
-                    </x-ui.table.cell>
-                    <x-ui.table.cell x-show="visibleCols.includes('created_at')">
-                        {{ $user->created_at->format('M d, Y') }}
-                    </x-ui.table.cell>
-                </x-ui.table.row>
-            @endforeach
-        </x-ui.table.rows>
-    </x-ui.table>
-</div>
+                <x-ui.table.rows>
+                    @forelse($paginator as $theorem)
+                        <x-ui.table.row 
+                            :checkboxId="$theorem->id" 
+                            :key="$theorem->id"
+                        >
+                            <x-ui.table.cell sticky class="dark:bg-neutral-950 bg-neutral-50">
+                                {{ $theorem->id }}
+                            </x-ui.table.cell>
+                            <x-ui.table.cell class="dark:bg-neutral-950 bg-neutral-50">
+                               <!-- name and statements.. -->
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell>
+                                <div class="text-sm text-neutral-700 dark:text-neutral-300">
+                                    {{ $theorem->mathematician }}
+                                </div>
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell>
+                               <!-- ... -->
+                                <x-ui.badge :color="$color" size="sm" variant="outline">
+                                    {{ $theorem->field }}
+                                </x-ui.badge>
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell>
+                                <div class="text-sm font-mono text-neutral-600 dark:text-neutral-400">
+                                    {{ $theorem->year_discovered < 0 ? abs($theorem->year_discovered) . ' BC' : $theorem->year_discovered }}
+                                </div>
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell 
+{+                                x-show="!hiddenCols.includes('difficulty')"+}
+                            >
+                                <!-- ... -->
+                                <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                                    Level {{ $theorem->difficulty_level }}
+                                </div>
+                            </x-ui.table.cell>
+                            
+                            <x-ui.table.cell  
+{+                                x-show="!hiddenCols.includes('status')"+}
+                            >
+                                @if($theorem->is_proven)
+                                    <x-ui.badge icon="check-circle" color="green" size="sm" variant="outline">
+                                        Proven
+                                    </x-ui.badge>
+                                @else
+                                    <x-ui.badge icon="exclamation-triangle" color="orange" size="sm" variant="outline">
+                                        Conjecture
+                                    </x-ui.badge>
+                                @endif
+                            </x-ui.table.cell>
+                        </x-ui.table.row>
+                    <!-- others parts  -->
+                    @endforelse
+                </x-ui.table.rows>
+            </x-ui.table>
+        </x-ui.table.container>
 ```
 
 #### Persisting Column Preferences
@@ -1227,7 +1385,7 @@ Use Alpine's `$persist` plugin to save user preferences across sessions:
 
 ```blade
 x-data="{ 
-    visibleCols: $persist(['name', 'email']).as('table-visible-columns')
+    hiddenCols: $persist(['status', 'difficulty']).as('table-hidden-columns')
 }"
 ```
 
