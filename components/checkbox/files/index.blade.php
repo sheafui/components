@@ -1,8 +1,3 @@
-{{-- 
-    Custom checkbox component that handles both individual and group states
-    Supports Livewire and Alpine.js model binding with automatic state synchronization
---}}
-
 @aware([
     'variant' => 'default'
 ])
