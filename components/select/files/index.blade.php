@@ -267,7 +267,6 @@
      }}
 >
 
-     {{-- for classic form submission if your using livewire remove this sh**t --}}
     @if ($name)
         <input 
             type="hidden" 

@@ -538,14 +538,6 @@ to push tabs to end **use `justify-end`**
 ```
 
 under the hood we check the presence of `justify-*` class, to handle some edge cases in some variants
-## Accessibility Features
-
-The tabs component includes full accessibility support:
-
-- **Keyboard Navigation**: Use arrow keys, Home, End, Page Up, and Page Down to navigate
-- **ARIA Attributes**: Proper `role="tablist"` and related ARIA attributes
-- **Focus Management**: Automatic focus management when switching tabs
-- **Screen Reader Support**: Proper labeling and state announcements
 
 ### Keyboard Shortcuts
 

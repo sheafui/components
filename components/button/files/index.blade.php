@@ -25,7 +25,7 @@ $squared = $slot->isEmpty();
 $sizeClasses = match($size) { 
     'lg' => '[:where(&)]:h-12 text-md' . ' '. ( $squared ? 'w-12': ($icon ? 'ps-4' : 'ps-5') . ' ' . ($iconAfter ? 'pe-4' : 'pe-5')),
     'md' => '[:where(&)]:h-10 text-base' . ' '. ( $squared ? 'w-10': ($icon ? 'ps-3' : 'ps-4') . ' ' . ($iconAfter ? 'pe-3' : 'pe-4')), // default
-    'sm' => '[:where(&)]:h-8 text-sm' . ' '. ( $squared ? 'w-8': ($icon ? 'ps-2' : 'ps-3') . ' ' . ($iconAfter ? 'pe-2' : 'pe-3')),
+    'sm' => '[:where(&)]:h-9 text-sm' . ' '. ( $squared ? 'w-9': ($icon ? 'ps-2' : 'ps-3') . ' ' . ($iconAfter ? 'pe-2' : 'pe-3')),
     'xs' => '[:where(&)]:h-6 text-xs' . ' '. ( $squared ? 'w-6': ($icon ? 'ps-1' : 'ps-2') . ' ' . ($iconAfter ? 'pe-1' : 'pe-2')),
     default => '[:where(&)]:h-10 text-sm' . ' '. ( $squared ? 'w-10': ($icon ? 'ps-3' : 'ps-4') . ' ' . ($iconAfter ? 'pe-3' : 'pe-4')),
 };
@@ -82,7 +82,7 @@ $colors = match($color) {
 // Determine variant-specific classes for background, text, borders, and hover states
 $variantClasses = match($variant){
     'primary' => [
-        'bg-[var(--color-primary)] hover:bg-[--alpha(var(--color-primary)/50%)', // Background color 
+        'bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90', // Background color 
         'text-[var(--color-primary-fg)]', // Text color
         'border border-black/10 dark:border-0', // Border styles
         $colors => filled($color)
@@ -96,13 +96,13 @@ $variantClasses = match($variant){
         ' bg-transparent'
     ],
     'outline' => [
-        'border border-[--alpha(var(--color-primary)/50%)] hover:border-[color-mix(in_oklab,_var(--color-primary),_black_20%)]', // Border
-        'bg-[--alpha(var(--color-primary)/5%)] hover:bg-[--alpha(var(--color-primary)/10%)]', // Background
+        'border border-[--alpha(var(--color-primary)/20%)] hover:border-[--alpha(var(--color-primary)/25%)]', // Border
+        'bg-[--alpha(var(--color-primary)/5%)] hover:bg-[--alpha(var(--color-primary)/7%)]', // Background
         'text-[var(--color-primary)]', 
         $colors => filled($color), // Ensure variables are set
     ],
     'ghost' => [
-        'bg-transparent hover:bg-neutral-800/5 dark:hover:bg-white/15', // Background colors
+        'bg-transparent hover:bg-[--alpha(var(--color-neutral-900)/5%)] dark:hover:bg-[--alpha(var(--color-white)/5%)]', // Background colors
         'text-neutral-800 dark:text-white' // Text colors
     ],
     'danger' =>[
@@ -116,11 +116,10 @@ $variantClasses = match($variant){
 
 // Assemble base button classes, including layout, disabled states, and conditional styles
 $classes = [
-    'relative inline-flex items-center font-medium justify-center gap-x-2 whitespace-nowrap transition-colors duration-200',
-    '[contain:layout]', // fix for chrome bug with loading: nothing outside effect this internal layout,
+    'relative [:where(&)]:inline-flex items-center font-medium justify-center gap-x-2 whitespace-nowrap transition-colors duration-200',
     'disabled:opacity-55 dark:disabled:opacity-55 disabled:cursor-default disabled:pointer-events-none cursor-pointer',
     '[&_a]:no-underline [&_a]:decoration-none [&_a:hover]:no-underline' => $variant !== 'none' , // Handle anchor tags inside the button
-    'rounded-field' => $variant !== 'none' , // Apply rounding unless variant is 'none'
+    '[:where(&)]:rounded-field' => $variant !== 'none' , // Apply rounding unless variant is 'none'
     
     // Handling loading logic via CSS: Show loading indicator as flex and set opacity-0 on its siblings
     '[&>[data-loading=true]:first-child]:flex', // Override 'hidden' to display the loading div during loading
@@ -177,7 +176,7 @@ $loadingAttributes = $loadingAttributes->merge($loading ? [
     @endif
 
     @if($slot->isNotEmpty())
-        <span >
+        <span data-text>
             {{ $slot }}
         </span>
     @endif

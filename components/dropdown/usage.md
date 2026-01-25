@@ -129,7 +129,7 @@ Add visual clarity with icons for better user experience.
     </x-slot:menu>
 </x-ui.dropdown>
 ```
-<!-- 
+
 ### Items with Shortcuts
 
 Display keyboard shortcuts for power users.
@@ -186,7 +186,7 @@ Display keyboard shortcuts for power users.
         </x-ui.dropdown.item>
     </x-slot:menu>
 </x-ui.dropdown>
-``` -->
+```
 
 ### Linked Items
 
@@ -768,6 +768,284 @@ Combine all features for sophisticated dropdown menus.
 
 Here's the section to add to your dropdown documentation:
 
+## Checkbox Variant
+
+The dropdown now supports checkbox items for multi-selection scenarios. When enabled, items can be toggled on/off independently.
+
+### Basic Checkbox Usage
+
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.dropdown checkbox>
+        <x-slot:button>
+            <x-ui.button icon="funnel" variant="soft" size="sm">
+                Filters
+            </x-ui.button>
+        </x-slot:button>
+        
+        <x-slot:menu>
+            <x-ui.dropdown.item wire:model="filters.active">
+                Active Items
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.item wire:model="filters.archived">
+                Archived Items
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.item wire:model="filters.deleted">
+                Deleted Items
+            </x-ui.dropdown.item>
+        </x-slot:menu>
+    </x-ui.dropdown>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.dropdown checkbox>
+    <x-slot:button>
+        <x-ui.button icon="funnel" variant="soft" size="sm">
+            Filters
+        </x-ui.button>
+    </x-slot:button>
+    
+    <x-slot:menu>
+        <x-ui.dropdown.item wire:model="filters.active">
+            Active Items
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.item wire:model="filters.archived">
+            Archived Items
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.item wire:model="filters.deleted">
+            Deleted Items
+        </x-ui.dropdown.item>
+    </x-slot:menu>
+</x-ui.dropdown>
+```
+
+### Custom Checkbox Variant
+
+Use `checkboxVariant` for a more prominent checkbox style with visible checkboxes:
+
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.dropdown checkbox checkboxVariant>
+        <x-slot:button>
+            <x-ui.button icon="funnel" variant="soft" size="sm">
+                Column Visibility
+            </x-ui.button>
+        </x-slot:button>
+        
+        <x-slot:menu>
+            <x-ui.dropdown.item readOnly>
+                Hidden Columns
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.separator/>
+            
+            <x-ui.dropdown.item wire:model="hiddenCols" value="probability">
+                Probability
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.item wire:model="hiddenCols" value="difficulty">
+                Difficulty
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.item wire:model="hiddenCols" value="status">
+                Status
+            </x-ui.dropdown.item>
+        </x-slot:menu>
+    </x-ui.dropdown>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.dropdown checkbox checkboxVariant>
+    <x-slot:button>
+        <x-ui.button icon="funnel" variant="soft" size="sm">
+            Column Visibility
+        </x-ui.button>
+    </x-slot:button>
+    
+    <x-slot:menu>
+        <x-ui.dropdown.item readOnly>
+            Hidden Columns
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.separator/>
+        
+        <x-ui.dropdown.item wire:model="hiddenCols" value="probability">
+            Probability
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.item wire:model="hiddenCols" value="difficulty">
+            Difficulty
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.item wire:model="hiddenCols" value="status">
+            Status
+        </x-ui.dropdown.item>
+    </x-slot:menu>
+</x-ui.dropdown>
+```
+
+**Differences:**
+- `checkbox`: Uses a minimal checkmark icon that appears when selected
+- `checkboxVariant`: Shows an actual checkbox UI element with background and border
+
+## Radio Variant
+
+For single-selection scenarios, use the radio variant:
+
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.dropdown radio name="sortBy">
+        <x-slot:button>
+            <x-ui.button icon="arrows-up-down" variant="soft" size="sm">
+                Sort By
+            </x-ui.button>
+        </x-slot:button>
+        
+        <x-slot:menu>
+            <x-ui.dropdown.item wire:model="sortBy" value="name">
+                Name
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.item wire:model="sortBy" value="date">
+                Date
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.item wire:model="sortBy" value="size">
+                Size
+            </x-ui.dropdown.item>
+        </x-slot:menu>
+    </x-ui.dropdown>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.dropdown radio name="sortBy">
+    <x-slot:button>
+        <x-ui.button icon="arrows-up-down" variant="soft" size="sm">
+            Sort By
+        </x-ui.button>
+    </x-slot:button>
+    
+    <x-slot:menu>
+        <x-ui.dropdown.item wire:model="sortBy" value="name">
+            Name
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.item wire:model="sortBy" value="date">
+            Date
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.item wire:model="sortBy" value="size">
+            Size
+        </x-ui.dropdown.item>
+    </x-slot:menu>
+</x-ui.dropdown>
+```
+
+**Note:** Radio items require a `name` attribute to group them together.
+
+## Read-Only Items (Titles)
+
+Use `readOnly` items as non-interactive section titles or headers within your dropdown:
+
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.dropdown checkbox checkboxVariant>
+        <x-slot:button>
+            <x-ui.button icon="adjustments-horizontal">
+                Display Options
+            </x-ui.button>
+        </x-slot:button>
+        
+        <x-slot:menu>
+            <x-ui.dropdown.item readOnly>
+                View Settings
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.separator/>
+            
+            <x-ui.dropdown.item wire:model="display.grid">
+                Grid View
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.item wire:model="display.list">
+                List View
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.separator/>
+            
+            <x-ui.dropdown.item readOnly>
+                Active Filters
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.separator/>
+            
+            <x-ui.dropdown.item wire:model="filters.active">
+                Show Active Only
+            </x-ui.dropdown.item>
+            
+            <x-ui.dropdown.item wire:model="filters.archived">
+                Show Archived
+            </x-ui.dropdown.item>
+        </x-slot:menu>
+    </x-ui.dropdown>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.dropdown checkbox checkboxVariant>
+    <x-slot:button>
+        <x-ui.button icon="adjustments-horizontal">
+            Display Options
+        </x-ui.button>
+    </x-slot:button>
+    
+    <x-slot:menu>
+        <x-ui.dropdown.item readOnly>
+            View Settings
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.separator/>
+        
+        <x-ui.dropdown.item wire:model="display.grid">
+            Grid View
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.item wire:model="display.list">
+            List View
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.separator/>
+        
+        <x-ui.dropdown.item readOnly>
+            Active Filters
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.separator/>
+        
+        <x-ui.dropdown.item wire:model="filters.active">
+            Show Active Only
+        </x-ui.dropdown.item>
+        
+        <x-ui.dropdown.item wire:model="filters.archived">
+            Show Archived
+        </x-ui.dropdown.item>
+    </x-slot:menu>
+</x-ui.dropdown>
+```
+
+**Benefits:**
+- Provides visual organization
+- Non-interactive, preventing accidental clicks
+- Spans full width for clear section separation
+- Styled differently from regular items
+
 ## Portal Mode
 
 The `portal` prop controls where the dropdown menu is rendered in the DOM. By default (`portal="false"`), the menu renders as a child of the dropdown component. When enabled (`portal="true"`), the menu is teleported to the end of the `<body>` element.
@@ -823,6 +1101,7 @@ When `portal="true"`, the dropdown menu loses access to parent CSS custom proper
 
 **Note:** The menu remains properly positioned via `x-anchor` regardless of portal usage.
 
+
 ## Component Props
 
 ### Dropdown (Main Component)
@@ -832,6 +1111,10 @@ When `portal="true"`, the dropdown menu loses access to parent CSS custom proper
 | `position` | string | `'bottom-center'` | No | Dropdown positioning: `bottom-center`, `bottom-start`, `bottom-end`, `top-center`, `top-start`, `top-end` |
 | `portal` | string | `null` | No | teleported dropdown: `portal` prop |
 | `class` | string | `''` | No | Additional CSS classes |
+| `checkbox` | boolean | `false` | No | Enable checkbox mode for multi-selection |
+| `radio` | boolean | `false` | No | Enable radio mode for single selection |
+| `resetFocus` | boolean | `false` | No | Return focus to trigger button when dropdown closes |
+| `checkboxVariant` | boolean | `false` | No | Use prominent checkbox UI (requires `checkbox="true"`) |
 
 ### Dropdown Item
 
@@ -845,6 +1128,9 @@ When `portal="true"`, the dropdown menu loses access to parent CSS custom proper
 | `variant` | string | `'soft'` | No | Visual variant: `soft`, `danger` |
 | `href` | string | `null` | No | URL for navigation items |
 | `class` | string | `''` | No | Additional CSS classes |
+| `readOnly` | boolean | `false` | No | Makes item non-interactive (useful as section title) |
+| `value` | string | `null` | No | Value for checkbox/radio items |
+| `name` | string | `null` | No | Name attribute for radio groups |
 
 ### Dropdown Group
 

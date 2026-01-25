@@ -505,30 +505,3 @@ The component includes comprehensive accessibility features:
 | `otp-complete` | `{ code: string }` | Fired when all inputs are filled |
 | `otp-clear` | - | Clears all inputs (listen with window) |
 | `otp-focus` | - | Focuses first empty input (listen with window) |
-
-## Technical Notes
-
-### Livewire Integration
-- Uses `Livewire.hook('morphed')` to handle DOM diffing
-- Refreshes `data-order` attributes after each morph
-- Supports both regular and `.live` model bindings
-- State synchronization happens automatically
-
-### Browser Compatibility
-- Works across Chrome, Firefox, Safari, and Edge
-- Uses `requestAnimationFrame()` for consistent focus behavior
-- Firefox-specific workarounds for `select()` timing issues
-
-### Performance
-- Minimal re-renders with smart state management
-- Uses `$nextTick()` to prevent race conditions
-- Efficient DOM queries with cached input references
-
-### Edge Cases Handled
-- Partial paste content
-- Invalid character filtering
-- Multi-character input (takes last character)
-- Clicking disabled inputs (::after overlay trick)
-- Livewire morph attribute stripping
-- External state changes (SSR-safe)
-- Delete key treated as backspace for consistency

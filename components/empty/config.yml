@@ -1,0 +1,4 @@
+files:
+  contents: resources/views/components/ui/empty/contents.blade.php
+  index: resources/views/components/ui/empty/index.blade.php
+  media: resources/views/components/ui/empty/media.blade.php

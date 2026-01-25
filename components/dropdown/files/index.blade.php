@@ -1,16 +1,24 @@
 @props([
     'position' => 'bottom-center',
     'teleport' => 'body',
-    'portal' => false 
+    'portal' => false,
+    'trap' => false,
+    'offset' => 6,
+    'checkbox' => false,
+    'radio' => false,
+    'resetFocus' => false
 ])
 
 @php
+    $isDefaultDropdownVariant = $checkbox || $radio;
     $classes = [
         'isolate z-50',
-        'grid grid-cols-[auto_1fr_auto]',
+        'grid grid-cols-[auto_1fr_auto]' => !$isDefaultDropdownVariant ,
+        'grid grid-cols-[auto_auto_1fr_auto]' => $isDefaultDropdownVariant,
         '[:where(&)]:max-w-96 [:where(&)]:min-w-40 text-start',
-        'bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 space-y-0.5',
-        'rounded-(--dropdown-radius) p-(--dropdown-padding) [--dropdown-radius:var(--radius-box)] [--dropdown-padding:--spacing(.75)]',
+        'bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10',
+        '[--dropdown-radius:var(--radius-box)] [--dropdown-padding:--spacing(.75)]
+         rounded-(--dropdown-radius) p-(--dropdown-padding) space-y-1',
     ];  
 @endphp
 
@@ -18,12 +26,13 @@
     <div
         x-data="{
             open: false,
+            resetFocus:@js($resetFocus),
             toggle() {
                 if (this.open) {
                     return this.close()
                 }
 
-                this.$refs.button.focus()
+                $focus.getFirst().focus()
                 this.open = true
             },
             isOpen(){
@@ -32,10 +41,11 @@
             close(focusAfter) {
                 if (! this.open) return
 
-                this.open = false
+                this.open = false;
 
-                focusAfter && focusAfter.focus()
+                focusAfter && this.resetFocus && requestAnimationFrame(() => $focus.getFirst().focus());
             },
+
             handleFocusInOut(event) {
                 const panel = this.$refs.panel
                 const button = this.$refs.button
@@ -55,6 +65,7 @@
             },
 
         }"
+        wire:ignore
         x-on:keydown.escape.prevent.stop="close($refs.button)"
         x-on:focusin.window="handleFocusInOut($event)"
         x-id="['dropdown-button']"
@@ -64,13 +75,14 @@
         <!-- Button -->
         <div 
             x-ref="button"
-            {{ $button->attributes->class('flex items-center px-2 py-1 rounded-field') }}
+            {{ $button->attributes }}
             x-on:keydown.tab.prevent.stop="$focus.focus($focus.within($refs.panel).getFirst())"
             x-on:keydown.down.prevent.stop="$focus.focus($focus.within($refs.panel).getFirst())"
             x-on:keydown.space.stop.prevent="toggle()"
             x-on:keydown.enter.stop.prevent="toggle()"
             x-on:click="toggle()"
             x-bind:aria-expanded="open"
+            x-bind:data-open="open"
             x-bind:aria-controls="$id('dropdown-button')"
         >
             {{ $button }}
@@ -82,8 +94,13 @@
         
         <div 
             x-show="open"
+
+            @if ($trap)
+                x-trap="open"            
+            @endif
+            
             x-ref="panel"
-            x-anchor.{{ $position }}.offset.6="$refs.button"
+            x-anchor.{{ $position }}.offset.{{ $offset }}="$refs.button;"
             x-on:keydown.down.prevent.stop="$focus.next()"
             x-on:keydown.up.prevent.stop="$focus.prev()"
             x-on:keydown.home.prevent.stop="$focus.first()"
@@ -98,7 +115,12 @@
             x-transition:leave-end="opacity-0 scale-95"
             x-on:click.away="close($refs.button)"
             x-bind:id="$id('dropdown-button')"
-            style="display: none; backdrop-filter: blur(64px); -webkit-backdrop-filter: blur(64px);"
+            style="display: none;"
+            @if($radio)
+                role="radiogroup"
+            @else
+                role="menu"
+            @endif
             {{ $menu->attributes->class(Arr::toCssClasses($classes)) }}
         >
             {{ $menu }}

@@ -3,13 +3,21 @@
     'disabled' => false,
 ])
 
+@php
+    $classes=[
+        'contents',
+        // if this followed by a separator or another submenu, compensite the missed space-y-(--dropdown-padding) caused by `contents` class
+        '[&+[data-slot=dropdown-separator]]:mt-1',
+        '[&+[data-slot=dropdown-submenu]_[data-slot=dropdown-item]]:mt-1',
+    ]
+@endphp
 
-<div x-data="{ isOpen: false }" class="contents">
+<div x-data="{ isOpen: false }" 
+    class="{{ Arr::toCssClasses($classes) }}"
+    data-slot="dropdown-submenu"
+>
     <x-ui.dropdown.item 
-        {{ $attributes->merge([
-            'disabled' => $disabled,
-            'tabindex' => $disabled ? '-1' : '0'
-        ]) }}
+        {{ $attributes->merge([ 'disabled' => $disabled, 'tabindex' => $disabled ? '-1' : '0' ]) }}
         x-ref="trigger"
         x-on:mouseenter="isOpen = true"
         x-on:mouseleave="isOpen = false"
@@ -21,8 +29,12 @@
                 if (el) $focus.focus($focus.within(el).getFirst());
             })
         "
+        active
     >
-        {{ $label }}
+        <div class="flex items-center justify-between">
+            {{ $label }}
+            <x-ui.icon name="chevron-right" variant="mini" class="inline-flex shrink-0 ml-2"/>
+        </div>
     </x-ui.dropdown.item>
 
     <div 
@@ -46,7 +58,7 @@
         style="display: none;"
         {{ $attributes->class([
             'bg-white dark:bg-neutral-900 ',
-            'z-10 max-w-96 min-w-40 text-start shadow-md  border border-black/10 dark:border-white/10',
+            'z-10 [:where(&)]:max-w-96 [:where(&)]:min-w-40 text-start shadow-md border border-black/10 dark:border-white/10',
             'grid grid-cols-[auto_1fr_auto]',
             'rounded-(--dropdown-radius) p-(--dropdown-padding) [--dropdown-radius:var(--radius-box)] [--dropdown-padding:--spacing(.75)]',
         ]) }}

@@ -47,7 +47,7 @@
     $iconCount = count(array_filter([$clearable, $copyable, $revealable, $rightIcon]));
 @endphp
 
-<div {{ $attributes->class(Arr::toCssClasses($classes)) }}>
+<div class="{{ Arr::toCssClasses(array_merge($classes, [$attributes->get('class')])) }}">
     {{-- HANDLE PREFIX SLOTS --}}
     @if (filled($prefix) || filled($prefixIcon))
         <x-ui.input.extra-slot data-slot="input-prefix">
@@ -190,7 +190,7 @@
         <input
             @class([
                 'z-10',
-                'inline-block border p-2 w-full text-base sm:text-sm text-neutral-800 disabled:text-neutral-500 placeholder-neutral-400 disabled:placeholder-neutral-400/70 dark:text-neutral-300 dark:disabled:text-neutral-400 dark:placeholder-neutral-400 dark:disabled:placeholder-neutral-500',
+                'inline-block border p-2 w-full text-sm text-neutral-800 disabled:text-neutral-500 placeholder-neutral-400 disabled:placeholder-neutral-400/70 dark:text-neutral-300 dark:disabled:text-neutral-400 dark:placeholder-neutral-400 dark:disabled:placeholder-neutral-500',
                 'bg-white dark:bg-neutral-900 dark:disabled:bg-neutral-800',
                 'disabled:cursor-not-allowed transition-colors duration-200',
                 'shadow-none dark:shadow-sm disabled:shadow-none rounded-box',
@@ -201,7 +201,7 @@
             name="{{ $name }}"
             type="{{ $type }}"
             data-slot="control"
-            {{ $attributes }}
+            {{ $attributes->except('class') }}
             data-control-id="input" {{-- used for actions --}}
             @if($invalid) invalid @endif
         />
