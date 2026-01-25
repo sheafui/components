@@ -3,6 +3,7 @@ files:
   item: resources/views/components/ui/dropdown/item.blade.php
   submenu: resources/views/components/ui/dropdown/submenu.blade.php
   group: resources/views/components/ui/dropdown/group.blade.php
+  checkbox-or-radio: resources/views/components/ui/dropdown/checkbox-or-radio.blade.php
   separator: resources/views/components/ui/dropdown/separator.blade.php
 dependencies:
   internal: [icon]
