@@ -14,6 +14,19 @@ Use the [sheaf artisan command](/docs/guides/cli-installation#content-component-
 php artisan sheaf:install skeleton
 ```
 
+
+then add this css to your `app.css`:
+```css
+@keyframes wave {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(200%);
+    }
+}
+```
 > Once installed, you can use the `<x-ui.skeleton />` and `<x-ui.skeleton.text />` components in any Blade view.
 
 ## Usage

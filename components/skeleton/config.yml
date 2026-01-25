@@ -1,0 +1,4 @@
+files:
+  abstract: resources/views/components/ui/skeleton/abstract.blade.php
+  index: resources/views/components/ui/skeleton/index.blade.php
+  text: resources/views/components/ui/skeleton/text.blade.php
