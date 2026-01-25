@@ -18,13 +18,13 @@
             'data-[active=true]:border',
         ],
         'non-contained' => [
-            'data-[active=true]:bg-neutral-900/10 dark:data-[active=true]:bg-white/10',
+            'data-[active=true]:bg-neutral-900/10 dark:data-[active=true]:bg-white/10 text-neutral-900 dark:text-neutral-50',
             'hover:bg-white/10 focus:bg-white/10', // focus and hover
             'rounded-[calc(var(--noncontained-variant-radius)-var(--noncontained-variant-padding))]', // those variables are defined on the group wrapper
         ],
         'pills' => [
             'rounded-full h-8 whitespace-nowrap rounded-full text-sm font-medium',
-            'data-[active=true]:bg-primary data-[active=true]:text-primary-fg'
+            'data-[active=true]:bg-(--color-primary) data-[active=true]:text-(--color-primary-fg)'
         ],
         default => [],
     };
