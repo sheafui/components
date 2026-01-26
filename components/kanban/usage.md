@@ -16,7 +16,6 @@ php artisan sheaf:install kanban
 
 > Once installed, you can use `<x-ui.kanban />`, `<x-ui.kanban.column />`, and `<x-ui.kanban.card />` components in any Blade view.
 
----
 
 ## Basic Usage
 
@@ -211,8 +210,6 @@ php artisan sheaf:install kanban
     </x-ui.kanban.column>
 </x-ui.kanban>
 ```
-
----
 
 ## Custom Column Width
 
