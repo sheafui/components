@@ -26,8 +26,7 @@ php artisan sheaf:install kanban
             <x-ui.kanban.header :count="6">
                 <x-ui.heading>Axioms</x-ui.heading>
                 <x-ui.text>Foundational statements</x-ui.text>
-            </x-ui.kanban.header>
-            
+            </x-ui.kanban.header>            
             <x-ui.kanban.cards>
                 <x-ui.kanban.card :id="1">
                     <x-ui.text class="font-semibold">
@@ -69,7 +68,6 @@ php artisan sheaf:install kanban
                 <x-ui.heading>Lemmas</x-ui.heading>
                 <x-ui.text>Helper theorems</x-ui.text>
             </x-ui.kanban.header>
-            
             <x-ui.kanban.cards>
                 <x-ui.kanban.card :id="7">
                     <div class="flex items-center gap-2">
@@ -128,12 +126,12 @@ php artisan sheaf:install kanban
                 </x-ui.kanban.card>
             </x-ui.kanban.cards>
         </x-ui.kanban.column>
-        
+        <!--  -->
         <x-ui.kanban.column id="theorems">
             <x-ui.kanban.header :count="4">
                 <x-ui.heading>Proven Theorems</x-ui.heading>
             </x-ui.kanban.header>
-            
+            <!--  -->
             <x-ui.kanban.cards>
                 <x-ui.kanban.card :id="12">
                     <div class="flex items-center gap-2">
@@ -187,7 +185,7 @@ php artisan sheaf:install kanban
 
 ```blade
 <x-ui.kanban>
-    <x-ui.kanban.column id="axioms">
+    <x-ui.kanban.column>
         <x-ui.kanban.header :count="6">
             <x-ui.heading>Axioms</x-ui.heading>
             <x-ui.text>Foundational statements</x-ui.text>
@@ -206,7 +204,7 @@ php artisan sheaf:install kanban
         </x-ui.kanban.cards>
     </x-ui.kanban.column>
     
-    <x-ui.kanban.column id="lemmas">
+    <x-ui.kanban.column>
         <x-ui.kanban.header :count="5">
             <x-ui.heading>Lemmas</x-ui.heading>
             <x-ui.text>Helper theorems</x-ui.text>
@@ -217,7 +215,7 @@ php artisan sheaf:install kanban
         </x-ui.kanban.cards>
     </x-ui.kanban.column>
     
-    <x-ui.kanban.column id="theorems">
+    <x-ui.kanban.column>
         <x-ui.kanban.header>
             <x-ui.heading>Proven Theorems</x-ui.heading>
         </x-ui.kanban.header>
