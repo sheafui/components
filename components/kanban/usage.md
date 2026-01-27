@@ -229,7 +229,7 @@ php artisan sheaf:install kanban
 </x-ui.kanban>
 ```
 
-## Custom Column Width
+## Column Width
 
 Control column width using CSS custom properties:
 
@@ -240,7 +240,7 @@ Control column width using CSS custom properties:
             <x-ui.kanban.header :count="4">
                 <x-ui.heading>Conjectures</x-ui.heading>
             </x-ui.kanban.header>
-            
+            <!--  -->
             <x-ui.kanban.cards>
                 <x-ui.kanban.card>
                     <x-ui.text class="font-semibold text-sm">Collatz Conjecture</x-ui.text>
@@ -260,12 +260,12 @@ Control column width using CSS custom properties:
                 </x-ui.kanban.card>
             </x-ui.kanban.cards>
         </x-ui.kanban.column>
-        
-        <x-ui.kanban.column>
+        <!--  -->
+        <x-ui.kanban.column class="[--column-width:28rem]">
             <x-ui.kanban.header :count="5">
                 <x-ui.heading>Proof Techniques</x-ui.heading>
             </x-ui.kanban.header>
-            
+            <!--  -->
             <x-ui.kanban.cards>
                 <x-ui.kanban.card>
                     <x-ui.text class="font-semibold text-sm">Proof by Contradiction</x-ui.text>
@@ -299,135 +299,20 @@ Control column width using CSS custom properties:
     <!-- Columns will be 18rem wide -->
 </x-ui.kanban>
 
-<!-- Wide columns (28rem) -->
+<!-- Wide columns (24rem) -->
 <x-ui.kanban class="[--column-width:28rem]">
     <!-- Columns will be 28rem wide -->
 </x-ui.kanban>
 
-<!-- Default is 20rem -->
-<x-ui.kanban>
-    <!-- Columns will be 20rem wide -->
-</x-ui.kanban>
+<!-- (20rem is the default) -->
 ```
 
----
-
-## Custom Headers with Slots
-
-Replace the default header with your own design using the `header` slot:
-
-@blade
-<x-demo class="flex justify-center">
-    <x-ui.kanban>
-        <x-ui.kanban.column id="number-theory">
-            <x-slot:header>
-                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
-                    <div class="flex items-center gap-3">
-                        <div class="size-8 flex items-center justify-center bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                            <span class="text-lg font-bold text-purple-600 dark:text-purple-400">ℕ</span>
-                        </div>
-                        <div>
-                            <x-ui.heading>Number Theory</x-ui.heading>
-                            <x-ui.text size="sm" class="opacity-60">Properties of integers</x-ui.text>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <x-ui.badge color="purple" size="sm">8 problems</x-ui.badge>
-                        <button class="p-1 hover:bg-white dark:hover:bg-neutral-800 rounded-lg transition-colors">
-                            <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </x-slot:header>
-            
-            <x-ui.kanban.cards>
-                <x-ui.kanban.card>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <x-ui.text class="font-semibold">Goldbach's Conjecture</x-ui.text>
-                            <x-ui.badge color="amber" size="sm">Open</x-ui.badge>
-                        </div>
-                        <x-ui.text size="sm" class="opacity-60">
-                            Every even integer greater than 2 can be expressed as the sum of two primes
-                        </x-ui.text>
-                        <div class="flex items-center gap-2">
-                            <x-ui.text size="xs" class="opacity-50">Proposed: 1742</x-ui.text>
-                            <span class="opacity-50">•</span>
-                            <x-ui.text size="xs" class="opacity-50">Field: Additive number theory</x-ui.text>
-                        </div>
-                    </div>
-                </x-ui.kanban.card>
-                <x-ui.kanban.card>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <x-ui.text class="font-semibold">Perfect Number Conjecture</x-ui.text>
-                            <x-ui.badge color="amber" size="sm">Open</x-ui.badge>
-                        </div>
-                        <x-ui.text size="sm" class="opacity-60">
-                            Infinitely many perfect numbers exist
-                        </x-ui.text>
-                        <div class="flex items-center gap-2">
-                            <x-ui.text size="xs" class="opacity-50">Ancient</x-ui.text>
-                            <span class="opacity-50">•</span>
-                            <x-ui.text size="xs" class="opacity-50">Number Theory</x-ui.text>
-                        </div>
-                    </div>
-                </x-ui.kanban.card>
-                <x-ui.kanban.card>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <x-ui.text class="font-semibold">Prime Gaps</x-ui.text>
-                            <x-ui.badge color="blue" size="sm">Active</x-ui.badge>
-                        </div>
-                        <x-ui.text size="sm" class="opacity-60">
-                            Distribution and patterns in prime number gaps
-                        </x-ui.text>
-                        <div class="flex items-center gap-2">
-                            <x-ui.text size="xs" class="opacity-50">Ongoing</x-ui.text>
-                            <span class="opacity-50">•</span>
-                            <x-ui.text size="xs" class="opacity-50">Prime Theory</x-ui.text>
-                        </div>
-                    </div>
-                </x-ui.kanban.card>
-            </x-ui.kanban.cards>
-        </x-ui.kanban.column>
-    </x-ui.kanban>
-</x-demo>
-@endblade
-
-```blade
-<x-ui.kanban.column>
-    <x-slot:header>
-        <!-- Your custom header design -->
-        <div class="p-4 bg-gradient-to-r from-purple-50 to-blue-50">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="size-8 bg-purple-100 rounded-lg">ℕ</div>
-                    <div>
-                        <x-ui.heading>Number Theory</x-ui.heading>
-                        <x-ui.text size="sm">Properties of integers</x-ui.text>
-                    </div>
-                </div>
-                <x-ui.badge color="purple" size="sm">8 problems</x-ui.badge>
-            </div>
-        </div>
-    </x-slot:header>
-    
-    <x-ui.kanban.cards>
-        <!-- Cards go here -->
-    </x-ui.kanban.cards>
-</x-ui.kanban.column>
-```
-
----
 
 ## Card Variations
 
 ### Card with Top and Bottom Slots
 
-Add metadata above and below the main content:
+Add metadata above and below the main content, (this helps organize things out more than just optional):
 
 @blade
 <x-demo class="flex justify-center">
@@ -436,12 +321,12 @@ Add metadata above and below the main content:
             <x-ui.kanban.header :count="5">
                 <x-ui.heading>Complexity Classes</x-ui.heading>
             </x-ui.kanban.header>
-            
+            <!--  -->
             <x-ui.kanban.cards>
                 <x-ui.kanban.card>
                     <x-slot:top>
                         <div class="flex items-center justify-between mb-2">
-                            <x-ui.badge color="green" size="sm">P</x-ui.badge>
+                            <x-ui.badge color="green" variant="outline" size="sm">P</x-ui.badge>
                             <x-ui.text size="xs" class="opacity-50">Polynomial time</x-ui.text>
                         </div>
                     </x-slot:top>
@@ -451,7 +336,7 @@ Add metadata above and below the main content:
                             Can every problem whose solution can be verified quickly also be solved quickly?
                         </x-ui.text>
                     </div>
-                    
+                    <!--  -->
                     <x-slot:bottom>
                         <div class="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
                             <x-ui.text size="xs" class="opacity-60">Stephen Cook (1971)</x-ui.text>
@@ -464,95 +349,26 @@ Add metadata above and below the main content:
                         </div>
                     </x-slot:bottom>
                 </x-ui.kanban.card>
-                
+                <!--  -->
                 <x-ui.kanban.card>
                     <x-slot:top>
                         <div class="flex items-center justify-between mb-2">
-                            <x-ui.badge color="blue" size="sm">NP</x-ui.badge>
+                            <x-ui.badge color="blue" variant="outline" size="sm">NP</x-ui.badge>
                             <x-ui.text size="xs" class="opacity-50">Nondeterministic polynomial</x-ui.text>
                         </div>
                     </x-slot:top>
-                    
+                    <!--  -->
                     <div>
                         <x-ui.text class="font-semibold">Traveling Salesman</x-ui.text>
                         <x-ui.text size="sm" class="opacity-60">
                             Find shortest route visiting all cities exactly once
                         </x-ui.text>
                     </div>
-                    
+                    <!--  -->
                     <x-slot:bottom>
                         <div class="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
                             <x-ui.text size="xs" class="opacity-60">Classic NP-Complete</x-ui.text>
                             <x-ui.text size="xs" class="opacity-50">Graph Theory</x-ui.text>
-                        </div>
-                    </x-slot:bottom>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:top>
-                        <div class="flex items-center justify-between mb-2">
-                            <x-ui.badge color="purple" size="sm">PSPACE</x-ui.badge>
-                            <x-ui.text size="xs" class="opacity-50">Polynomial space</x-ui.text>
-                        </div>
-                    </x-slot:top>
-                    
-                    <div>
-                        <x-ui.text class="font-semibold">Quantified Boolean Formula</x-ui.text>
-                        <x-ui.text size="sm" class="opacity-60">
-                            Determining truth of formulas with quantifiers
-                        </x-ui.text>
-                    </div>
-                    
-                    <x-slot:bottom>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
-                            <x-ui.text size="xs" class="opacity-60">PSPACE-Complete</x-ui.text>
-                            <x-ui.text size="xs" class="opacity-50">Logic</x-ui.text>
-                        </div>
-                    </x-slot:bottom>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:top>
-                        <div class="flex items-center justify-between mb-2">
-                            <x-ui.badge color="amber" size="sm">EXPTIME</x-ui.badge>
-                            <x-ui.text size="xs" class="opacity-50">Exponential time</x-ui.text>
-                        </div>
-                    </x-slot:top>
-                    
-                    <div>
-                        <x-ui.text class="font-semibold">Chess Position Evaluation</x-ui.text>
-                        <x-ui.text size="sm" class="opacity-60">
-                            Generalized chess on n×n board
-                        </x-ui.text>
-                    </div>
-                    
-                    <x-slot:bottom>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
-                            <x-ui.text size="xs" class="opacity-60">Game Theory</x-ui.text>
-                            <x-ui.text size="xs" class="opacity-50">Combinatorics</x-ui.text>
-                        </div>
-                    </x-slot:bottom>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:top>
-                        <div class="flex items-center justify-between mb-2">
-                            <x-ui.badge color="red" size="sm">Undecidable</x-ui.badge>
-                            <x-ui.text size="xs" class="opacity-50">No algorithm exists</x-ui.text>
-                        </div>
-                    </x-slot:top>
-                    
-                    <div>
-                        <x-ui.text class="font-semibold">Halting Problem</x-ui.text>
-                        <x-ui.text size="sm" class="opacity-60">
-                            Determine if arbitrary program halts on given input
-                        </x-ui.text>
-                    </div>
-                    
-                    <x-slot:bottom>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
-                            <x-ui.text size="xs" class="opacity-60">Alan Turing (1936)</x-ui.text>
-                            <x-ui.text size="xs" class="opacity-50">Computability</x-ui.text>
                         </div>
                     </x-slot:bottom>
                 </x-ui.kanban.card>
@@ -587,148 +403,10 @@ Add metadata above and below the main content:
     </x-slot:bottom>
 </x-ui.kanban.card>
 ```
-### Card with Drag Handle
-
-Add a custom drag handle that appears on hover:
-
-@blade
-<x-demo class="flex justify-center">
-    <x-ui.kanban>
-        <x-ui.kanban.column>
-            <x-ui.kanban.header :count="6">
-                <x-ui.heading>Proof Steps</x-ui.heading>
-            </x-ui.kanban.header>
-            
-            <x-ui.kanban.cards>
-                <x-ui.kanban.card>
-                    <x-slot:handle>
-                        <div class="p-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded cursor-move">
-                            <svg class="size-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                            </svg>
-                        </div>
-                    </x-slot:handle>
-                    
-                    <div>
-                        <h4 class="font-medium">Step 1: State the hypothesis</h4>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                            Let f be continuous on [a,b]
-                        </p>
-                    </div>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:handle>
-                        <div class="p-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded cursor-move">
-                            <svg class="size-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                            </svg>
-                        </div>
-                    </x-slot:handle>
-                    
-                    <div>
-                        <h4 class="font-medium">Step 2: Apply Lemma 1.2</h4>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                            Since f is continuous, it is bounded
-                        </p>
-                    </div>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:handle>
-                        <div class="p-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded cursor-move">
-                            <svg class="size-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                            </svg>
-                        </div>
-                    </x-slot:handle>
-                    
-                    <div>
-                        <h4 class="font-medium">Step 3: Construct sequence</h4>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                            Define sequence {xₙ} in [a,b]
-                        </p>
-                    </div>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:handle>
-                        <div class="p-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded cursor-move">
-                            <svg class="size-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                            </svg>
-                        </div>
-                    </x-slot:handle>
-                    
-                    <div>
-                        <h4 class="font-medium">Step 4: Show convergence</h4>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                            By Bolzano-Weierstrass, convergent subsequence exists
-                        </p>
-                    </div>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:handle>
-                        <div class="p-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded cursor-move">
-                            <svg class="size-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                            </svg>
-                        </div>
-                    </x-slot:handle>
-                    
-                    <div>
-                        <h4 class="font-medium">Step 5: Apply continuity</h4>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                            Use sequential criterion for continuity
-                        </p>
-                    </div>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:handle>
-                        <div class="p-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded cursor-move">
-                            <svg class="size-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                            </svg>
-                        </div>
-                    </x-slot:handle>
-                    
-                    <div>
-                        <h4 class="font-medium">Step 6: Conclude</h4>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                            Therefore, f attains maximum on [a,b]. QED.
-                        </p>
-                    </div>
-                </x-ui.kanban.card>
-            </x-ui.kanban.cards>
-        </x-ui.kanban.column>
-    </x-ui.kanban>
-</x-demo>
-@endblade
-
-```blade
-<x-ui.kanban.card>
-    <x-slot:handle>
-        <!-- Your custom drag handle -->
-        <div class="p-1.5 hover:bg-neutral-200 rounded cursor-move">
-            <svg class="size-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-            </svg>
-        </div>
-    </x-slot:handle>
-    
-    <!-- Card content -->
-    <div>
-        <h4 class="font-medium">Step 1: State the hypothesis</h4>
-        <p class="text-sm text-neutral-600">Let f be continuous on [a,b]</p>
-    </div>
-</x-ui.kanban.card>
-```
 
 ### Card Size Variants
 
-Adjust card padding with size variants:
+Adjust card padding with size variants, use them as your condesing more contents :
 
 @blade
 <x-demo class="flex justify-center">
@@ -737,7 +415,7 @@ Adjust card padding with size variants:
             <x-ui.kanban.header :count="3">
                 <x-ui.heading>Extra Small</x-ui.heading>
             </x-ui.kanban.header>
-            
+            <!--  -->
             <x-ui.kanban.cards>
                 <x-ui.kanban.card>
                     <h4 class="text-xs font-medium">Axiom of Extensionality</h4>
@@ -750,12 +428,12 @@ Adjust card padding with size variants:
                 </x-ui.kanban.card>
             </x-ui.kanban.cards>
         </x-ui.kanban.column>
-        
+        <!--  -->
         <x-ui.kanban.column size="sm">
             <x-ui.kanban.header :count="3">
                 <x-ui.heading>Small</x-ui.heading>
             </x-ui.kanban.header>
-            
+            <!--  -->
             <x-ui.kanban.cards>
                 <x-ui.kanban.card>
                     <h4 class="text-sm font-medium">Identity Element</h4>
@@ -771,12 +449,12 @@ Adjust card padding with size variants:
                 </x-ui.kanban.card>
             </x-ui.kanban.cards>
         </x-ui.kanban.column>
-        
+        <!--  -->
         <x-ui.kanban.column size="md">
             <x-ui.kanban.header :count="3">
                 <x-ui.heading>Medium (Default)</x-ui.heading>
             </x-ui.kanban.header>
-            
+            <!--  -->
             <x-ui.kanban.cards>
                 <x-ui.kanban.card>
                     <h4 class="font-medium">Cauchy Sequence</h4>
@@ -836,8 +514,6 @@ Adjust card padding with size variants:
     </x-ui.kanban.cards>
 </x-ui.kanban.column>
 ```
-
----
 
 ## Empty States
 
