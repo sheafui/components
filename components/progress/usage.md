@@ -4,7 +4,7 @@ name: 'progress'
 
 ## Introduction
 
-The **Progress** component provides a flexible and accessible way to display progress indicators, loading states, and completion tracking. With support for both determinate and indeterminate states, buffer visualization, and extensive customization options, it's perfect for file uploads, form completion, data processing, and any progress visualization needs.
+The **Progress** component provides a flexible and accessible way to display progress indicators, loading states, and completion tracking. It supports both determinate (known progress) and indeterminate (unknown duration) states, buffer visualization for streaming content, and extensive customization options. Perfect for file uploads, form completion, video buffering, data processing, and any scenario requiring progress visualization.
 
 ## Installation
 
@@ -54,7 +54,7 @@ php artisan sheaf:install progress
 
 ## Size Variants
 
-Control the height of the progress bar with size variants:
+The progress bar comes in five sizes, from extra small to extra large. Control the height using the `size` prop:
 
 @blade
 <x-demo>
@@ -95,10 +95,9 @@ Control the height of the progress bar with size variants:
 <x-ui.progress value="65" size="xl" />
 ```
 
-
 ## Livewire Integration
 
-Bind to Livewire state with `wire:model`:
+Bind the progress component to Livewire state using `wire:model.live` for real-time updates:
 
 @blade
 <x-demo>
@@ -134,9 +133,10 @@ Bind to Livewire state with `wire:model`:
     </x-ui.button>
 </div>
 ```
+
 ## Alpine.js Integration
 
-Use `x-model` for client-side reactive progress, can be livewire driven to :).
+Use `x-model` for client-side reactive progress updates. This works great for pure frontend interactions or in combination with Livewire:
 
 @blade
 <x-demo>
@@ -185,9 +185,9 @@ Use `x-model` for client-side reactive progress, can be livewire driven to :).
 </div>
 ```
 
-## The Bar Color
+## Customizing Bar Color
 
-if you want to use other color then the primary color of the theme, you can do so by using `[&_[data-slot=bar]]:bg-*` and use any color you want.
+To use a different color from your theme's primary color, use the `[&_[data-slot=bar]]` selector with any Tailwind color:
 
 @blade
 <x-demo>
@@ -236,16 +236,16 @@ if you want to use other color then the primary color of the theme, you can do s
 @endblade
 
 ```blade
-    <!-- red -->
-    <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-red-500" />
-    <!-- amber -->
-    <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-amber-500" />
-```
+<!-- Red -->
+<x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-red-500" />
 
+<!-- Amber -->
+<x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-amber-500" />
+```
 
 ## Animated Progress
 
-similuate progress loading bar with js using `requestAnimationFrame()` function:
+Simulate smooth progress updates using JavaScript's `requestAnimationFrame()` function for frame-perfect animations:
 
 @blade
 <x-demo>
@@ -324,7 +324,7 @@ similuate progress loading bar with js using `requestAnimationFrame()` function:
 
 ## Wave Animation
 
-Add a shimmer wave effect for slow-progressing tasks:
+Add a shimmer wave effect to provide visual feedback during slow or long-running progress updates:
 
 @blade
 <x-demo>
@@ -347,15 +347,16 @@ Add a shimmer wave effect for slow-progressing tasks:
 @endblade
 
 ```blade
-<!-- Wave animation for visual feedback on slow progress -->
+<!-- Wave animation provides visual feedback on slow progress -->
 <x-ui.progress class="[&_[data-slot=bar]]:bg-orange-500" value="35" wave />
 <x-ui.progress class="[&_[data-slot=bar]]:bg-green-500" value="15" wave size="lg" />
 ```
 
->Note: the animation use white background so it doesn't work for white background (aka our white default primary color)
+> **Note:** The wave animation uses a white gradient overlay, so it may not be visible on light backgrounds or when using light colors like the default white primary color.
 
 ## Top and Bottom Slots
-Add custom content above and below the progress bar:
+
+Add custom content above or below the progress bar using named slots:
 
 @blade
 <x-demo>
@@ -406,11 +407,42 @@ Add custom content above and below the progress bar:
 ```
 
 ## Advanced Features
-a set of features and examples for advanced usage
+
+The progress component supports compound state objects for advanced use cases like video buffering and indeterminate loading.
+
+### Understanding State Formats
+
+The progress component accepts state in three different formats:
+
+**1. Simple Integer (Basic Progress)**
+```php
+public $progress = 50;  // Just a number
+```
+
+**2. Compound Object (Advanced Features)**
+```php
+// Value + Buffer (for streaming content)
+public $progress = ['value' => 50, 'buffer' => 75];
+
+// Value + Indeterminate (for unknown duration tasks)
+public $progress = ['value' => 0, 'indeterminate' => true];
+
+// All properties combined
+public $progress = [
+    'value' => 50,
+    'buffer' => 75,
+    'indeterminate' => false
+];
+```
+
+**State Rules:**
+- `buffer` automatically adjusts to never be less than `value`
+- When `indeterminate: true`, the bar displays an animated loading state regardless of value
+- All values are automatically clamped between `min` and `max`
 
 ### Dynamic Color Transitions
 
-Create progress bars that change color based on completion percentage:
+Create progress bars that smoothly transition colors based on completion percentage:
 
 @blade
 <x-demo>
@@ -529,11 +561,11 @@ Create progress bars that change color based on completion percentage:
 </div>
 ```
 
-> Note: using other color spaces like `oklch` or `HSL` are better for sure, but they are expensive interpolations and complex to generate specific colors dynamically, that's why I stick with the rgb space for this example
+> **Note:** While color spaces like `oklch` or `HSL` provide better color interpolation, RGB is used here for performance and simplicity in dynamically generating specific color values.
 
 ### Static Color Switching
 
-Switch between predefined colors using the data-slot selector:
+Switch between predefined colors based on progress value using Alpine's reactive classes:
 
 @blade
 <x-demo>
@@ -578,10 +610,9 @@ Switch between predefined colors using the data-slot selector:
 />
 ```
 
-
 ### Buffer Progress
 
-Dual progress bars for buffering scenarios (like video players), by passing the state as an array where first key is the value and second is the buffer, the buffer can never be lower than value, and increasing the value will automatically increase the buffeg value:
+Display dual progress bars for buffering scenarios like video players or file downloads. Pass a compound object with both `value` and `buffer` properties:
 
 @blade
 <x-demo>
@@ -617,16 +648,21 @@ Dual progress bars for buffering scenarios (like video players), by passing the 
 @endblade
 
 ```blade
-    <!-- x-data="{ progress: {value: 12, buffer: 34 }}" -->
-    <x-ui.progress x-model="progress"  />
-    <!-- or -->
-    <!-- $public array $progress = ['value' => 12,'buffer' => 34] -->
-    <x-ui.progress wire:model="progress"  />
+<!-- Alpine.js -->
+<div x-data="{ progress: {value: 12, buffer: 34 }}">
+    <x-ui.progress x-model="progress" />
+</div>
+
+<!-- Livewire -->
+<!-- public array $progress = ['value' => 12, 'buffer' => 34] -->
+<x-ui.progress wire:model.live="progress" />
 ```
+
+**How it works:** The buffer bar always stays ahead of or equal to the current value. If you try to set the value higher than the buffer, the buffer automatically adjusts upward.
 
 ### Indeterminate Loading
 
-For tasks with unknown duration, you can use the indeterminate feature passing it using the inderminate key in your state:
+For tasks with unknown duration, use the `indeterminate` property to display an animated loading state:
 
 @blade
 <x-demo>
@@ -640,16 +676,20 @@ For tasks with unknown duration, you can use the indeterminate feature passing i
 @endblade
 
 ```blade
-<!-- For unknown duration tasks (teal color)-->
-<!-- public array $progress=['value' => 12, indeterminate => true] -->
+<!-- Livewire -->
+<!-- public array $progress = ['value' => 0, 'indeterminate' => true] -->
 <x-ui.progress wire:model.live="progress" />
-<!-- OR  -->
-<div x-data="{progress: {..., indeterminate: true}}">
+
+<!-- Alpine.js -->
+<div x-data="{progress: {value: 0, indeterminate: true}}">
     <x-ui.progress x-model="progress" />
 </div>
 ```
 
-### example 
+### Complete Example: Video Buffering with Indeterminate Support
+
+This example demonstrates using all compound properties together:
+
 @blade
 <x-demo>
     <div 
@@ -706,17 +746,21 @@ For tasks with unknown duration, you can use the indeterminate feature passing i
 @endblade
 
 ```blade
-<!-- public array $progress=['value' => 12, 'buffer'=>46, indeterminate => true] -->
+<!-- Livewire -->
+<!-- public array $progress = ['value' => 12, 'buffer' => 46, 'indeterminate' => false] -->
 <x-ui.progress wire:model.live="progress" />
-<x-ui.button wire:click="$toggle('progress.indeterminate')">toggle indeterminate<x-ui.button>
-<!-- OR  -->
-<div x-data="{progress: {..., indeterminate: true}}">
+<x-ui.button wire:click="$toggle('progress.indeterminate')">
+    Toggle Indeterminate
+</x-ui.button>
+
+<!-- Alpine.js -->
+<div x-data="{progress: {value: 12, buffer: 46, indeterminate: false}}">
     <x-ui.progress x-model="progress" />
-    
-    <x-ui.button x-on:click="progress.indeterminate = !progress.indeterminate">toggle indeterminate<x-ui.button>
+    <x-ui.button x-on:click="progress.indeterminate = !progress.indeterminate">
+        Toggle Indeterminate
+    </x-ui.button>
 </div>
 ```
-
 
 ## Component Props
 
@@ -724,38 +768,51 @@ For tasks with unknown duration, you can use the indeterminate feature passing i
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `value` | number | `0` | Current progress value |
-| `max` | number | `100` | Maximum value |
-| `min` | number | `0` | Minimum value |
-| `size` | string | `'md'` | Size variant: `'xs'`, `'sm'`, `'md'`, `'lg'`, `'xl'` |
-| `indeterminate` | boolean | `false` | Show indeterminate loading animation |
-| `buffer` | number | `null` | Buffer progress value (for dual progress bars) |
-| `wave` | boolean | `false` | Enable wave shimmer animation |
+| `value` | number | `0` | Current progress value (0-100) |
+| `max` | number | `100` | Maximum value for progress calculation |
+| `min` | number | `0` | Minimum value for progress calculation |
+| `size` | string | `'md'` | Bar height: `'xs'`, `'sm'`, `'md'`, `'lg'`, `'xl'` |
+| `buffer` | number\|null | `null` | Buffer progress value for dual progress bars |
+| `wave` | boolean | `false` | Enable shimmer wave animation |
 | `duration` | number | `300` | Transition duration in milliseconds |
-| `top` | slot | - | Content above the progress bar |
-| `bottom` | slot | - | Content below the progress bar |
-
+| `top` | slot | - | Custom content displayed above the progress bar |
+| `bottom` | slot | - | Custom content displayed below the progress bar |
 
 ## Styling
 
-The progress component uses CSS custom properties for color customization:
+The progress component provides multiple ways to customize colors:
+
+### Using CSS Custom Properties
 
 ```blade
-<!-- Using CSS variable -->
+<!-- Static CSS variable -->
 <x-ui.progress 
     value="60"
     style="--color-primary: rgb(59, 130, 246)"
-/>
-
-<!-- Using data-slot selector -->
-<x-ui.progress 
-    value="60"
-    class="[&_[data-slot=bar]]:bg-purple-500"
 />
 
 <!-- Dynamic color with Alpine -->
 <x-ui.progress 
     x-model="progress"
     x-bind:style="`--color-primary: ${dynamicColor}`"
+/>
+```
+
+### Using Data-Slot Selector
+
+```blade
+<!-- Static color -->
+<x-ui.progress 
+    value="60"
+    class="[&_[data-slot=bar]]:bg-purple-500"
+/>
+
+<!-- Conditional colors with Alpine -->
+<x-ui.progress 
+    x-model="progress"
+    x-bind:class="{
+        '[&_[data-slot=bar]]:bg-red-500': progress < 50,
+        '[&_[data-slot=bar]]:bg-green-500': progress >= 50
+    }"
 />
 ```
