@@ -354,7 +354,61 @@ Add a shimmer wave effect for slow-progressing tasks:
 
 >Note: the animation use white background so it doesn't work for white background (aka our white default primary color)
 
-## Dynamic Color Transitions
+## Top and Bottom Slots
+Add custom content above and below the progress bar:
+
+@blade
+<x-demo>
+    <div class="space-y-6">
+        <x-ui.progress value="65">
+            <x-slot:top>
+                <div class="flex items-center justify-between mb-2">
+                    <x-ui.text size="sm" class="font-medium">Uploading files...</x-ui.text>
+                    <x-ui.text size="sm" class="opacity-60">65%</x-ui.text>
+                </div>
+            </x-slot:top>
+        </x-ui.progress>
+        
+        <x-ui.progress value="45">
+            <x-slot:top>
+                <div class="flex items-center justify-between mb-2">
+                    <x-ui.text size="sm" class="font-medium">Processing data</x-ui.text>
+                    <x-ui.text size="sm" class="opacity-60">45%</x-ui.text>
+                </div>
+            </x-slot:top>
+            <x-slot:bottom>
+                <div class="flex items-center justify-between mt-2">
+                    <x-ui.text size="xs" class="opacity-50">2.4 MB of 5.3 MB</x-ui.text>
+                    <x-ui.text size="xs" class="opacity-50">~2 min remaining</x-ui.text>
+                </div>
+            </x-slot:bottom>
+        </x-ui.progress>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.progress value="65">
+    <x-slot:top>
+        <div class="flex justify-between mb-2">
+            <x-ui.text>Uploading files...</x-ui.text>
+            <x-ui.text>65%</x-ui.text>
+        </div>
+    </x-slot:top>
+    
+    <x-slot:bottom>
+        <div class="flex justify-between mt-2">
+            <x-ui.text size="xs">2.4 MB of 5.3 MB</x-ui.text>
+            <x-ui.text size="xs">~2 min remaining</x-ui.text>
+        </div>
+    </x-slot:bottom>
+</x-ui.progress>
+```
+
+## Advanced Features
+a set of features and examples for advanced usage
+
+### Dynamic Color Transitions
 
 Create progress bars that change color based on completion percentage:
 
@@ -477,7 +531,7 @@ Create progress bars that change color based on completion percentage:
 
 > Note: using other color spaces like `oklch` or `HSL` are better for sure, but they are expensive interpolations and complex to generate specific colors dynamically, that's why I stick with the rgb space for this example
 
-## Static Color Switching
+### Static Color Switching
 
 Switch between predefined colors using the data-slot selector:
 
@@ -524,41 +578,10 @@ Switch between predefined colors using the data-slot selector:
 />
 ```
 
-## Indeterminate Loading
 
-For tasks with unknown duration:
+### Buffer Progress
 
-@blade
-<x-demo>
-    <div class="space-y-6">
-        <div class="space-y-2">
-            <x-ui.text size="sm" class="font-medium">Basic Indeterminate</x-ui.text>
-            <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" indeterminate />
-        </div>
-        
-        <div class="space-y-2">
-            <x-ui.text size="sm" class="font-medium">Large Indeterminate</x-ui.text>
-            <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" indeterminate size="lg" />
-        </div>
-        
-        <div class="space-y-2">
-            <x-ui.text size="sm" class="font-medium">Indeterminate with Wave</x-ui.text>
-            <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" indeterminate wave size="lg" />
-        </div>
-    </div>
-</x-demo>
-@endblade
-
-```blade
-<!-- For unknown duration tasks (teal color)-->
-<x-ui.progress indeterminate />
-<x-ui.progress indeterminate size="lg" />
-<x-ui.progress indeterminate wave />
-```
-
-## Buffer Progress
-
-Dual progress bars for buffering scenarios (like video players), by passing the state as an array where first key is the value and second is the buffer:
+Dual progress bars for buffering scenarios (like video players), by passing the state as an array where first key is the value and second is the buffer, the buffer can never be lower than value, and increasing the value will automatically increase the buffeg value:
 
 @blade
 <x-demo>
@@ -601,57 +624,99 @@ Dual progress bars for buffering scenarios (like video players), by passing the 
     <x-ui.progress wire:model="progress"  />
 ```
 
-## Top and Bottom Slots
+### Indeterminate Loading
 
-Add custom content above and below the progress bar:
+For tasks with unknown duration, you can use the indeterminate feature passing it using the inderminate key in your state:
 
 @blade
 <x-demo>
-    <div class="space-y-6">
-        <x-ui.progress value="65">
-            <x-slot:top>
-                <div class="flex items-center justify-between mb-2">
-                    <x-ui.text size="sm" class="font-medium">Uploading files...</x-ui.text>
-                    <x-ui.text size="sm" class="opacity-60">65%</x-ui.text>
-                </div>
-            </x-slot:top>
-        </x-ui.progress>
-        
-        <x-ui.progress value="45">
-            <x-slot:top>
-                <div class="flex items-center justify-between mb-2">
-                    <x-ui.text size="sm" class="font-medium">Processing data</x-ui.text>
-                    <x-ui.text size="sm" class="opacity-60">45%</x-ui.text>
-                </div>
-            </x-slot:top>
-            <x-slot:bottom>
-                <div class="flex items-center justify-between mt-2">
-                    <x-ui.text size="xs" class="opacity-50">2.4 MB of 5.3 MB</x-ui.text>
-                    <x-ui.text size="xs" class="opacity-50">~2 min remaining</x-ui.text>
-                </div>
-            </x-slot:bottom>
-        </x-ui.progress>
+    <div class="space-y-6" x-data="{progress: {indeterminate: true}}">
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Indeterminate Loading...</x-ui.text>
+            <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" x-model="progress" />
+        </div>
     </div>
 </x-demo>
 @endblade
 
 ```blade
-<x-ui.progress value="65">
-    <x-slot:top>
-        <div class="flex justify-between mb-2">
-            <x-ui.text>Uploading files...</x-ui.text>
-            <x-ui.text>65%</x-ui.text>
-        </div>
-    </x-slot:top>
-    
-    <x-slot:bottom>
-        <div class="flex justify-between mt-2">
-            <x-ui.text size="xs">2.4 MB of 5.3 MB</x-ui.text>
-            <x-ui.text size="xs">~2 min remaining</x-ui.text>
-        </div>
-    </x-slot:bottom>
-</x-ui.progress>
+<!-- For unknown duration tasks (teal color)-->
+<!-- public array $progress=['value' => 12, indeterminate => true] -->
+<x-ui.progress wire:model.live="progress" />
+<!-- OR  -->
+<div x-data="{progress: {..., indeterminate: true}}">
+    <x-ui.progress x-model="progress" />
+</div>
 ```
+
+### example 
+@blade
+<x-demo>
+    <div 
+        x-data="{
+            progress: {
+                value: 12,
+                buffer: 46,
+                indeterminate: false
+            }
+        }" 
+        class="space-y-6 p-6 bg-white dark:bg-neutral-900 max-w-2xl rounded-lg border border-neutral-200 dark:border-neutral-800"
+    >
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Video Buffering Simulation With Indeterminate Loading Support</x-ui.text>
+            <x-ui.text size="xs" class="opacity-60">
+                Played: <span x-text="progress.value"></span>% 
+                | Buffered: <span x-text="progress.buffer"></span>%</x-ui.text>
+            <x-ui.progress 
+                x-model="progress" 
+                class="[&_[data-slot=bar]]:bg-teal-500"
+            />
+        </div>
+        <!--  -->
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <x-ui.text size="sm" class="font-medium mb-2">Played Position</x-ui.text>
+                <input 
+                    type="range" 
+                    x-model="progress.value" 
+                    min="0" 
+                    max="100" 
+                    class="w-full"
+                />
+            </div>
+            <div>
+                <x-ui.text size="sm" class="font-medium mb-2">Buffer Amount</x-ui.text>
+                <input 
+                    type="range" 
+                    x-model="progress.buffer" 
+                    min="0" 
+                    max="100" 
+                    class="w-full"
+                />
+            </div>
+            <x-ui.button 
+                variant="outline"
+                x-on:click="progress.indeterminate = !progress.indeterminate"
+            >
+                toggle indeterminate
+            </x-ui.button>
+        </div>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<!-- public array $progress=['value' => 12, 'buffer'=>46, indeterminate => true] -->
+<x-ui.progress wire:model.live="progress" />
+<x-ui.button wire:click="$toggle('progress.indeterminate')">toggle indeterminate<x-ui.button>
+<!-- OR  -->
+<div x-data="{progress: {..., indeterminate: true}}">
+    <x-ui.progress x-model="progress" />
+    
+    <x-ui.button x-on:click="progress.indeterminate = !progress.indeterminate">toggle indeterminate<x-ui.button>
+</div>
+```
+
 
 ## Component Props
 
