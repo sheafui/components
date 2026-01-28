@@ -523,55 +523,65 @@ Provide custom empty states for columns with no cards:
 <x-demo class="flex justify-center">
     <x-ui.kanban>
         <x-ui.kanban.column>
-            <x-ui.kanban.header>
+            <x-ui.kanban.header :count="0">
                 <x-ui.heading>Unsolved Problems</x-ui.heading>
             </x-ui.kanban.header>
-            
-            <x-ui.kanban.cards>
-                <x-slot:empty>
-                    <div class="py-8 text-center">
-                        <svg class="mx-auto size-12 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                        <h4 class="mt-4 font-medium text-neutral-900 dark:text-neutral-100">No unsolved problems</h4>
-                        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                            All mathematical problems have been solved!
-                        </p>
-                        <button class="mt-4 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            Propose New Problem
-                        </button>
-                    </div>
-                </x-slot:empty>
-            </x-ui.kanban.cards>
+            <!--  -->
+            @if(true)
+                <x-ui.empty>
+                    <x-ui.empty.media class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800">
+                        <x-ui.icon name="x-mark" />
+                    </x-ui.empty.media>
+                    <!--  -->
+                    <x-ui.empty.contents>
+                        <x-ui.heading>No problems</x-ui.heading>
+                        <x-ui.text class="opacity-70">
+                            All problems have been solved!
+                        </x-ui.text>
+                    </x-ui.empty.contents>
+                </x-ui.empty>
+            @else
+                <x-ui.kanban.cards>
+                    <!--  -->
+                </x-ui.kanban.cards>
+            @endif
         </x-ui.kanban.column>
     </x-ui.kanban>
 </x-demo>
 @endblade
 
 ```blade
-<x-ui.kanban.column>
-    <x-ui.kanban.header>
-        <x-ui.heading>Column Name</x-ui.heading>
-    </x-ui.kanban.header>
     
-    <x-ui.kanban.cards>
-        <x-slot:empty>
-            <!-- Your custom empty state -->
-            <div class="py-8 text-center">
-                <svg class="mx-auto size-12 text-neutral-400">...</svg>
-                <h4 class="mt-4 font-medium">No items yet</h4>
-                <p class="mt-1 text-sm text-neutral-600">Add your first item to get started</p>
-            </div>
-        </x-slot:empty>
-    </x-ui.kanban.cards>
+<x-ui.kanban.column>
+    <x-ui.kanban.header :count="$count">
+        <x-ui.heading>Unsolved Problems</x-ui.heading>
+    </x-ui.kanban.header>
+    @if($empty)
+        <x-ui.empty>
+            <x-ui.empty.media 
+                class="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800"
+            >
+                <x-ui.icon name="x-mark" />
+            </x-ui.empty.media>
+            <x-ui.empty.contents>
+                <x-ui.heading>No problems</x-ui.heading>
+                <x-ui.text class="opacity-70">
+                    All problems have been solved!
+                </x-ui.text>
+            </x-ui.empty.contents>
+        </x-ui.empty>
+    @else
+        <x-ui.kanban.cards>
+            <!--  -->
+        </x-ui.kanban.cards>
+    @endif
 </x-ui.kanban.column>
 ```
 
----
 
 ## Column Footers
 
-Add interactive elements to column footers:
+Add interactive aligned elements to columns footers:
 
 @blade
 <x-demo class="flex justify-center">
@@ -580,56 +590,42 @@ Add interactive elements to column footers:
             <x-ui.kanban.header :count="6">
                 <x-ui.heading>Open Problems</x-ui.heading>
             </x-ui.kanban.header>
-            
+            <!--  -->
             <x-ui.kanban.cards>
                 <x-ui.kanban.card>
                     <h4 class="font-medium">Riemann Hypothesis</h4>
                     <p class="text-sm text-neutral-600 dark:text-neutral-400">Zeros of the Riemann zeta function</p>
                 </x-ui.kanban.card>
-                
+                <!--  -->
                 <x-ui.kanban.card>
                     <h4 class="font-medium">Navier-Stokes Existence</h4>
                     <p class="text-sm text-neutral-600 dark:text-neutral-400">Smooth solutions for 3D fluid equations</p>
                 </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <h4 class="font-medium">Birch and Swinnerton-Dyer</h4>
-                    <p class="text-sm text-neutral-600 dark:text-neutral-400">Elliptic curves and L-functions</p>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <h4 class="font-medium">Hodge Conjecture</h4>
-                    <p class="text-sm text-neutral-600 dark:text-neutral-400">Algebraic cycles in algebraic geometry</p>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <h4 class="font-medium">Yang-Mills Theory</h4>
-                    <p class="text-sm text-neutral-600 dark:text-neutral-400">Mass gap in quantum field theory</p>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <h4 class="font-medium">P vs NP</h4>
-                    <p class="text-sm text-neutral-600 dark:text-neutral-400">Computational complexity classes</p>
-                </x-ui.kanban.card>
             </x-ui.kanban.cards>
-            
-            <x-slot:footer>
+            <!--  -->
+            <x-ui.kanban.footer>
                 <div class="space-y-2">
-                    <input 
-                        type="text" 
-                        placeholder="Add a new millennium problem..." 
-                        class="w-full px-3 py-2 text-sm bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
+                    <x-ui.input/>
                     <div class="flex gap-2">
-                        <button type="submit" class="flex-1 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <x-ui.button 
+                            color="blue" 
+                            variant="outline" 
+                            size="sm" 
+                            icon="plus"
+                        >
                             Add Problem
-                        </button>
-                        <button type="button" class="px-3 py-2 text-sm border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
+                        </x-ui.button>
+                        <x-ui.button 
+                            variant="outline" 
+                            size="sm" 
+                            icon="arrow-up-tray" 
+                            class="ml-auto"
+                        >
                             Import
-                        </button>
+                        </x-ui.button>
                     </div>
                 </div>
-            </x-slot:footer>
+            </x-ui.kanban.footer>
         </x-ui.kanban.column>
     </x-ui.kanban>
 </x-demo>
@@ -645,252 +641,44 @@ Add interactive elements to column footers:
         <!-- Cards go here -->
     </x-ui.kanban.cards>
     
-    <x-slot:footer>
-        <!-- Footer content with form -->
+     <x-ui.kanban.footer>
         <div class="space-y-2">
-            <input 
-                type="text" 
-                placeholder="Add new item..." 
-                class="w-full px-3 py-2 text-sm border rounded-lg"
-            >
-            <button class="w-full px-3 py-2 text-sm bg-blue-600 text-white rounded-lg">
-                Add Item
-            </button>
+            <x-ui.input/>
+            <div class="flex gap-2">
+                <x-ui.button 
+                    color="blue" 
+                    variant="outline" 
+                    size="sm" 
+                    icon="plus"
+                >
+                    Add Problem
+                </x-ui.button>
+                <x-ui.button 
+                    variant="outline" 
+                    size="sm" 
+                    icon="arrow-up-tray" 
+                    class="ml-auto"
+                >
+                    Import
+                </x-ui.button>
+            </div>
         </div>
-    </x-slot:footer>
+    </x-ui.kanban.footer>
 </x-ui.kanban.column>
 ```
 
----
-## Complete Example
+## Implementation Guide
 
 Here's a comprehensive example showcasing all features:
 
 @blade
-<x-demo class="flex justify-center">
-    <x-ui.kanban class="[--column-width:24rem]">
-        <!-- Conjectures Column -->
-        <x-ui.kanban.column id="conjectures">
-            <x-ui.kanban.header :count="4">
-                <x-ui.heading>Conjectures</x-ui.heading>
-                <x-ui.text>Unproven statements</x-ui.text>
-            </x-ui.kanban.header>
-            
-            <x-ui.kanban.cards>
-                <x-ui.kanban.card>
-                    <x-slot:top>
-                        <div class="flex items-center gap-2 mb-2">
-                            <x-ui.badge color="purple" size="sm">Number Theory</x-ui.badge>
-                            <x-ui.badge color="amber" size="sm" variant="outline">1742</x-ui.badge>
-                        </div>
-                    </x-slot:top>
-                    
-                    <div>
-                        <h4 class="font-medium">Goldbach's Conjecture</h4>
-                        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                            Every even integer greater than 2 can be expressed as the sum of two primes.
-                        </p>
-                    </div>
-                    
-                    <x-slot:bottom>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
-                            <div class="flex -space-x-2">
-                                <div class="size-6 rounded-full bg-blue-100 dark:bg-blue-900/30 border-2 border-white dark:border-neutral-900 flex items-center justify-center text-xs font-medium">
-                                    CG
-                                </div>
-                                <div class="size-6 rounded-full bg-green-100 dark:bg-green-900/30 border-2 border-white dark:border-neutral-900 flex items-center justify-center text-xs font-medium">
-                                    LE
-                                </div>
-                            </div>
-                            <div class="text-xs text-neutral-500">Verified to 4×10¹⁸</div>
-                        </div>
-                    </x-slot:bottom>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:top>
-                        <div class="flex items-center gap-2 mb-2">
-                            <x-ui.badge color="blue" size="sm">Topology</x-ui.badge>
-                            <x-ui.badge color="amber" size="sm" variant="outline">1904</x-ui.badge>
-                        </div>
-                    </x-slot:top>
-                    
-                    <div>
-                        <h4 class="font-medium">Poincaré Conjecture</h4>
-                        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                            Every simply connected 3-manifold is homeomorphic to the 3-sphere.
-                        </p>
-                    </div>
-                    
-                    <x-slot:bottom>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
-                            <span class="text-xs text-green-600 dark:text-green-400 font-medium">✓ Proven by Perelman (2003)</span>
-                        </div>
-                    </x-slot:bottom>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:top>
-                        <div class="flex items-center gap-2 mb-2">
-                            <x-ui.badge color="indigo" size="sm">Analysis</x-ui.badge>
-                            <x-ui.badge color="amber" size="sm" variant="outline">1859</x-ui.badge>
-                        </div>
-                    </x-slot:top>
-                    
-                    <div>
-                        <h4 class="font-medium">Riemann Hypothesis</h4>
-                        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                            All non-trivial zeros of the zeta function have real part equal to 1/2.
-                        </p>
-                    </div>
-                    
-                    <x-slot:bottom>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
-                            <div class="flex -space-x-2">
-                                <div class="size-6 rounded-full bg-purple-100 dark:bg-purple-900/30 border-2 border-white dark:border-neutral-900 flex items-center justify-center text-xs font-medium">
-                                    BR
-                                </div>
-                            </div>
-                            <div class="text-xs text-neutral-500">$1M Prize</div>
-                        </div>
-                    </x-slot:bottom>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <x-slot:top>
-                        <div class="flex items-center gap-2 mb-2">
-                            <x-ui.badge color="pink" size="sm">Graph Theory</x-ui.badge>
-                            <x-ui.badge color="amber" size="sm" variant="outline">1852</x-ui.badge>
-                        </div>
-                    </x-slot:top>
-                    
-                    <div>
-                        <h4 class="font-medium">Four Color Theorem</h4>
-                        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                            Any map can be colored with four colors so no adjacent regions share a color.
-                        </p>
-                    </div>
-                    
-                    <x-slot:bottom>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
-                            <span class="text-xs text-green-600 dark:text-green-400 font-medium">✓ Proven (1976)</span>
-                            <span class="text-xs text-neutral-500">Computer-assisted</span>
-                        </div>
-                    </x-slot:bottom>
-                </x-ui.kanban.card>
-            </x-ui.kanban.cards>
-        </x-ui.kanban.column>
-        
-        <!-- Under Review Column -->
-        <x-ui.kanban.column id="review">
-            <x-slot:header>
-                <div class="p-4 border-b border-neutral-200 dark:border-neutral-800">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="size-3 rounded-full bg-blue-500 animate-pulse"></div>
-                            <div>
-                                <h3 class="font-semibold">Under Review</h3>
-                                <p class="text-sm text-neutral-600 dark:text-neutral-400">Peer verification in progress</p>
-                            </div>
-                        </div>
-                        <span class="px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">
-                            3 active
-                        </span>
-                    </div>
-                </div>
-            </x-slot:header>
-            
-            <x-ui.kanban.cards>
-                <x-ui.kanban.card>
-                    <div class="space-y-2">
-                        <div class="flex items-start justify-between">
-                            <h4 class="font-medium">Twin Prime Conjecture</h4>
-                            <x-ui.badge color="blue" size="sm">Zhang</x-ui.badge>
-                        </div>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                            Bounded gaps between primes (2013)
-                        </p>
-                        <div class="pt-2">
-                            <div class="flex items-center justify-between text-xs text-neutral-600 dark:text-neutral-400 mb-1">
-                                <span>Verification progress</span>
-                                <span>85%</span>
-                            </div>
-                            <div class="h-1.5 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-blue-500" style="width: 85%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <div class="space-y-2">
-                        <div class="flex items-start justify-between">
-                            <h4 class="font-medium">abc Conjecture Proof</h4>
-                            <x-ui.badge color="purple" size="sm">Mochizuki</x-ui.badge>
-                        </div>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                            Inter-universal Teichmüller theory
-                        </p>
-                        <div class="pt-2">
-                            <div class="flex items-center justify-between text-xs text-neutral-600 dark:text-neutral-400 mb-1">
-                                <span>Verification progress</span>
-                                <span>60%</span>
-                            </div>
-                            <div class="h-1.5 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-purple-500" style="width: 60%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </x-ui.kanban.card>
-                
-                <x-ui.kanban.card>
-                    <div class="space-y-2">
-                        <div class="flex items-start justify-between">
-                            <h4 class="font-medium">Collatz Conjecture Analysis</h4>
-                            <x-ui.badge color="green" size="sm">Tao</x-ui.badge>
-                        </div>
-                        <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                            Almost all orbits attain small values
-                        </p>
-                        <div class="pt-2">
-                            <div class="flex items-center justify-between text-xs text-neutral-600 dark:text-neutral-400 mb-1">
-                                <span>Verification progress</span>
-                                <span>92%</span>
-                            </div>
-                            <div class="h-1.5 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-green-500" style="width: 92%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </x-ui.kanban.card>
-            </x-ui.kanban.cards>
-        </x-ui.kanban.column>
-        
-        <!-- Proven Theorems Column -->
-        <x-ui.kanban.column id="proven">
-            <x-ui.kanban.header :count="0">
-                <x-ui.heading>Proven Theorems</x-ui.heading>
-            </x-ui.kanban.header>
-            
-            <x-ui.kanban.cards>
-                <x-slot:empty>
-                    <div class="text-center py-8">
-                        <svg class="mx-auto size-12 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <h4 class="mt-4 font-medium text-neutral-900 dark:text-neutral-100">Awaiting verification</h4>
-                        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                            Proofs will appear here once peer-reviewed
-                        </p>
-                    </div>
-                </x-slot:empty>
-            </x-ui.kanban.cards>
-        </x-ui.kanban.column>
-    </x-ui.kanban>
+<x-demo 
+    class="flex justify-center"
+>
+   
 </x-demo>
 @endblade
 
---- 
 
 ## Component Props
 
@@ -932,19 +720,3 @@ Here's a comprehensive example showcasing all features:
 | `top` | slot | - | Content above main card content |
 | `bottom` | slot | - | Content below main card content |
 | `handle` | slot | - | Drag handle (shown on hover, positioned top-left) |
-
----
-
-## Component Structure
-
-The kanban component consists of five parts:
-
-**Board** (`<x-ui.kanban>`) - Container that manages the horizontal scrolling layout and column sizing
-
-**Column** (`<x-ui.kanban.column>`) - Vertical container for cards with optional header and footer
-
-**Header** (`<x-ui.kanban.header>`) - Column header with optional count badge
-
-**Cards** (`<x-ui.kanban.cards>`) - Container for card items with optional empty state
-
-**Card** (`<x-ui.kanban.card>`) - Individual item container with slots for top/bottom metadata and drag handles
