@@ -258,7 +258,7 @@ similuate progress loading bar with js using `requestAnimationFrame()` function:
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
                     <!--  -->
-                    this.value = Math.floor(progress * 100);
+                    this.value = progress * 100;
                     <!--  -->
                     if (progress < 1) {
                         requestAnimationFrame(updateProgress);
@@ -277,7 +277,7 @@ similuate progress loading bar with js using `requestAnimationFrame()` function:
     >
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">
-                <span x-text="value" class="pr-2"></span>
+                <span x-text="Math.floor(value)" class="pr-2"></span>
                 <span>% Progress</span>
             </x-ui.text>
             <x-ui.progress class="[&_[data-slot=bar]]:bg-amber-500" x-model="value" />
@@ -298,7 +298,7 @@ similuate progress loading bar with js using `requestAnimationFrame()` function:
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 
-                this.value = Math.floor(progress * 100);
+                this.value = progress * 100;
                 
                 if (progress < 1) {
                     requestAnimationFrame(updateProgress);
@@ -368,7 +368,7 @@ Create progress bars that change color based on completion percentage:
                 const updateProgress = (currentTime) => {
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
-                    this.value = Math.floor(progress * 100);
+                    this.value = progress * 100;
                     this.currentColor = this.getProgressColor();
                     if (progress < 1) {
                         requestAnimationFrame(updateProgress);
@@ -417,7 +417,7 @@ Create progress bars that change color based on completion percentage:
     >
         <div class="space-y-2">
             <x-ui.text  class="font-medium flex">
-                <span x-text="value" class="w-4"></span>% <span class="ml-auto">Color transitions from Red → Orange → Yellow → Green</span>
+                <span x-text="Math.floor(value)" class="min-w-5"></span>% <span class="ml-auto">Color transitions from Red → Orange → Yellow → Green</span>
             </x-ui.text>
             <x-ui.progress 
                 wave
@@ -555,10 +555,25 @@ For tasks with unknown duration:
 
 ## Buffer Progress
 
-Dual progress bars for buffering scenarios (like video players):
+Dual progress bars for buffering scenarios (like video players), by passing the state as an array where first key is the value and second is the buffer:
+
+@blade
+<x-demo>
+    <div class="space-y-6" x-data="{progress: {value: 12, buffer: 34}}">
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Buffering</x-ui.text>
+            <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" x-model="progress" />
+        </div>
+    </div>
+</x-demo>
+@endblade
 
 ```blade
-    <x-ui.progress :buffer="buffered" />
+    <!-- x-data="{ progress: {value: 12, buffer: 34 }}" -->
+    <x-ui.progress x-model="progress"  />
+    <!-- or -->
+    <!-- $public array $progress = ['value' => 12,'buffer' => 34] -->
+    <x-ui.progress wire:model="progress"  />
 ```
 
 ## Top and Bottom Slots
