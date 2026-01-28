@@ -103,16 +103,19 @@ Bind to Livewire state with `wire:model`:
 @blade
 <x-demo>
     <div>
-        <div class="space-y-4">
-            <div class="space-y-2">
+        <div class="space-y-4" x-data="{ progress: 45}">
+            <div class="space-y-2" >
                 <x-ui.text size="sm" class="font-medium">
-                    Upload Progress: 45%
+                    Upload Progress: <span x-text="progress"></span>%
                 </x-ui.text>
-                <x-ui.progress value="45" />
+                <x-ui.progress x-model="progress" class="[&_[data-slot=bar]]:bg-fuchsia-500"/>
             </div>
             
             <div class="flex gap-2">
-                <x-ui.button size="sm">
+                <x-ui.button size="sm" variant="outline" x-on:click="progress = 0">
+                    Reset Upload
+                </x-ui.button>
+                <x-ui.button size="sm" variant="outline" x-on:click="progress = 100">
                     Simulate Upload
                 </x-ui.button>
             </div>
@@ -564,6 +567,28 @@ Dual progress bars for buffering scenarios (like video players), by passing the 
             <x-ui.text size="sm" class="font-medium">Buffering</x-ui.text>
             <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" x-model="progress" />
         </div>
+         <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <x-ui.text size="sm" class="font-medium mb-2">Played Position</x-ui.text>
+                    <input 
+                        type="range" 
+                        x-model="progress.value"
+                        min="0" 
+                        max="100" 
+                        class="w-full"
+                    />
+                </div>
+                <div>
+                    <x-ui.text size="sm" class="font-medium mb-2">Buffer Amount</x-ui.text>
+                    <input 
+                        type="range" 
+                        x-model="progress.buffer"
+                        min="0" 
+                        max="100" 
+                        class="w-full"
+                    />
+                </div>
+            </div>
     </div>
 </x-demo>
 @endblade
