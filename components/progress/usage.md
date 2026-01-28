@@ -63,22 +63,22 @@ Control the height of the progress bar with size variants:
             <x-ui.text size="sm" class="font-medium">Extra Small (xs)</x-ui.text>
             <x-ui.progress value="65" size="xs" />
         </div>
-        
+        <!--  -->
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Small (sm)</x-ui.text>
             <x-ui.progress value="65" size="sm" />
         </div>
-        
+        <!--  -->
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Medium (md) - Default</x-ui.text>
             <x-ui.progress value="65" size="md" />
         </div>
-        
+        <!--  -->
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Large (lg)</x-ui.text>
             <x-ui.progress value="65" size="lg" />
         </div>
-        
+        <!--  -->
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Extra Large (xl)</x-ui.text>
             <x-ui.progress value="65" size="xl" />
@@ -108,7 +108,7 @@ Bind to Livewire state with `wire:model`:
                 <x-ui.text size="sm" class="font-medium">
                     Upload Progress: <span x-text="progress"></span>%
                 </x-ui.text>
-                <x-ui.progress x-model="progress" class="[&_[data-slot=bar]]:bg-fuchsia-500"/>
+                <x-ui.progress x-model="progress" class="[&_[data-slot=bar]]:bg-rose-500"/>
             </div>
             
             <div class="flex gap-2">
