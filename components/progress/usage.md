@@ -25,17 +25,14 @@ php artisan sheaf:install progress
             <x-ui.text size="sm" class="font-medium">25% Progress</x-ui.text>
             <x-ui.progress value="25" />
         </div>
-        
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">50% Progress</x-ui.text>
             <x-ui.progress value="50" />
         </div>
-        
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">75% Progress</x-ui.text>
             <x-ui.progress value="75" />
         </div>
-        
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">100% Complete</x-ui.text>
             <x-ui.progress value="100" />
@@ -46,7 +43,10 @@ php artisan sheaf:install progress
 
 ```blade
 <!-- Static progress values -->
-<x-ui.progress value="25" />
+<div class="space-y-2">
+    <x-ui.text size="sm" class="font-medium">25% Progress</x-ui.text>
+    <x-ui.progress value="25" />
+</div>
 <x-ui.progress value="50" />
 <x-ui.progress value="75" />
 <x-ui.progress value="100" />
@@ -95,56 +95,6 @@ Control the height of the progress bar with size variants:
 <x-ui.progress value="65" size="xl" />
 ```
 
-## Alpine.js Integration
-
-Use `x-model` for client-side reactive progress:
-
-@blade
-<x-demo>
-    <div x-data="{ progress: 50 }">
-        <div class="space-y-4">
-            <div class="space-y-2">
-                <x-ui.text size="sm" class="font-medium">
-                    Alpine Progress: <span x-text="progress"></span>%
-                </x-ui.text>
-                <x-ui.progress x-model="progress" />
-            </div>
-            
-            <div class="flex gap-2">
-                <x-ui.button @click="progress = Math.min(progress + 10, 100)" size="sm">
-                    +10%
-                </x-ui.button>
-                <x-ui.button @click="progress = Math.max(progress - 10, 0)" size="sm" variant="outline">
-                    -10%
-                </x-ui.button>
-                <x-ui.button @click="progress = 50" size="sm" variant="outline">
-                    Reset
-                </x-ui.button>
-            </div>
-            
-            <input 
-                type="range" 
-                x-model="progress" 
-                min="0" 
-                max="100" 
-                class="w-full"
-            />
-        </div>
-    </div>
-</x-demo>
-@endblade
-
-```blade
-<div x-data="{ progress: 50 }">
-    <x-ui.progress x-model="progress" />
-    
-    <button @click="progress = Math.min(progress + 10, 100)">
-        Increment
-    </button>
-    
-    <input type="range" x-model="progress" min="0" max="100" />
-</div>
-```
 
 ## Livewire Integration
 
@@ -165,9 +115,6 @@ Bind to Livewire state with `wire:model`:
                 <x-ui.button size="sm">
                     Simulate Upload
                 </x-ui.button>
-                <x-ui.button size="sm" variant="outline">
-                    Reset
-                </x-ui.button>
             </div>
         </div>
     </div>
@@ -175,7 +122,6 @@ Bind to Livewire state with `wire:model`:
 @endblade
 
 ```blade
-<!-- In your Livewire component -->
 <div>
     <x-ui.text>Upload Progress: {{ $uploadProgress }}%</x-ui.text>
     <x-ui.progress wire:model.live="uploadProgress" />
@@ -185,10 +131,61 @@ Bind to Livewire state with `wire:model`:
     </x-ui.button>
 </div>
 ```
+## Alpine.js Integration
+
+Use `x-model` for client-side reactive progress, can be livewire driven to :).
+
+@blade
+<x-demo>
+    <div x-data="{ progress: 50 }">
+        <div class="space-y-4">
+            <div class="space-y-2">
+                <x-ui.text size="sm" class="font-medium">
+                    Alpine Progress: <span x-text="progress"></span>%
+                </x-ui.text>
+                <x-ui.progress x-model="progress" />
+            </div>
+            <!--  -->
+            <div class="flex gap-2">
+                <x-ui.button x-on:click="progress = Math.min(progress + 10, 100)" size="sm">
+                    +10%
+                </x-ui.button>
+                <x-ui.button x-on:click="progress = Math.max(progress - 10, 0)" size="sm" variant="outline">
+                    -10%
+                </x-ui.button>
+            </div>
+            <!--  -->
+            <input 
+                type="range" 
+                x-model="progress" 
+                min="0" 
+                max="100" 
+                class="w-full"
+            />
+        </div>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<div x-data="{ progress: 50 }">
+
+    <x-ui.progress x-model="progress" />
+
+    <x-ui.button x-on:click="progress = Math.min(progress + 10, 100)" size="sm">
+        +10%
+    </x-ui.button>
+    <x-ui.button x-on:click="progress = Math.max(progress - 10, 0)" size="sm" variant="outline">
+        -10%
+    </x-ui.button>    
+    <input type="range" x-model="progress" min="0" max="100" />
+</div>
+```
+
 
 ## Animated Progress
 
-Create smooth animated progress bars:
+similuate progress loading bar with js using `requestAnimationFrame()` function:
 
 @blade
 <x-demo>
@@ -199,13 +196,13 @@ Create smooth animated progress bars:
                 const duration = 4000;
                 const delay = 1000;
                 const startTime = performance.now();
-                
+                <!--  -->
                 const updateProgress = (currentTime) => {
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
-                    
+                    <!--  -->
                     this.value = Math.floor(progress * 100);
-                    
+                    <!--  -->
                     if (progress < 1) {
                         requestAnimationFrame(updateProgress);
                     } else {
@@ -215,7 +212,7 @@ Create smooth animated progress bars:
                         }, delay);
                     }
                 };
-                
+                <!--  -->
                 requestAnimationFrame(updateProgress);
             }
         }" 
@@ -223,7 +220,8 @@ Create smooth animated progress bars:
     >
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">
-                <span x-text="value"></span>% Progress
+                <span x-text="value" class="pr-2"></span>
+                <span>% Progress</span>
             </x-ui.text>
             <x-ui.progress x-model="value" />
         </div>
@@ -273,12 +271,16 @@ Add a shimmer wave effect for slow-progressing tasks:
     <div class="space-y-6">
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Progress with Wave</x-ui.text>
-            <x-ui.progress value="35" wave />
+            <x-ui.progress 
+                value="35" 
+                class="[&_[data-slot=bar]]:bg-orange-500"
+                wave 
+            />
         </div>
         
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Slow Download Simulation</x-ui.text>
-            <x-ui.progress value="15" wave size="lg" />
+            <x-ui.progress class="[&_[data-slot=bar]]:bg-green-500" value="15" wave size="lg" />
         </div>
     </div>
 </x-demo>
@@ -286,9 +288,11 @@ Add a shimmer wave effect for slow-progressing tasks:
 
 ```blade
 <!-- Wave animation for visual feedback on slow progress -->
-<x-ui.progress value="35" wave />
-<x-ui.progress value="15" wave size="lg" />
+<x-ui.progress class="[&_[data-slot=bar]]:bg-orange-500" value="35" wave />
+<x-ui.progress class="[&_[data-slot=bar]]:bg-green-500" value="15" wave size="lg" />
 ```
+
+>Note: the animation use white background so it doesn't work for white background (aka our white default primary color)
 
 ## Dynamic Color Transitions
 
