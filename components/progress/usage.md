@@ -182,6 +182,63 @@ Use `x-model` for client-side reactive progress, can be livewire driven to :).
 </div>
 ```
 
+## The Bar Color
+
+if you want to use other color then the primary color of the theme, you can do so by using `[&_[data-slot=bar]]:bg-*` and use any color you want.
+
+@blade
+<x-demo>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Primary (default)</x-ui.text>
+            <x-ui.progress value="70" />
+        </div>
+        <!--  -->
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Red</x-ui.text>
+            <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-red-500" />
+        </div>
+        <!--  -->
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Amber</x-ui.text>
+            <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-amber-500" />
+        </div>
+        <!--  -->
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Orange</x-ui.text>
+            <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-orange-500" />
+        </div>
+        <!--  -->
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Teal</x-ui.text>
+            <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-teal-500" />
+        </div>
+        <!--  -->
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Rose</x-ui.text>
+            <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-rose-500" />
+        </div>
+        <!--  -->
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Blue</x-ui.text>
+            <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-blue-500" />
+        </div>
+        <!--  -->
+        <div class="space-y-2">
+            <x-ui.text size="sm" class="font-medium">Fuchsia</x-ui.text>
+            <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-fuchsia-500" />
+        </div>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+    <!-- red -->
+    <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-red-500" />
+    <!-- amber -->
+    <x-ui.progress value="70" class="[&_[data-slot=bar]]:bg-amber-500" />
+```
+
 
 ## Animated Progress
 
@@ -223,7 +280,7 @@ similuate progress loading bar with js using `requestAnimationFrame()` function:
                 <span x-text="value" class="pr-2"></span>
                 <span>% Progress</span>
             </x-ui.text>
-            <x-ui.progress x-model="value" />
+            <x-ui.progress class="[&_[data-slot=bar]]:bg-amber-500" x-model="value" />
         </div>
     </div>
 </x-demo>
@@ -258,7 +315,7 @@ similuate progress loading bar with js using `requestAnimationFrame()` function:
     }" 
     x-init="animate()"
 >
-    <x-ui.progress x-model="value" />
+    <x-ui.progress class="[&_[data-slot=bar]]:bg-amber-500" x-model="value" />
 </div>
 ```
 
@@ -473,24 +530,24 @@ For tasks with unknown duration:
     <div class="space-y-6">
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Basic Indeterminate</x-ui.text>
-            <x-ui.progress indeterminate />
+            <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" indeterminate />
         </div>
         
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Large Indeterminate</x-ui.text>
-            <x-ui.progress indeterminate size="lg" />
+            <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" indeterminate size="lg" />
         </div>
         
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Indeterminate with Wave</x-ui.text>
-            <x-ui.progress indeterminate wave size="lg" />
+            <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" indeterminate wave size="lg" />
         </div>
     </div>
 </x-demo>
 @endblade
 
 ```blade
-<!-- For unknown duration tasks -->
+<!-- For unknown duration tasks (teal color)-->
 <x-ui.progress indeterminate />
 <x-ui.progress indeterminate size="lg" />
 <x-ui.progress indeterminate wave />
