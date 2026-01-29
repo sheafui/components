@@ -669,21 +669,247 @@ Add interactive aligned elements to columns footers:
 
 ## Implementation Guide
 
-Here's a comprehensive example showcasing all features:
-in this guide I am going to show how to use the `App\Concerns\Reorderable` shipped with this component to build a kanban board, where you can reorder the cards inside the columns and also ordering the overall columns inside the board, for cards I choose to go with math statements and thier approvals process but it really doesn't matter, the Idea still the same
 
-let's start from scratch, setup the models:
-
-
+This guide shows you how to build a fully functional kanban board with drag-and-drop reordering using Livewire. We'll create a mathematical research workflow board that tracks conjectures through review to proven theorems.
 
 @blade
-<x-demo 
-    class="flex justify-center"
->
-   
-</x-demo>
+<x-md.cta                                                            
+    href="/demos/kanban"                                    
+    label="See the complete kanban board in action"
+    ctaLabel="Visit Live Demo"
+/>
 @endblade
 
+### Overview
+
+We'll build a kanban board where:
+- **Columns** represent workflow stages (Conjectures → Under Review → Proven Theorems)
+- **Cards** represent mathematical statements with progress tracking
+- Users can **drag columns** to reorder workflow stages
+- Users can **drag cards** within columns or between columns
+- All reordering persists to the database
+
+### Database Setup
+
+First, create the necessary migrations:
+
+**Board Migration:**
+```php
+Schema::create('boards', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->timestamps();
+});
+```
+
+**BoardColumn Migration:**
+```php
+Schema::create('board_columns', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('board_id')->constrained()->cascadeOnDelete();
+    $table->string('title');
+    $table->text('description')->nullable();
+    $table->unsignedInteger('order')->default(0);
+    $table->timestamps();
+    
+    $table->index(['board_id', 'order']);
+});
+```
+
+**MathematicalStatement Migration:**
+```php
+Schema::create('mathematical_statements', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('column_id')->constrained('board_columns')->cascadeOnDelete();
+    $table->string('title');
+    $table->text('description');
+    $table->string('field'); // number_theory, topology, etc.
+    $table->integer('year');
+    $table->string('status'); // conjecture, review, proven
+    $table->unsignedInteger('progress')->default(0); // 0-100
+    $table->unsignedInteger('order')->default(0);
+    $table->timestamps();
+    
+    $table->index(['column_id', 'order']);
+});
+```
+
+### Model Setup
+
+Define the Eloquent relationships:
+
+**Board Model:**
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Board extends Model
+{
+    protected $fillable = ['name'];
+    
+    public function columns()
+    {
+        return $this->hasMany(BoardColumn::class)->orderBy('order');
+    }
+}
+```
+
+**BoardColumn Model:**
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class BoardColumn extends Model
+{
+    protected $fillable = ['board_id', 'title', 'description', 'order'];
+    
+    public function board()
+    {
+        return $this->belongsTo(Board::class);
+    }
+    
+    public function statements()
+    {
+        return $this->hasMany(MathematicalStatement::class, 'column_id')
+            ->orderBy('order');
+    }
+}
+```
+
+**MathematicalStatement Model:**
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class MathematicalStatement extends Model
+{
+    protected $fillable = [
+        'column_id', 'title', 'description', 'field', 
+        'year', 'status', 'progress', 'order'
+    ];
+    
+    public function column()
+    {
+        return $this->belongsTo(BoardColumn::class, 'column_id');
+    }
+}
+```
+
+### Using the Reorderable Trait
+
+The kanban component ships with a powerful `App\Livewire\Concerns\Reorderable` trait that handles all the complex database logic for reordering items. You don't need to write the SQL yourself—just use the trait's methods.
+
+**Key Methods:**
+
+1. **`reorderWithinScope()`** - Reorder items within the same container (e.g., cards in the same column)
+2. **`moveBetweenScopes()`** - Move items between containers (e.g., card from one column to another)
+3. **`reorderTransaction()`** - Wrap reordering in a database transaction for safety
+
+### Livewire Component
+
+Create your Livewire component that uses the `Reorderable` trait:
+
+```php
+<?php
+
+namespace App\Livewire;
+
+use App\Livewire\Concerns\Reorderable;
+use App\Models\Board;
+use App\Models\BoardColumn;
+use App\Models\MathematicalStatement;
+use Livewire\Component;
+
+class KanbanBoard extends Component
+{
+    use Reorderable;
+
+    public Board $board;
+
+    public function mount(): void
+    {
+        $this->loadBoard();
+    }
+
+    public function render()
+    {
+        return view('livewire.kanban-board');
+    }
+
+    private function loadBoard(): void
+    {
+        $this->board = Board::query()
+            ->with(['columns', 'columns.statements'])
+            ->firstOrFail();
+    }
+
+    /**
+     * Handle column reordering (drag columns to rearrange workflow)
+     */
+    public function sortColumns(int $columnId, int $newPosition): void
+    {
+        $this->reorderTransaction(function () use ($columnId, $newPosition) {
+            $column = BoardColumn::findOrFail($columnId);
+
+            // Reorder within the board's columns
+            $this->reorderWithinScope(
+                model: $column,
+                newPosition: $newPosition,
+                scope: fn ($q) => $q->where('board_id', $column->board_id)
+            );
+        });
+
+        $this->loadBoard();
+    }
+
+    /**
+     * Handle card reordering and moving between columns
+     */
+    public function sortCards(int $cardId, int $newPosition, int $targetColumnId): void
+    {
+        $this->reorderTransaction(function () use ($cardId, $newPosition, $targetColumnId) {
+            $card = MathematicalStatement::findOrFail($cardId);
+
+            if ($card->column_id === $targetColumnId) {
+                // Same column - just reorder
+                $this->reorderWithinScope(
+                    model: $card,
+                    newPosition: $newPosition,
+                    scope: fn ($q) => $q->where('column_id', $card->column_id)
+                );
+            } else {
+                // Different column - move between scopes
+                $this->moveBetweenScopes(
+                    model: $card,
+                    fromScope: fn ($q) => $q->where('column_id', $card->column_id),
+                    toScope: fn ($q) => $q->where('column_id', $targetColumnId),
+                    scopeAttributes: ['column_id' => $targetColumnId],
+                    newPosition: $newPosition
+                );
+            }
+        });
+
+        $this->loadBoard();
+    }
+}
+```
+
+**How the Reorderable Trait Works:**
+
+- **`reorderWithinScope()`**: When you drag a card from position 2 to position 5 within the same column, the trait automatically shifts all affected cards and updates their `order` values
+- **`moveBetweenScopes()`**: When you drag a card from "Conjectures" to "Under Review", the trait handles removing it from the old column, shifting remaining cards, and inserting it at the new position
+- **`reorderTransaction()`**: Wraps everything in a database transaction so if anything fails, no partial updates occur
+
+<!-- to continue later  -->
 
 ## Component Props
 
