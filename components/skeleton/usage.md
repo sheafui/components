@@ -58,7 +58,7 @@ Choose from different animation styles to match your design preference:
 
 @blade
 <x-demo class="flex justify-center">
-    <div class="w-full max-w-3xl space-y-6">
+    <div class=" mx-auto space-y-6">
         <div class="space-y-2">
             <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Pulse </p>
             <x-ui.skeleton animate="pulse" class="h-8 w-80" />
