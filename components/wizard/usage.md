@@ -1,0 +1,5 @@
+---
+name: wizard
+---
+
+## Wizard Component
