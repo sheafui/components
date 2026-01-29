@@ -670,6 +670,11 @@ Add interactive aligned elements to columns footers:
 ## Implementation Guide
 
 Here's a comprehensive example showcasing all features:
+in this guide I am going to show how to use the `App\Concerns\Reorderable` shipped with this component to build a kanban board, where you can reorder the cards inside the columns and also ordering the overall columns inside the board, for cards I choose to go with math statements and thier approvals process but it really doesn't matter, the Idea still the same
+
+let's start from scratch, setup the models:
+
+
 
 @blade
 <x-demo 
