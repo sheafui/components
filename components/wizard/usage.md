@@ -522,40 +522,19 @@ class UserOnboarding extends Component
      */
     public function submit(): void
     {
-        // Validate all non-skippable steps
-        foreach ($this->steps() as $stepKey => $stepConfig) {
-            if (!$stepConfig['skippable']) {
-                $stepConfig['form']->validate();
-            }
-        }
+        // you may need to be more strict... 
+        // foreach ($this->steps() as $stepKey => $stepConfig) {
+        //     if (!$stepConfig['skippable']) {
+        //         $stepConfig['form']->validate();
+        //     }
+        // }
 
         $allData = $this->getAllFormsData();
 
         // Save everything in a transaction
         DB::transaction(function () use ($allData) {
-            $user = User::create([
-                'username' => $allData['account']['username'],
-                'email' => $allData['account']['email'],
-                'password' => Hash::make($allData['account']['password']),
-                'first_name' => $allData['profile']['first_name'] ?? null,
-                'last_name' => $allData['profile']['last_name'] ?? null,
-            ]);
-
-            // Handle avatar upload if present
-            if ($allData['profile']['avatar'] ?? null) {
-                $path = $allData['profile']['avatar']->store('avatars', 'public');
-                $user->update(['avatar' => $path]);
-            }
-
-            // Save preferences
-            $user->preferences()->create($allData['preferences']);
-
-            // Log the user in
-            auth()->login($user);
+            //...
         });
-
-        // Redirect to dashboard
-        $this->redirect(route('dashboard'));
     }
 
     public function render()
@@ -611,11 +590,11 @@ Create the Blade template for your wizard:
         <x-ui.wizard.body>
             <div class="p-6">
                 @if ($currentStep === 'account')
-                    <x-components::demos.user-on-boarding.account :$account />
+                    <x-demos.user-on-boarding.account :$account />
                 @elseif ($currentStep === 'profile')
-                    <x-components::demos.user-on-boarding.profile :$profile />
+                    <x-demos.user-on-boarding.profile :$profile />
                 @elseif ($currentStep === 'preferences')
-                    <x-components::demos.user-on-boarding.preferences :$preferences />
+                    <x-demos.user-on-boarding.preferences :$preferences />
                 @endif
 
                 <div class="flex items-center justify-between mt-8 pt-6">
@@ -817,8 +796,8 @@ This pattern gives you a robust, production-ready wizard with clean separation o
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `active` | boolean | `false` | Whether this is the current active step |
-| `completed` | boolean | `false` | Whether this step has been completed |
+| `active` or `data-active` | boolean | `false` | Whether this is the current active step |
+| `completed` or `data-active` | boolean | `false` | Whether this step has been completed |
 | `label` | mixed | `1` | Label to display (number or custom content) |
 | `icon` | slot | `null` | Custom icon to replace label |
 | `completedIcon` | string | `'check'` | Icon name to show when step is completed |
