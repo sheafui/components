@@ -20,92 +20,19 @@ php artisan sheaf:install wizard
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.wizard variant="minimal">
-        <x-ui.wizard.steps>
-            <x-ui.wizard.step :active="true" :completed="false" :label="1">
-                <x-ui.heading>Account Setup</x-ui.heading>
-                <x-ui.text class="opacity-70">
-                    Create your credentials
-                </x-ui.text>
-            </x-ui.wizard.step>
-
-            <x-ui.wizard.step :active="false" :completed="false" :label="2">
-                <x-ui.heading>Profile Details</x-ui.heading>
-                <x-ui.text class="opacity-70">
-                    Tell us about yourself
-                </x-ui.text>
-            </x-ui.wizard.step>
-
-            <x-ui.wizard.step :active="false" :completed="false" :label="3">
-                <x-ui.heading>Preferences</x-ui.heading>
-                <x-ui.text class="opacity-70">
-                    Customize your experience
-                </x-ui.text>
-            </x-ui.wizard.step>
-        </x-ui.wizard.steps>
-
-        <x-ui.wizard.body>
-            <div class="p-6">
-                <x-ui.heading size="lg">Welcome!</x-ui.heading>
-                <x-ui.text class="mt-2">
-                    Let's get your account set up in just a few steps.
-                </x-ui.text>
-            </div>
-        </x-ui.wizard.body>
-    </x-ui.wizard>
-</x-demo>
-@endblade
-
-```blade
-<x-ui.wizard variant="minimal">
-    <x-ui.wizard.steps>
-        <x-ui.wizard.step :active="true" :label="1">
-            <x-ui.heading>Account Setup</x-ui.heading>
-            <x-ui.text>Create your credentials</x-ui.text>
-        </x-ui.wizard.step>
-
-        <x-ui.wizard.step :active="false" :label="2">
-            <x-ui.heading>Profile Details</x-ui.heading>
-            <x-ui.text>Tell us about yourself</x-ui.text>
-        </x-ui.wizard.step>
-
-        <x-ui.wizard.step :active="false" :label="3">
-            <x-ui.heading>Preferences</x-ui.heading>
-            <x-ui.text>Customize your experience</x-ui.text>
-        </x-ui.wizard.step>
-    </x-ui.wizard.steps>
-
-    <x-ui.wizard.body>
-        <div class="p-6">
-            <!-- Your form content here -->
-        </div>
-    </x-ui.wizard.body>
-</x-ui.wizard>
-```
-
-## Variants
-
-The wizard component supports two visual variants:
-
-### Default Variant
-
-A traditional horizontal stepper with separators between steps:
-
-@blade
-<x-demo class="flex justify-center">
     <x-ui.wizard variant="default">
-        <x-ui.wizard.steps>
+        <x-ui.wizard.steps color="blue">
             <x-ui.wizard.step :active="false" :completed="true" :label="1">
                 <x-ui.heading>Personal Info</x-ui.heading>
                 <x-ui.text class="opacity-70">Name and email</x-ui.text>
             </x-ui.wizard.step>
 
-            <x-ui.wizard.step :active="true" :completed="false" :label="2">
+            <x-ui.wizard.step :active="false" :completed="true" :label="2">
                 <x-ui.heading>Account Details</x-ui.heading>
-                <x-ui.text class="opacity-70">Username and password</x-ui.text>
+                <x-ui.text class="opacity-70">addresses</x-ui.text>
             </x-ui.wizard.step>
 
-            <x-ui.wizard.step :active="false" :completed="false" :label="3">
+            <x-ui.wizard.step :active="true" :completed="false" :label="3">
                 <x-ui.heading>Verification</x-ui.heading>
                 <x-ui.text class="opacity-70">Confirm your email</x-ui.text>
             </x-ui.wizard.step>
@@ -113,7 +40,7 @@ A traditional horizontal stepper with separators between steps:
 
         <x-ui.wizard.body>
             <div class="p-6">
-                <x-ui.text>Step 2 content goes here</x-ui.text>
+                <x-ui.text>Step 3 content goes here</x-ui.text>
             </div>
         </x-ui.wizard.body>
     </x-ui.wizard>
@@ -122,25 +49,34 @@ A traditional horizontal stepper with separators between steps:
 
 ```blade
 <x-ui.wizard variant="default">
-    <x-ui.wizard.steps>
+    <x-ui.wizard.steps color="sky">
         <x-ui.wizard.step :active="false" :completed="true" :label="1">
             <x-ui.heading>Personal Info</x-ui.heading>
+            <x-ui.text class="opacity-70">Name and email</x-ui.text>
         </x-ui.wizard.step>
 
-        <x-ui.wizard.step :active="true" :label="2">
+        <x-ui.wizard.step :active="false" :completed="true" :label="2">
             <x-ui.heading>Account Details</x-ui.heading>
+            <x-ui.text class="opacity-70">Username and password</x-ui.text>
         </x-ui.wizard.step>
 
-        <x-ui.wizard.step :active="false" :label="3">
+        <x-ui.wizard.step :active="true" :completed="false" :label="3">
             <x-ui.heading>Verification</x-ui.heading>
+            <x-ui.text class="opacity-70">Confirm your email</x-ui.text>
         </x-ui.wizard.step>
     </x-ui.wizard.steps>
 
     <x-ui.wizard.body>
-        <!-- Content -->
+        <div class="p-6">
+            <x-ui.text>Step 3 content goes here</x-ui.text>
+        </div>
     </x-ui.wizard.body>
 </x-ui.wizard>
 ```
+
+## Variants
+
+The wizard component supports two visual variants, in addition to the default variant above there is minimal variant:
 
 ### Minimal Variant
 
@@ -186,87 +122,13 @@ A cleaner design with connecting lines between steps:
     </x-ui.wizard.body>
 </x-ui.wizard>
 ```
-
-## Step States
-
-Steps can have three visual states:
-
-### Active Step
-
-The current step the user is on:
-
-@blade
-<x-demo class="flex justify-center">
-    <x-ui.wizard variant="minimal">
-        <x-ui.wizard.steps>
-            <x-ui.wizard.step :active="true" :label="1">
-                <x-ui.heading>Active Step</x-ui.heading>
-                <x-ui.text class="opacity-70">Currently viewing</x-ui.text>
-            </x-ui.wizard.step>
-        </x-ui.wizard.steps>
-    </x-ui.wizard>
-</x-demo>
-@endblade
-
-```blade
-<x-ui.wizard.step :active="true" :label="1">
-    <x-ui.heading>Active Step</x-ui.heading>
-</x-ui.wizard.step>
-```
-
-### Completed Step
-
-Steps that have been finished:
-
-@blade
-<x-demo class="flex justify-center">
-    <x-ui.wizard variant="minimal">
-        <x-ui.wizard.steps>
-            <x-ui.wizard.step :active="false" :completed="true" :label="1">
-                <x-ui.heading>Completed Step</x-ui.heading>
-                <x-ui.text class="opacity-70">Already finished</x-ui.text>
-            </x-ui.wizard.step>
-        </x-ui.wizard.steps>
-    </x-ui.wizard>
-</x-demo>
-@endblade
-
-```blade
-<x-ui.wizard.step :completed="true" :label="1">
-    <x-ui.heading>Completed Step</x-ui.heading>
-</x-ui.wizard.step>
-```
-
-### Inactive Step
-
-Steps not yet reached:
-
-@blade
-<x-demo class="flex justify-center">
-    <x-ui.wizard variant="minimal">
-        <x-ui.wizard.steps>
-            <x-ui.wizard.step :active="false" :completed="false" :label="3">
-                <x-ui.heading>Upcoming Step</x-ui.heading>
-                <x-ui.text class="opacity-70">Not yet started</x-ui.text>
-            </x-ui.wizard.step>
-        </x-ui.wizard.steps>
-    </x-ui.wizard>
-</x-demo>
-@endblade
-
-```blade
-<x-ui.wizard.step :active="false" :completed="false" :label="3">
-    <x-ui.heading>Upcoming Step</x-ui.heading>
-</x-ui.wizard.step>
-```
-
 ## Color Customization
 
 Customize the wizard's accent color using the `color` prop on `wizard.steps`:
 
 @blade
-<x-demo class="flex justify-center">
-    <x-ui.wizard variant="minimal">
+<x-demo class="flex flex-col gap-y-6 justify-center">
+    <x-ui.wizard variant="default">
         <x-ui.wizard.steps color="purple">
             <x-ui.wizard.step :active="false" :completed="true" :label="1">
                 <x-ui.heading>Step 1</x-ui.heading>
@@ -286,7 +148,31 @@ Customize the wizard's accent color using the `color` prop on `wizard.steps`:
 
         <x-ui.wizard.body>
             <div class="p-6">
-                <x-ui.text>Purple-themed wizard</x-ui.text>
+                <x-ui.text> purple themed wizard for default variant</x-ui.text>
+            </div>
+        </x-ui.wizard.body>
+    </x-ui.wizard>
+    <x-ui.wizard variant="minimal">
+        <x-ui.wizard.steps color="teal">
+            <x-ui.wizard.step :active="false" :completed="true" :label="1">
+                <x-ui.heading>Step 1</x-ui.heading>
+                <x-ui.text class="opacity-70">Purple accent</x-ui.text>
+            </x-ui.wizard.step>
+
+            <x-ui.wizard.step :active="true" :label="2">
+                <x-ui.heading>Step 2</x-ui.heading>
+                <x-ui.text class="opacity-70">Active with purple</x-ui.text>
+            </x-ui.wizard.step>
+
+            <x-ui.wizard.step :active="false" :label="3">
+                <x-ui.heading>Step 3</x-ui.heading>
+                <x-ui.text class="opacity-70">Upcoming</x-ui.text>
+            </x-ui.wizard.step>
+        </x-ui.wizard.steps>
+
+        <x-ui.wizard.body>
+            <div class="p-6">
+                <x-ui.text>teal themed wizard for minimal variant </x-ui.text>
             </div>
         </x-ui.wizard.body>
     </x-ui.wizard>
@@ -294,8 +180,16 @@ Customize the wizard's accent color using the `color` prop on `wizard.steps`:
 @endblade
 
 ```blade
-<x-ui.wizard variant="minimal">
+<x-ui.wizard>
     <x-ui.wizard.steps color="purple">
+        <x-ui.wizard.step :active="true" :label="1">
+            <x-ui.heading>Step 1</x-ui.heading>
+        </x-ui.wizard.step>
+        <!-- More steps -->
+    </x-ui.wizard.steps>
+</x-ui.wizard>
+<x-ui.wizard variant="minimal">
+    <x-ui.wizard.steps color="teal">
         <x-ui.wizard.step :active="true" :label="1">
             <x-ui.heading>Step 1</x-ui.heading>
         </x-ui.wizard.step>
@@ -313,27 +207,18 @@ Use custom icons instead of numbers for step labels:
 @blade
 <x-demo class="flex justify-center">
     <x-ui.wizard variant="minimal">
-        <x-ui.wizard.steps color="blue">
-            <x-ui.wizard.step :active="false" :completed="true">
-                <x-slot:icon>
-                    <x-ui.icon name="user" variant="mini" />
-                </x-slot:icon>
+        <x-ui.wizard.steps >
+            <x-ui.wizard.step icon="user" :active="false" :completed="true">
                 <x-ui.heading>Profile</x-ui.heading>
                 <x-ui.text class="opacity-70">Basic information</x-ui.text>
             </x-ui.wizard.step>
 
-            <x-ui.wizard.step :active="true">
-                <x-slot:icon>
-                    <x-ui.icon name="credit-card" variant="mini" />
-                </x-slot:icon>
+            <x-ui.wizard.step icon="credit-card" :active="true">
                 <x-ui.heading>Payment</x-ui.heading>
                 <x-ui.text class="opacity-70">Billing details</x-ui.text>
             </x-ui.wizard.step>
 
-            <x-ui.wizard.step :active="false">
-                <x-slot:icon>
-                    <x-ui.icon name="check-circle" variant="mini" />
-                </x-slot:icon>
+            <x-ui.wizard.step icon="check-circle" :active="false">
                 <x-ui.heading>Complete</x-ui.heading>
                 <x-ui.text class="opacity-70">Finish setup</x-ui.text>
             </x-ui.wizard.step>
@@ -349,9 +234,7 @@ Use custom icons instead of numbers for step labels:
 @endblade
 
 ```blade
-<x-ui.wizard.step :active="true">
-    <x-slot:icon>
-        <x-ui.icon name="user" variant="mini" />
+<x-ui.wizard.step icon="user" :active="true">
     </x-slot:icon>
     <x-ui.heading>Profile</x-ui.heading>
     <x-ui.text>Basic information</x-ui.text>
@@ -359,35 +242,29 @@ Use custom icons instead of numbers for step labels:
 ```
 
 You can also customize the completed icon:
-
-```blade
-<x-ui.wizard.step :completed="true" completedIcon="check-badge">
-    <x-ui.heading>Completed</x-ui.heading>
-</x-ui.wizard.step>
-```
-
-## Contained Layout
-
-Remove borders and padding for integration into existing containers:
-
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.wizard contained variant="minimal">
-        <x-ui.wizard.steps>
-            <x-ui.wizard.step :active="true" :label="1">
-                <x-ui.heading>Step 1</x-ui.heading>
-                <x-ui.text class="opacity-70">No border</x-ui.text>
+    <x-ui.wizard variant="minimal">
+        <x-ui.wizard.steps >
+            <x-ui.wizard.step icon="user" :active="false" completedIcon="check-badge" :completed="true">
+                <x-ui.heading>Profile</x-ui.heading>
+                <x-ui.text class="opacity-70">Basic information</x-ui.text>
             </x-ui.wizard.step>
 
-            <x-ui.wizard.step :active="false" :label="2">
-                <x-ui.heading>Step 2</x-ui.heading>
-                <x-ui.text class="opacity-70">Clean layout</x-ui.text>
+            <x-ui.wizard.step icon="credit-card" :active="true">
+                <x-ui.heading>Payment</x-ui.heading>
+                <x-ui.text class="opacity-70">Billing details</x-ui.text>
+            </x-ui.wizard.step>
+
+            <x-ui.wizard.step icon="check-circle" :active="false">
+                <x-ui.heading>Complete</x-ui.heading>
+                <x-ui.text class="opacity-70">Finish setup</x-ui.text>
             </x-ui.wizard.step>
         </x-ui.wizard.steps>
 
         <x-ui.wizard.body>
             <div class="p-6">
-                <x-ui.text>Contained wizard for custom layouts</x-ui.text>
+                <x-ui.text>Icon-based steps</x-ui.text>
             </div>
         </x-ui.wizard.body>
     </x-ui.wizard>
@@ -395,15 +272,9 @@ Remove borders and padding for integration into existing containers:
 @endblade
 
 ```blade
-<x-ui.wizard contained variant="minimal">
-    <x-ui.wizard.steps>
-        <!-- Steps without border -->
-    </x-ui.wizard.steps>
-
-    <x-ui.wizard.body>
-        <!-- Body without border -->
-    </x-ui.wizard.body>
-</x-ui.wizard>
+<x-ui.wizard.step :completed="true" completedIcon="check-badge">
+    <x-ui.heading>Completed</x-ui.heading>
+</x-ui.wizard.step>
 ```
 
 ## Implementation Guide
@@ -425,13 +296,12 @@ We'll build a wizard that:
 - **Validates each step** before allowing progression
 - **Allows skipping** optional steps
 - **Collects all data** and saves atomically at the end
-- **Persists state** using Livewire properties
 
 ### Step 1: Create Form Objects
 
 Create separate form objects for each step to organize validation and data:
 
-**Account Form (app/Livewire/Forms/AccountForm.php):**
+**Account Form `app/Livewire/Forms/AccountForm.php`:**
 ```php
 <?php
 
@@ -442,16 +312,11 @@ use Livewire\Form;
 
 class AccountForm extends Form
 {
-    #[Validate('required|string|min:3|max:20|unique:users,username')]
+   #[Validate('required|min:3')]
     public string $username = '';
 
-    #[Validate('required|email|unique:users,email')]
+    #[Validate('required|email')]
     public string $email = '';
-
-    #[Validate('required|min:8|confirmed')]
-    public string $password = '';
-
-    public string $password_confirmation = '';
 }
 ```
 
@@ -466,14 +331,11 @@ use Livewire\Form;
 
 class ProfileForm extends Form
 {
-    #[Validate('required|string|max:50')]
+    #[Validate('required|min:3')]
     public string $first_name = '';
 
-    #[Validate('required|string|max:50')]
+    #[Validate('required|min:3')]
     public string $last_name = '';
-
-    #[Validate('nullable|image|max:2048')]
-    public $avatar = null;
 }
 ```
 
@@ -710,7 +572,7 @@ Create the Blade template for your wizard:
 **resources/views/livewire/user-onboarding.blade.php:**
 ```blade
 <div>
-    <x-ui.wizard variant="minimal">
+    <x-ui.wizard >
         <x-ui.wizard.steps color="blue">
             <x-ui.wizard.step 
                 :active="$currentStep === 'account'" 
@@ -719,7 +581,7 @@ Create the Blade template for your wizard:
             >
                 <x-ui.heading>Account Information</x-ui.heading>
                 <x-ui.text class="opacity-70">
-                    Create your account credentials
+                    Create your account credentials.
                 </x-ui.text>
             </x-ui.wizard.step>
 
@@ -730,7 +592,7 @@ Create the Blade template for your wizard:
             >
                 <x-ui.heading>Profile Information</x-ui.heading>
                 <x-ui.text class="opacity-70">
-                    Tell us more about yourself
+                    Tell us more about yourself.
                 </x-ui.text>
             </x-ui.wizard.step>
 
@@ -741,53 +603,38 @@ Create the Blade template for your wizard:
             >
                 <x-ui.heading>Preferences & Review</x-ui.heading>
                 <x-ui.text class="opacity-70">
-                    Customize your notifications
+                    Customize your notification preferences.
                 </x-ui.text>
             </x-ui.wizard.step>
         </x-ui.wizard.steps>
 
         <x-ui.wizard.body>
             <div class="p-6">
-                {{-- Account Step --}}
                 @if ($currentStep === 'account')
-                    <livewire:wizard.steps.account :form="$account" />
+                    <x-components::demos.user-on-boarding.account :$account />
+                @elseif ($currentStep === 'profile')
+                    <x-components::demos.user-on-boarding.profile :$profile />
+                @elseif ($currentStep === 'preferences')
+                    <x-components::demos.user-on-boarding.preferences :$preferences />
                 @endif
 
-                {{-- Profile Step --}}
-                @if ($currentStep === 'profile')
-                    <livewire:wizard.steps.profile :form="$profile" />
-                @endif
-
-                {{-- Preferences Step --}}
-                @if ($currentStep === 'preferences')
-                    <livewire:wizard.steps.preferences :form="$preferences" />
-                @endif
-
-                {{-- Navigation --}}
-                <div class="flex items-center justify-between mt-8 pt-6 border-t border-neutral-200 dark:border-neutral-800">
+                <div class="flex items-center justify-between mt-8 pt-6">
                     @if (!$this->isFirstStep())
-                        <x-ui.button wire:click="previousStep" variant="soft">
-                            Previous
-                        </x-ui.button>
+                        <x-ui.button wire:click="previousStep" variant="soft">Previous</x-ui.button>
                     @else
                         <div></div>
                     @endif
 
                     <div class="flex gap-2 ml-auto">
                         @if ($this->isStepSkippable($currentStep) && !$this->isLastStep())
-                            <x-ui.button wire:click="skipStep" variant="ghost">
-                                Skip
-                            </x-ui.button>
+                            <x-ui.button wire:click="skipStep" variant="ghost">Skip</x-ui.button>
                         @endif
 
                         @if (!$this->isLastStep())
-                            <x-ui.button wire:click="nextStep(true)" variant="outline">
-                                Next
-                            </x-ui.button>
+                            <x-ui.button wire:click="nextStep(true)" variant="outline">Next</x-ui.button>
                         @else
-                            <x-ui.button wire:click="submit" variant="outline" color="green">
-                                Complete Setup
-                            </x-ui.button>
+                            <x-ui.button wire:click="submit" variant="outline" color="green">Complete
+                                Setup</x-ui.button>
                         @endif
                     </div>
                 </div>
@@ -803,7 +650,11 @@ Create Blade components for each step's content:
 
 **resources/views/livewire/wizard/steps/account.blade.php:**
 ```blade
-<div class="space-y-6">
+@props([
+    'account' // just in case you want to interact with it here  
+]) 
+
+<div {{ $attributes }} class="space-y-6">
     <div>
         <x-ui.heading size="lg">Account Information</x-ui.heading>
         <x-ui.text class="opacity-70 mt-2">
@@ -811,16 +662,17 @@ Create Blade components for each step's content:
         </x-ui.text>
     </div>
 
-    <div class="space-y-4">
+    <form class="space-y-4">
         <x-ui.field required>
             <x-ui.label>Username</x-ui.label>
             <x-ui.input 
                 wire:model="account.username" 
                 type="text" 
                 placeholder="johndoe" 
+                autocomplete="username"
             />
-            <x-ui.error name="account.username" />
-            <x-ui.description>Choose a unique username</x-ui.description>
+            <x-ui.error name="username" />
+            <x-ui.description>Choose a unique username that will identify you</x-ui.description>
         </x-ui.field>
 
         <x-ui.field required>
@@ -829,38 +681,19 @@ Create Blade components for each step's content:
                 wire:model="account.email" 
                 type="email" 
                 placeholder="john@example.com" 
+                autocomplete="email"
             />
-            <x-ui.error name="account.email" />
+            <x-ui.error name="email" />
             <x-ui.description>We'll send verification to this email</x-ui.description>
         </x-ui.field>
-
-        <x-ui.field required>
-            <x-ui.label>Password</x-ui.label>
-            <x-ui.input 
-                wire:model="account.password" 
-                type="password" 
-                placeholder="••••••••" 
-            />
-            <x-ui.error name="account.password" />
-            <x-ui.description>Minimum 8 characters</x-ui.description>
-        </x-ui.field>
-
-        <x-ui.field required>
-            <x-ui.label>Confirm Password</x-ui.label>
-            <x-ui.input 
-                wire:model="account.password_confirmation" 
-                type="password" 
-                placeholder="••••••••" 
-            />
-            <x-ui.error name="account.password_confirmation" />
-        </x-ui.field>
-    </div>
+    </form>
 </div>
 ```
 
 **resources/views/livewire/wizard/steps/profile.blade.php:**
 ```blade
-<div class="space-y-6">
+@props(['profile'=>null])
+<div {{ $attributes }} class="space-y-6">
     <div>
         <x-ui.heading size="lg">Profile Information</x-ui.heading>
         <x-ui.text class="opacity-70 mt-2">
@@ -868,71 +701,44 @@ Create Blade components for each step's content:
         </x-ui.text>
     </div>
 
-    <div class="space-y-4">
+    <form class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
             <x-ui.field required>
                 <x-ui.label>First Name</x-ui.label>
                 <x-ui.input 
                     wire:model="profile.first_name" 
+                    type="text" 
                     placeholder="John" 
                 />
-                <x-ui.error name="profile.first_name" />
+                <x-ui.error name="first_name" />
             </x-ui.field>
 
             <x-ui.field required>
                 <x-ui.label>Last Name</x-ui.label>
                 <x-ui.input 
                     wire:model="profile.last_name" 
+                    type="text" 
                     placeholder="Doe" 
                 />
-                <x-ui.error name="profile.last_name" />
+                <x-ui.error name="last_name" />
             </x-ui.field>
         </div>
-
-        <x-ui.field>
-            <x-ui.label>Profile Picture</x-ui.label>
-            <x-ui.input 
-                type="file"
-                wire:model="profile.avatar" 
-                accept="image/*"
-            />
-            <x-ui.error name="profile.avatar" />
-            <x-ui.description>Max 2MB</x-ui.description>
-        </x-ui.field>
-
-        @if ($profile->avatar)
-            <div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
-                <img 
-                    src="{{ $profile->avatar->temporaryUrl() }}" 
-                    class="w-16 h-16 rounded-full object-cover" 
-                    alt="Preview"
-                >
-                <div class="flex-1">
-                    <x-ui.text size="sm" class="font-medium">
-                        {{ $profile->avatar->getClientOriginalName() }}
-                    </x-ui.text>
-                    <x-ui.text size="xs" class="opacity-70">
-                        {{ number_format($profile->avatar->getSize() / 1024, 2) }} KB
-                    </x-ui.text>
-                </div>
-            </div>
-        @endif
-    </div>
+    </form>
 </div>
 ```
 
 **resources/views/livewire/wizard/steps/preferences.blade.php:**
 ```blade
-<div class="space-y-6">
+<div {{ $attributes }} class="space-y-6">
     <div>
         <x-ui.heading size="lg">Preferences & Review</x-ui.heading>
         <x-ui.text class="opacity-70 mt-2">
-            Customize your notification preferences
+            Customize your notification preferences and review your information before submitting
         </x-ui.text>
     </div>
 
     <div class="space-y-6">
-        <div class="p-4 bg-white/5 rounded-lg space-y-4">
+        <div class="p-4 dark:bg-white/1 bg-neutral-800/1 rounded-lg space-y-4">
             <div>
                 <x-ui.heading size="sm">Notification Channels</x-ui.heading>
                 <x-ui.text size="sm" class="opacity-70 mt-1">
@@ -956,7 +762,7 @@ Create Blade components for each step's content:
                 <x-ui.switch 
                     wire:model.live="preferences.sms_notifications"
                     label="SMS Notifications"
-                    description="Receive text message alerts"
+                    description="Receive text message alerts (standard rates apply)"
                 />
             </div>
         </div>
