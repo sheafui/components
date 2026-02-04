@@ -4,7 +4,7 @@ name: 'repeater'
 
 ## Introduction
 
-The **Repeater** component provides a dynamic, UUID-based solution for managing collections of form items. Perfect for product variants, contact lists, task items, or any scenario where users need to add, remove, and duplicate related data entries. Built with Livewire in mind, it handles state management seamlessly while avoiding common pitfalls like array index conflicts.
+The **Repeater** component provides a dynamic, UUID-based solution for managing collections of form items. Perfect for product variants, contact lists, task items, or any scenario where users need to add, remove, and duplicate related data entries. Built with Livewire (pure blade sorry you need to wait, or you adapt the UI with your backend using js). it handles state management seamlessly.
 
 ## Installation
 
@@ -18,7 +18,7 @@ php artisan sheaf:install repeater
 
 ## Basic Structure
 
-The repeater component is intentionally simple - it's just a visual wrapper. The real magic happens in your Livewire component with the `HasRepeater` trait.
+The repeater component is intentionally simple, it's just a visual wrapper. The magic happens in your Livewire component with the `HasRepeater` trait.
 
 @blade
 <x-demo class="flex justify-center">
@@ -27,7 +27,7 @@ The repeater component is intentionally simple - it's just a visual wrapper. The
             This is a visual example. isn't functional, See the implementation guide below for a working demo.
         </x-ui.text>
         <!--  -->
-        <x-ui.repeater deletable duplicatable>
+        <x-ui.repeater deletable duplicatable class="[&_button]:pointer-events-none">
             <x-ui.repeater.item uuid="uuid-123">
                 <div class="space-y-4">
                     <x-ui.field>
@@ -86,14 +86,13 @@ The repeater component is intentionally simple - it's just a visual wrapper. The
 </x-ui.repeater>
 ```
 
-## Component Features
 
-### Action Buttons
+## Repeater Actions
 
 Control which action buttons appear on each item:
 
 @blade
-<x-demo class="flex flex-col gap-6">
+<x-demo class="flex flex-col gap-6 [&_button]:pointer-events-none">
     <div class="max-w-2xl w-full mx-auto">
         <x-ui.text class="mb-4 font-medium">With Delete Only</x-ui.text>
         <x-ui.repeater deletable>
@@ -146,12 +145,12 @@ Control which action buttons appear on each item:
 </x-ui.repeater>
 ```
 
-### Custom Header
+## Repeater Header
 
 Add a header section for titles, instructions, or summary information:
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo class="flex justify-center [&_button]:pointer-events-none">
     <div class="max-w-2xl w-full">
         <x-ui.repeater deletable duplicatable>
             <x-slot:header class="pb-4 mb-4">
@@ -179,23 +178,23 @@ Add a header section for titles, instructions, or summary information:
 
 ```blade
 <x-ui.repeater>
-    <x-slot:header class="pb-4">
+{+    <x-slot:header class="pb-4">
         <x-ui.heading>Product Variants</x-ui.heading>
         <x-ui.text class="opacity-70">
             Add different configurations
         </x-ui.text>
-    </x-slot:header>
+    </x-slot:header>+}
     
     <!-- items -->
 </x-ui.repeater>
 ```
 
-### Per-Item Actions
+## Repeater Item Actions
 
 Add custom actions to individual items using the `actions` slot:
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo class="flex justify-center [&_button]:pointer-events-none">
     <div class="max-w-2xl w-full">
         <x-ui.repeater deletable>
             <x-ui.repeater.item uuid="uuid-abc">
@@ -228,11 +227,12 @@ Add custom actions to individual items using the `actions` slot:
 <x-ui.repeater.item :$uuid>
     <!-- item content -->
     
-    <x-slot:footer class="mt-4">
-        <x-ui.button size="sm" variant="soft">
-            Custom Action
+{+    <x-slot:footer class="mt-4">
+        <x-ui.button size="sm" icon="clock" variant="soft">
+            Set Deadline
         </x-ui.button>
-    </x-slot:footer>
+        <!-- ... -->
+    </x-slot:footer>+}
 </x-ui.repeater.item>
 ```
 
