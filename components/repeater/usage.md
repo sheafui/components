@@ -248,39 +248,18 @@ This guide shows you how to build a fully functional repeater for managing produ
 />
 @endblade
 
-### Overview
+### Example Overview
 
-We'll build a repeater that:
+I'll show an example of building a repeater that:
 - **Manages product variants** with name, SKU, price, stock, and description
 - **Generates unique SKUs** automatically
 - **Validates data** before saving
 - **Handles existing data** for editing scenarios
 - **Prevents duplicates** and maintains data integrity
 
-### Step 1: Copy the HasRepeater Trait
-
-The `HasRepeater` trait is included with your Sheaf UI purchase. Copy it to your project:
-
-**app/Livewire/Concerns/HasRepeater.php:**
-
-This trait is shipped with the repeater component files. Simply copy the `HasRepeater.php` file from the component package to your `app/Livewire/Concerns/` directory (create the directory if it doesn't exist).
-
-The trait provides these key methods:
-- `mountRepeater(int $initialCount)` - Initialize with empty items
-- `addItem()` - Add a new item
-- `deleteItem(string $uuid)` - Remove an item
-- `duplicateItem(string $uuid)` - Duplicate an item
-- `getItemsData()` - Get clean array for saving (without UUIDs)
-- `getItemsCollection()` - Get items as a Laravel collection
-
-And these hook methods you can override:
-- `afterItemAdded(string $uuid)` - Called after adding an item
-- `afterItemDeleted(string $uuid)` - Called after deleting an item
-- `afterItemDuplicated(string $originalUuid, string $newUuid)` - Called after duplicating
-
 ### Step 2: Create Your Livewire Component
 
-Create a component that uses the trait to manage product variants:
+Create a component that uses `app\Livewire\Concerns\HasRepeater` the trait to manage product variants:
 
 **app/Livewire/ProductVariants.php:**
 ```php
