@@ -16,15 +16,6 @@ php artisan sheaf:install repeater
 
 > Once installed, you can use `<x-ui.repeater />` and `<x-ui.repeater.item />` components in any Blade view.
 
-## Why UUID-Based Keys?
-
-Traditional repeaters use numeric indices (0, 1, 2...), which cause problems when items are deleted or reordered. The repeater component uses UUIDs as keys, ensuring:
-
-- **No wire:key conflicts** when items are added/removed
-- **Stable references** for each item throughout its lifecycle
-- **Reliable data binding** even after deletions or duplications
-- **Predictable behavior** in complex forms
-
 ## Basic Structure
 
 The repeater component is intentionally simple - it's just a visual wrapper. The real magic happens in your Livewire component with the `HasRepeater` trait.
@@ -33,9 +24,9 @@ The repeater component is intentionally simple - it's just a visual wrapper. The
 <x-demo class="flex justify-center">
     <div class="max-w-2xl w-full">
         <x-ui.text class="mb-4 text-center opacity-70">
-            This is a visual example. See the implementation guide below for a working demo.
+            This is a visual example. isn't functional, See the implementation guide below for a working demo.
         </x-ui.text>
-        
+        <!--  -->
         <x-ui.repeater deletable duplicatable>
             <x-ui.repeater.item uuid="uuid-123">
                 <div class="space-y-4">
@@ -49,7 +40,7 @@ The repeater component is intentionally simple - it's just a visual wrapper. The
                     </x-ui.field>
                 </div>
             </x-ui.repeater.item>
-
+            <!--  -->
             <x-ui.repeater.item uuid="uuid-456">
                 <div class="space-y-4">
                     <x-ui.field>
@@ -62,7 +53,7 @@ The repeater component is intentionally simple - it's just a visual wrapper. The
                     </x-ui.field>
                 </div>
             </x-ui.repeater.item>
-
+            <!--  -->
             <x-slot:actions>
                 <x-ui.button variant="outline" icon="plus">
                     Add Item
@@ -82,6 +73,7 @@ The repeater component is intentionally simple - it's just a visual wrapper. The
                     <x-ui.label text="Item Name"/>
                     <x-ui.input wire:model="items.{{ $uuid }}.name" />
                 </x-ui.field>
+                <!-- more ... -->
             </div>
         </x-ui.repeater.item>
     @endforeach
@@ -112,7 +104,7 @@ Control which action buttons appear on each item:
             </x-ui.repeater.item>
         </x-ui.repeater>
     </div>
-
+    <!--  -->
     <div class="max-w-2xl w-full mx-auto">
         <x-ui.text class="mb-4 font-medium">With Duplicate Only</x-ui.text>
         <x-ui.repeater duplicatable>
@@ -123,7 +115,7 @@ Control which action buttons appear on each item:
             </x-ui.repeater.item>
         </x-ui.repeater>
     </div>
-
+    <!--  -->
     <div class="max-w-2xl w-full mx-auto">
         <x-ui.text class="mb-4 font-medium">With Both Actions</x-ui.text>
         <x-ui.repeater deletable duplicatable>
@@ -162,19 +154,19 @@ Add a header section for titles, instructions, or summary information:
 <x-demo class="flex justify-center">
     <div class="max-w-2xl w-full">
         <x-ui.repeater deletable duplicatable>
-            <x-slot:header class="border-b pb-4 mb-4">
+            <x-slot:header class="pb-4 mb-4">
                 <x-ui.heading>Product Variants</x-ui.heading>
                 <x-ui.text class="opacity-70 mt-1">
                     Add different sizes, colors, or configurations of your product
                 </x-ui.text>
             </x-slot:header>
-
+            <!--  -->
             <x-ui.repeater.item uuid="uuid-789">
                 <x-ui.field>
                     <x-ui.input placeholder="Variant name..." />
                 </x-ui.field>
             </x-ui.repeater.item>
-
+            <!--  -->
             <x-slot:actions>
                 <x-ui.button variant="outline" icon="plus">
                     Add Variant
@@ -187,7 +179,7 @@ Add a header section for titles, instructions, or summary information:
 
 ```blade
 <x-ui.repeater>
-    <x-slot:header class="border-b pb-4">
+    <x-slot:header class="pb-4">
         <x-ui.heading>Product Variants</x-ui.heading>
         <x-ui.text class="opacity-70">
             Add different configurations
@@ -211,17 +203,17 @@ Add custom actions to individual items using the `actions` slot:
                     <x-ui.label text="Task"/>
                     <x-ui.input placeholder="Task description..." />
                 </x-ui.field>
-
-                <x-slot:actions class="mt-4 pt-4 border-t">
+                <!--  -->
+                <x-slot:footer class="mt-4 pt-2 border-t border-neutral-200 dark:border-white/10">
                     <x-ui.button size="sm" variant="soft" icon="clock">
                         Set Deadline
                     </x-ui.button>
                     <x-ui.button size="sm" variant="soft" icon="tag">
                         Add Tags
                     </x-ui.button>
-                </x-slot:actions>
+                </x-slot:footer>
             </x-ui.repeater.item>
-
+            <!--  -->
             <x-slot:actions>
                 <x-ui.button variant="outline" icon="plus">
                     Add Task
@@ -236,11 +228,11 @@ Add custom actions to individual items using the `actions` slot:
 <x-ui.repeater.item :$uuid>
     <!-- item content -->
     
-    <x-slot:actions class="mt-4">
+    <x-slot:footer class="mt-4">
         <x-ui.button size="sm" variant="soft">
             Custom Action
         </x-ui.button>
-    </x-slot:actions>
+    </x-slot:footer>
 </x-ui.repeater.item>
 ```
 
