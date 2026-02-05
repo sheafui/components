@@ -138,21 +138,23 @@ Control how users can resize the textarea. The default behavior is `vertical` re
 The component supports different states including disabled and validation states.
 
 @blade
-<x-demo class="max-w-md mx-auto space-y-4">
-    <x-ui.textarea 
-        wire:model="normalState" 
-        placeholder="Normal state"
-    />
-    <x-ui.textarea 
-        wire:model="disabledState" 
-        placeholder="Disabled state"
-        disabled
-    />
-    <x-ui.textarea 
-        wire:model="invalidState" 
-        placeholder="Invalid state"
-        invalid
-    />
+<x-demo>
+    <div class="flex gap-2 ">
+        <x-ui.textarea 
+            wire:model="normalState" 
+            placeholder="Normal state"
+        />
+        <x-ui.textarea 
+            wire:model="disabledState" 
+            placeholder="Disabled state"
+            disabled
+        />
+        <x-ui.textarea 
+            wire:model="invalidState" 
+            placeholder="Invalid state"
+            invalid
+        />
+    </div>
 </x-demo>
 @endblade
 
