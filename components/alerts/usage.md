@@ -1,6 +1,3 @@
-Here's the comprehensive, updated documentation:
-
-```markdown
 ---
 name: alerts
 ---
