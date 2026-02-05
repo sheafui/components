@@ -1,11 +1,13 @@
+Here's the comprehensive, updated documentation:
+
+```markdown
 ---
 name: alerts
 ---
 
 ## Introduction
 
-The `Alerts` component is a versatile notification component designed to communicate important information to users. It provides multiple semantic types, customizable icons, and flexible content areas for headings, descriptions, and actions.
-
+The `Alerts` component is a flexible notification system designed to communicate important information to users. It supports semantic variants, extensive color customization, two distinct icon layout patterns, and optional action controls for interactive notifications.
 
 ## Installation
 
@@ -15,241 +17,453 @@ Use the [sheaf artisan command](/docs/guides/cli-installation#content-component-
 php artisan sheaf:install alerts
 ```
 
-> Once installed, you can use the <x-ui.alerts /> component in any Blade view.
+> Once installed, you can use the `<x-ui.alerts />` component in any Blade view.
 
-## Usage
+## Basic Usage
 
-### Basic Alert Types
+### Alert Variants
 
-The alert component supports multiple semantic types, each with its own color scheme and default icon.
+The alert component provides four semantic variants, each automatically applying appropriate colors when no custom color is specified.
 
 @blade
 <x-demo>
     <div class="w-full space-y-4">
-        <x-components::ui.alerts>
-            <x-slot:heading>Default alert message</x-slot:heading>
-        </x-components::ui.alerts>
-        <x-components::ui.alerts type="info">
-            <x-slot:heading>This is an info alert</x-slot:heading>
-        </x-components::ui.alerts>
-        <x-components::ui.alerts type="success">
-            <x-slot:heading>This is a success alert</x-slot:heading>
-        </x-components::ui.alerts>
-        <x-components::ui.alerts type="warning">
-            <x-slot:heading>This is a warning alert</x-slot:heading>
-        </x-components::ui.alerts>
-        <x-components::ui.alerts type="error">
-            <x-slot:heading>This is an error alert</x-slot:heading>
-        </x-components::ui.alerts>
+        <x-ui.alerts variant="info">
+            <x-ui.alerts.heading>Information</x-ui.alerts.heading>
+            <x-ui.alerts.description>This is an informational message.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts variant="success">
+            <x-ui.alerts.heading>Success</x-ui.alerts.heading>
+            <x-ui.alerts.description>Operation completed successfully.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts variant="warning">
+            <x-ui.alerts.heading>Warning</x-ui.alerts.heading>
+            <x-ui.alerts.description>Please review this important notice.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts variant="error">
+            <x-ui.alerts.heading>Error</x-ui.alerts.heading>
+            <x-ui.alerts.description>An error occurred during processing.</x-ui.alerts.description>
+        </x-ui.alerts>
     </div>
 </x-demo>
 @endblade
 
-```html
-<!-- Default (info) alert -->
-<x-ui.alerts>
-    <x-slot:heading>Default alert message</x-slot:heading>
-</x-ui.alerts>
-
-<!-- Info alert -->
-<x-ui.alerts type="info">
-    <x-slot:heading>This is an info alert</x-slot:heading>
+```blade
+<!-- Info alert (default) -->
+<x-ui.alerts variant="info">
+    <x-ui.alerts.heading>Information</x-ui.alerts.heading>
+    <x-ui.alerts.description>This is an informational message.</x-ui.alerts.description>
 </x-ui.alerts>
 
 <!-- Success alert -->
-<x-ui.alerts type="success">
-    <x-slot:heading>This is a success alert</x-slot:heading>
+<x-ui.alerts variant="success">
+    <x-ui.alerts.heading>Success</x-ui.alerts.heading>
+    <x-ui.alerts.description>Operation completed successfully.</x-ui.alerts.description>
 </x-ui.alerts>
 
 <!-- Warning alert -->
-<x-ui.alerts type="warning">
-    <x-slot:heading>This is a warning alert</x-slot:heading>
+<x-ui.alerts variant="warning">
+    <x-ui.alerts.heading>Warning</x-ui.alerts.heading>
+    <x-ui.alerts.description>Please review this important notice.</x-ui.alerts.description>
 </x-ui.alerts>
 
 <!-- Error alert -->
-<x-ui.alerts type="error">
-    <x-slot:heading>This is an error alert</x-slot:heading>
+<x-ui.alerts variant="error">
+    <x-ui.alerts.heading>Error</x-ui.alerts.heading>
+    <x-ui.alerts.description>An error occurred during processing.</x-ui.alerts.description>
 </x-ui.alerts>
 ```
 
-### Alert with Content
+### Description Only Alerts
 
-Add descriptive content below the heading to provide additional context or details.
-
-@blade
-<x-demo>
-    <div class="w-full">
-        <x-components::ui.alerts type="info">
-            <x-slot:heading>Account verification required</x-slot:heading>
-            <x-slot:content>
-                <p>We've sent a verification email to your inbox. Please check your email and click the verification link to activate your account.</p>
-            </x-slot:content>
-        </x-components::ui.alerts>
-    </div>
-</x-demo>
-@endblade
-
-```html
-<x-ui.alerts type="info">
-    <x-slot:heading>Account verification required</x-slot:heading>
-    <x-slot:content>
-        <p>We've sent a verification email to your inbox. Please check your email and click the verification link to activate your account.</p>
-    </x-slot:content>
-</x-ui.alerts>
-```
-
-### Alert with Actions
-
-Include action buttons to allow users to respond to the alert directly.
-
-@blade
-<x-demo>
-    <div class="w-full">
-        <x-components::ui.alerts type="warning">
-            <x-slot:heading>Your subscription expires soon</x-slot:heading>
-            <x-slot:content>
-                <p>Your premium subscription will expire in 3 days. Renew now to continue enjoying all premium features.</p>
-            </x-slot:content>
-            <x-slot:actions>
-                <div class="flex gap-2">
-                    <x-components::ui.button size="sm">Renew Now</x-components::ui.button>
-                    <x-components::ui.button size="sm" variant="outline">Remind Later</x-components::ui.button>
-                </div>
-            </x-slot:actions>
-        </x-components::ui.alerts>
-    </div>
-</x-demo>
-@endblade
-
-```html
-<x-ui.alerts type="warning">
-    <x-slot:heading>Your subscription expires soon</x-slot:heading>
-    <x-slot:content>
-        <p>Your premium subscription will expire in 3 days. Renew now to continue enjoying all premium features.</p>
-    </x-slot:content>
-    <x-slot:actions>
-        <x-ui.button size="sm">Renew Now</x-ui.button>
-        <x-ui.button size="sm" variant="outline">Remind Later</x-ui.button>
-    </x-slot:actions>
-</x-ui.alerts>
-```
-
-### Custom Icons
-
-Override the default icon with a custom one that better fits your specific use case.
+You can create simple alerts with just a description, no heading required.
 
 @blade
 <x-demo>
     <div class="w-full space-y-4">
-        <x-components::ui.alerts type="info" iconName="cog-6-tooth">
-            <x-slot:heading>System configuration updated</x-slot:heading>
-            <x-slot:content>
-                <p>Your system settings have been successfully updated and are now in effect.</p>
-            </x-slot:content>
-        </x-components::ui.alerts>
-        <!--  -->
-        <x-components::ui.alerts type="success" iconName="trophy" iconClass="text-yellow-500">
-            <x-slot:heading>Achievement unlocked!</x-slot:heading>
-            <x-slot:content>
-                <p>Congratulations! You've completed all the beginner tutorials.</p>
-            </x-slot:content>
-        </x-components::ui.alerts>
+        <x-ui.alerts variant="info" icon="sparkles">
+            <x-ui.alerts.description>Version 2.0 is now available for download.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts variant="success" icon="check-circle">
+            <x-ui.alerts.description>Your changes have been saved successfully.</x-ui.alerts.description>
+        </x-ui.alerts>
     </div>
 </x-demo>
 @endblade
 
-```html
-<!-- Custom icon with default color -->
-<x-ui.alerts type="info" iconName="cog-6-tooth">
-    <x-slot:heading>System configuration updated</x-slot:heading>
-    <x-slot:content>
-        <p>Your system settings have been successfully updated and are now in effect.</p>
-    </x-slot:content>
+```blade
+<!-- Alert with description only -->
+<x-ui.alerts variant="info" icon="sparkles">
+    <x-ui.alerts.description>Version 2.0 is now available for download.</x-ui.alerts.description>
 </x-ui.alerts>
 
-<!-- Custom icon with custom color -->
-<x-ui.alerts type="success" iconName="trophy" iconClass="text-yellow-500">
-    <x-slot:heading>Achievement unlocked!</x-slot:heading>
-    <x-slot:content>
-        <p>Congratulations! You've completed all the beginner tutorials.</p>
-    </x-slot:content>
+<x-ui.alerts variant="success" icon="check-circle">
+    <x-ui.alerts.description>Your changes have been saved successfully.</x-ui.alerts.description>
 </x-ui.alerts>
 ```
 
-### Complex Alert Example
+## Icon Placement
 
-A comprehensive example showing all features working together.
+The alert component supports two distinct icon layout patterns to suit different design needs.
+
+### Alert-Level Icons (Left Side)
+
+Place icons at the alert level for a traditional notification layout with the icon positioned to the left of all content.
+
+@blade
+<x-demo>
+    <div class="w-full space-y-4">
+        <x-ui.alerts variant="success" icon="check-circle">
+            <x-ui.alerts.heading>Payment successful</x-ui.alerts.heading>
+            <x-ui.alerts.description>Your payment has been processed successfully.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts variant="error" icon="shield-exclamation">
+            <x-ui.alerts.heading>Authentication failed</x-ui.alerts.heading>
+            <x-ui.alerts.description>Invalid credentials. Please check your email and password.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="zinc" icon="bell">
+            <x-ui.alerts.heading>System notification</x-ui.alerts.heading>
+            <x-ui.alerts.description>Your system has been updated to the latest version.</x-ui.alerts.description>
+        </x-ui.alerts>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<!-- Icon positioned at alert level (left side) -->
+<x-ui.alerts variant="success" icon="check-circle">
+    <x-ui.alerts.heading>Payment successful</x-ui.alerts.heading>
+    <x-ui.alerts.description>Your payment has been processed successfully.</x-ui.alerts.description>
+</x-ui.alerts>
+
+<x-ui.alerts variant="error" icon="shield-exclamation">
+    <x-ui.alerts.heading>Authentication failed</x-ui.alerts.heading>
+    <x-ui.alerts.description>Invalid credentials. Please check your email and password.</x-ui.alerts.description>
+</x-ui.alerts>
+```
+
+> **Note:** When both heading and description are present, the alert-level icon automatically aligns to the top for better visual balance.
+
+### Heading-Level Icons (Inline)
+
+Place icons directly in the heading for a more integrated, inline appearance.
+
+@blade
+<x-demo>
+    <div class="w-full space-y-4">
+        <x-ui.alerts variant="warning">
+            <x-ui.alerts.heading icon="server-stack">Storage almost full</x-ui.alerts.heading>
+            <x-ui.alerts.description>You've used 90% of your storage space. Consider upgrading your plan.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="blue">
+            <x-ui.alerts.heading icon="light-bulb">Information</x-ui.alerts.heading>
+            <x-ui.alerts.description>This is a blue informational alert message.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="red">
+            <x-ui.alerts.heading icon="server">Critical error</x-ui.alerts.heading>
+            <x-ui.alerts.description>The server is not responding. Please try again later.</x-ui.alerts.description>
+        </x-ui.alerts>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<!-- Icon positioned at heading level (inline) -->
+<x-ui.alerts variant="warning">
+    <x-ui.alerts.heading icon="server-stack">Storage almost full</x-ui.alerts.heading>
+    <x-ui.alerts.description>You've used 90% of your storage space. Consider upgrading your plan.</x-ui.alerts.description>
+</x-ui.alerts>
+
+<x-ui.alerts color="blue">
+    <x-ui.alerts.heading icon="light-bulb">Information</x-ui.alerts.heading>
+    <x-ui.alerts.description>This is a blue informational alert message.</x-ui.alerts.description>
+</x-ui.alerts>
+```
+
+> **Important:** Use either alert-level OR heading-level icons, not both. They represent two different layout patterns.
+
+## Custom Colors
+
+Override the default variant colors with any of the 22+ available color options.
+
+@blade
+<x-demo>
+    <div class="w-full space-y-4">
+        <x-ui.alerts color="purple">
+            <x-ui.alerts.heading icon="credit-card">Subscription renewed</x-ui.alerts.heading>
+            <x-ui.alerts.description>Your annual subscription has been renewed successfully.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="cyan">
+            <x-ui.alerts.heading icon="arrow-down-tray">Download ready</x-ui.alerts.heading>
+            <x-ui.alerts.description>Your export file is ready for download.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="amber">
+            <x-ui.alerts.heading icon="clock">Pending approval</x-ui.alerts.heading>
+            <x-ui.alerts.description>Your submission is waiting for admin review.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="emerald">
+            <x-ui.alerts.heading icon="shield-check">Backup completed</x-ui.alerts.heading>
+            <x-ui.alerts.description>Your data has been backed up successfully to the cloud.</x-ui.alerts.description>
+        </x-ui.alerts>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.alerts color="purple">
+    <x-ui.alerts.heading icon="credit-card">Subscription renewed</x-ui.alerts.heading>
+    <x-ui.alerts.description>Your annual subscription has been renewed successfully.</x-ui.alerts.description>
+</x-ui.alerts>
+
+<x-ui.alerts color="cyan">
+    <x-ui.alerts.heading icon="arrow-down-tray">Download ready</x-ui.alerts.heading>
+    <x-ui.alerts.description>Your export file is ready for download.</x-ui.alerts.description>
+</x-ui.alerts>
+
+<x-ui.alerts color="amber">
+    <x-ui.alerts.heading icon="clock">Pending approval</x-ui.alerts.heading>
+    <x-ui.alerts.description>Your submission is waiting for admin review.</x-ui.alerts.description>
+</x-ui.alerts>
+```
+
+## Alerts with Controls
+
+Add interactive buttons or controls that users can act upon directly within the alert.
+
+@blade
+<x-demo>
+    <div class="w-full space-y-4">
+        <x-ui.alerts variant="info" icon="sparkles">
+            <x-ui.alerts.description>Version 2.0 is now available for download.</x-ui.alerts.description>
+            <x-slot:controls>
+                <x-ui.button color="blue" icon="cloud-arrow-down">Download</x-ui.button>
+            </x-slot:controls>
+        </x-ui.alerts>
+        
+        <x-ui.alerts variant="success" icon="check-circle">
+            <x-ui.alerts.heading>Payment successful</x-ui.alerts.heading>
+            <x-ui.alerts.description>Your payment has been processed successfully.</x-ui.alerts.description>
+            <x-slot:controls class="self-center">
+                <x-ui.button color="neutral" icon="key">Grant Access</x-ui.button>
+            </x-slot:controls>
+        </x-ui.alerts>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<!-- Alert with action button -->
+<x-ui.alerts variant="info" icon="sparkles">
+    <x-ui.alerts.description>Version 2.0 is now available for download.</x-ui.alerts.description>
+    <x-slot:controls>
+        <x-ui.button color="blue" icon="cloud-arrow-down">Download</x-ui.button>
+    </x-slot:controls>
+</x-ui.alerts>
+
+<!-- Controls with custom alignment -->
+<x-ui.alerts variant="success" icon="check-circle">
+    <x-ui.alerts.heading>Payment successful</x-ui.alerts.heading>
+    <x-ui.alerts.description>Your payment has been processed successfully.</x-ui.alerts.description>
+    <x-slot:controls class="self-center">
+        <x-ui.button color="neutral" icon="key">Grant Access</x-ui.button>
+    </x-slot:controls>
+</x-ui.alerts>
+```
+
+> **Tip:** Use the `class` attribute on the controls slot to customize alignment (`self-start`, `self-center`, `self-end`).
+
+## Complete Color Palette
+
+The alert component supports 22+ colors with full dark mode compatibility.
+
+@blade
+<x-demo>
+    <div class="w-full space-y-3">
+        <x-ui.alerts color="blue">
+            <x-ui.alerts.heading icon="information-circle">Blue</x-ui.alerts.heading>
+            <x-ui.alerts.description>A blue colored alert.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="green">
+            <x-ui.alerts.heading icon="check-circle">Green</x-ui.alerts.heading>
+            <x-ui.alerts.description>A green colored alert.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="yellow">
+            <x-ui.alerts.heading icon="exclamation-triangle">Yellow</x-ui.alerts.heading>
+            <x-ui.alerts.description>A yellow colored alert.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="red">
+            <x-ui.alerts.heading icon="exclamation-circle">Red</x-ui.alerts.heading>
+            <x-ui.alerts.description>A red colored alert.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="purple">
+            <x-ui.alerts.heading icon="sparkles">Purple</x-ui.alerts.heading>
+            <x-ui.alerts.description>A purple colored alert.</x-ui.alerts.description>
+        </x-ui.alerts>
+        
+        <x-ui.alerts color="pink">
+            <x-ui.alerts.heading icon="heart">Pink</x-ui.alerts.heading>
+            <x-ui.alerts.description>A pink colored alert.</x-ui.alerts.description>
+        </x-ui.alerts>
+    </div>
+</x-demo>
+@endblade
+
+### Available Colors
+
+**Primary Colors:** `blue`, `green`, `red`, `yellow`, `orange`
+
+**Extended Palette:** `amber`, `lime`, `emerald`, `teal`, `cyan`, `sky`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, `rose`
+
+**Neutral Colors:** `zinc`, `gray`, `neutral`, `slate`, `stone`
+
+## Complex Examples
+
+### Multi-Action Alert
 
 @blade
 <x-demo>
     <div class="w-full">
-        <x-components::ui.alerts type="error" iconName="shield-exclamation">
-            <x-slot:heading>Security Alert: Suspicious Activity Detected</x-slot:heading>
-            <x-slot:content>
-                <p>We've detected unusual login attempts from an unrecognized location. If this wasn't you, please secure your account immediately.</p>
-                <ul class="mt-2 list-disc list-inside text-sm space-y-1">
-                    <li>Location: San Francisco, CA</li>
-                    <li>Time: Today at 2:15 PM</li>
-                    <li>Device: Unknown mobile device</li>
-                </ul>
-            </x-slot:content>
-            <x-slot:actions>
+        <x-ui.alerts variant="warning" icon="wrench-screwdriver">
+            <x-ui.alerts.heading>Maintenance scheduled</x-ui.alerts.heading>
+            <x-ui.alerts.description>System maintenance will occur on Sunday at 2 AM EST. Services will be temporarily unavailable.</x-ui.alerts.description>
+            <x-slot:controls>
                 <div class="flex gap-2">
-                    <x-components::ui.button size="sm" variant="danger">Secure Account</x-components::ui.button>
-                    <x-components::ui.button size="sm" variant="outline">This Was Me</x-components::ui.button>
-                    <x-components::ui.button size="sm" variant="info">Learn More</x-components::ui.button>
+                    <x-ui.button color="yellow" size="sm">View Schedule</x-ui.button>
+                    <x-ui.button variant="outline" size="sm">Dismiss</x-ui.button>
                 </div>
-            </x-slot:actions>
-        </x-components::ui.alerts>
+            </x-slot:controls>
+        </x-ui.alerts>
     </div>
 </x-demo>
 @endblade
 
-```html
-<x-ui.alerts type="error" iconName="shield-exclamation">
-    <x-slot:heading>Security Alert: Suspicious Activity Detected</x-slot:heading>
-    <x-slot:content>
-        <p>We've detected unusual login attempts from an unrecognized location. If this wasn't you, please secure your account immediately.</p>
-        <ul class="mt-2 list-disc list-inside text-sm space-y-1">
-            <li>Location: San Francisco, CA</li>
-            <li>Time: Today at 2:15 PM</li>
-            <li>Device: Unknown mobile device</li>
-        </ul>
-    </x-slot:content>
-    <x-slot:actions>
-        <x-ui.button size="sm" variant="danger">Secure Account</x-ui.button>
-        <x-ui.button size="sm" variant="outline">This Was Me</x-ui.button>
-        <x-ui.button size="sm" variant="info">Learn More</x-ui.button>
-    </x-slot:actions>
+```blade
+<x-ui.alerts variant="warning" icon="wrench-screwdriver">
+    <x-ui.alerts.heading>Maintenance scheduled</x-ui.alerts.heading>
+    <x-ui.alerts.description>System maintenance will occur on Sunday at 2 AM EST. Services will be temporarily unavailable.</x-ui.alerts.description>
+    <x-slot:controls>
+        <div class="flex gap-2">
+            <x-ui.button color="yellow" size="sm">View Schedule</x-ui.button>
+            <x-ui.button variant="outline" size="sm">Dismiss</x-ui.button>
+        </div>
+    </x-slot:controls>
 </x-ui.alerts>
 ```
 
-## Component Props Reference
+### Rich Content Alert
 
-### Alert Props
+@blade
+<x-demo>
+    <div class="w-full">
+        <x-ui.alerts color="fuchsia" icon="gift">
+            <x-ui.alerts.heading>Special offer</x-ui.alerts.heading>
+            <x-ui.alerts.description>
+                <p class="mb-2">Get 50% off on your next purchase.</p>
+                <ul class="list-disc list-inside text-sm space-y-1">
+                    <li>Valid for premium plans only</li>
+                    <li>Offer expires in 24 hours</li>
+                    <li>Cannot be combined with other offers</li>
+                </ul>
+            </x-ui.alerts.description>
+            <x-slot:controls>
+                <x-ui.button color="fuchsia" size="sm">Claim Offer</x-ui.button>
+            </x-slot:controls>
+        </x-ui.alerts>
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.alerts color="fuchsia" icon="gift">
+    <x-ui.alerts.heading>Special offer</x-ui.alerts.heading>
+    <x-ui.alerts.description>
+        <p class="mb-2">Get 50% off on your next purchase.</p>
+        <ul class="list-disc list-inside text-sm space-y-1">
+            <li>Valid for premium plans only</li>
+            <li>Offer expires in 24 hours</li>
+            <li>Cannot be combined with other offers</li>
+        </ul>
+    </x-ui.alerts.description>
+    <x-slot:controls>
+        <x-ui.button color="fuchsia" size="sm">Claim Offer</x-ui.button>
+    </x-slot:controls>
+</x-ui.alerts>
+```
+
+## Component API
+
+### Alert Component Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `type` | `string` | `'info'` | Alert semantic type: `'info'`, `'success'`, `'warning'`, `'error'` |
-| `icon` | `boolean` | `true` | Whether to display an icon |
-| `iconName` | `string` | `null` | Custom icon name (overrides default type-based icon) |
-| `iconClass` | `string` | `null` | Additional CSS classes for the icon |
+| `variant` | `string` | `'info'` | Semantic variant: `'info'`, `'success'`, `'warning'`, `'error'` |
+| `color` | `string` | `null` | Custom color (overrides variant color). See available colors above. |
+| `icon` | `string\|null` | `null` | Icon name for alert-level icon placement |
+| `controls` | `slot` | `null` | Slot for action buttons or interactive elements |
 
-### Slot Reference
+### Heading Component Props
 
-| Slot | Required | Description |
-|------|----------|-------------|
-| `heading` | **Yes** | The main alert message or title |
-| `content` | No | Additional descriptive content below the heading |
-| `actions` | No | Action buttons or interactive elements |
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | `string\|null` | `null` | Icon name for heading-level icon placement |
 
-## Default Icons by Type
+### Description Component
 
-Each alert type comes with a carefully selected default icon that reinforces the semantic meaning:
+The description component accepts only the default slot for content and automatically applies appropriate text styling.
 
-| Type | Default Icon | Color |
-|------|--------------|-------|
-| `info` | `information-circle` | Blue |
-| `success` | `check-circle` | Green |
-| `warning` | `exclamation-triangle` | Orange |
-| `error` | `exclamation-circle` | Red |
+## Default Variant Mappings
+
+| Variant | Default Color | Common Use Case |
+|---------|---------------|-----------------|
+| `info` | Blue | Informational messages, updates, tips |
+| `success` | Green | Successful operations, confirmations |
+| `warning` | Yellow | Warnings, cautions, non-critical issues |
+| `error` | Red | Errors, failures, critical issues |
+
+## Accessibility
+
+The alert component includes built-in accessibility features:
+
+- `role="alert"` for proper ARIA semantics
+- `aria-live="polite"` for screen reader announcements
+- Semantic color hierarchy with sufficient contrast
+- Keyboard-accessible controls and buttons
+
+## Best Practices
+
+1. **Icon Placement**: Choose one icon pattern per alert - either alert-level OR heading-level, not both
+2. **Color Consistency**: Use semantic variants for standard notifications, custom colors for branded or special alerts
+3. **Content Clarity**: Keep headings concise, use descriptions for additional context
+4. **Action Alignment**: Use `self-center` for controls in single-line alerts, default for multi-line content
+5. **Accessibility**: Ensure sufficient color contrast and provide clear, descriptive text
+
+## Dark Mode
+
+All alert colors include carefully crafted dark mode variants that maintain readability and visual hierarchy. The component automatically adapts to your application's color scheme with no additional configuration needed.
+```
+
+This documentation is comprehensive and includes:
+
+✅ Clear explanation of both icon placement patterns
+✅ Practical examples for every major feature
+✅ Complete color palette showcase
+✅ Interactive demos using the actual component syntax
+✅ Best practices and accessibility information
+✅ Clear API reference with all props documented
+✅ Real-world complex examples
+✅ No component:: prefixing
