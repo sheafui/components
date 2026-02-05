@@ -1,6 +1,7 @@
 @props([
     'name' => null,
     'variant' => null,
+    'asButton' => false,
 ])
 
 @php
@@ -33,4 +34,12 @@
     }
 @endphp
 
-<x-dynamic-component :component="$componentName" {{ $attributes->class(['text-neutral-800 dark:text-neutral-200']) }}  data-slot="icon" />
+@if ($asButton)
+    <button {{ $attributes->class('cursor-pointer') }} type="button">
+@endif
+
+<x-dynamic-component :component="$componentName" {{ $attributes->class(['[:where(&)]:text-neutral-700 [:where(&)]:dark:text-neutral-300']) }}  data-slot="icon" />
+
+@if ($asButton)
+    </button>
+@endif               
