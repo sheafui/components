@@ -306,23 +306,15 @@ Use with tables and data grids:
 
 ## Component Props
 
-#### Skeleton Component
+#### ui.skeleton
 
 | Prop Name  | Type   | Default  | Required | Description                                              |
 | ---------- | ------ | -------- | -------- | -------------------------------------------------------- |
 | `animate`  | string | `'glow'` | No       | Animation style: `'pulse'`, `'wave'`, `'glow'`, `'none'` |
 
-#### Skeleton Text Component
+#### ui.skeleton.text
 
 | Prop Name  | Type   | Default   | Required | Description                                              |
 | ---------- | ------ | --------- | -------- | -------------------------------------------------------- |
 | `animate`  | string | `'glow'`  | No       | Animation style: `'pulse'`, `'wave'`, `'glow'`, `'none'` |
 | `size`     | string | `'base'`  | No       | Text size: `'sm'`, `'base'`, `'lg'`, `'xl'`              |
-
-## Component Structure
-
-The skeleton component consists of:
-
-- **Base Component**: `<x-ui.skeleton>` - Generic skeleton placeholder
-- **Text Component**: `<x-ui.skeleton.text>` - Text line placeholder with size variants
-- **Abstract Component**: `<x-ui.skeleton.abstract>` - Internal animation logic (not for direct use)
