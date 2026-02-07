@@ -20,7 +20,7 @@ php artisan sheaf:install progress
 
 @blade
 <x-demo>
-    <div class="space-y-6">
+    <div class="space-y-6 w-full">
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">25% Progress</x-ui.text>
             <x-ui.progress value="25" />
@@ -58,7 +58,7 @@ The progress bar comes in five sizes, from extra small to extra large. Control t
 
 @blade
 <x-demo>
-    <div class="space-y-6">
+    <div class="space-y-6 w-full">
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Extra Small (xs)</x-ui.text>
             <x-ui.progress value="65" size="xs" />
@@ -101,8 +101,8 @@ Bind the progress component to Livewire state using `wire:model.live` for real-t
 
 @blade
 <x-demo>
-    <div>
-        <div class="space-y-4" x-data="{ progress: 45}">
+    <div class="w-full">
+        <div class="space-y-4 w-full" x-data="{ progress: 45}">
             <div class="space-y-2" >
                 <x-ui.text size="sm" class="font-medium">
                     Upload Progress: <span x-text="progress"></span>%
@@ -140,7 +140,7 @@ Use `x-model` for client-side reactive progress updates. This works great for pu
 
 @blade
 <x-demo>
-    <div x-data="{ progress: 50 }">
+    <div x-data="{ progress: 50 }" class="w-full">
         <div class="space-y-4">
             <div class="space-y-2">
                 <x-ui.text size="sm" class="font-medium">
@@ -191,7 +191,7 @@ To use a different color from your theme's primary color, use the `[&_[data-slot
 
 @blade
 <x-demo>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-800">
+    <div class="grid grid-cols-1 md:grid-cols-2 w-full gap-6 p-6 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-800">
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Primary (default)</x-ui.text>
             <x-ui.progress value="70" />
@@ -250,6 +250,7 @@ Simulate smooth progress updates using JavaScript's `requestAnimationFrame()` fu
 @blade
 <x-demo>
     <div 
+        class="w-full"
         x-data="{
             value: 0,
             animate() {
@@ -328,7 +329,7 @@ Add a shimmer wave effect to provide visual feedback during slow or long-running
 
 @blade
 <x-demo>
-    <div class="space-y-6">
+    <div class="w-full space-y-6">
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Progress with Wave</x-ui.text>
             <x-ui.progress 
@@ -360,7 +361,7 @@ Add custom content above or below the progress bar using named slots:
 
 @blade
 <x-demo>
-    <div class="space-y-6">
+    <div class="space-y-6 w-full">
         <x-ui.progress value="65">
             <x-slot:top>
                 <div class="flex items-center justify-between mb-2">
@@ -503,6 +504,7 @@ Create progress bars that smoothly transition colors based on completion percent
             }
         }" 
         x-init="animate()"
+        class="w-full"
     >
         <div class="space-y-2">
             <x-ui.text  class="font-medium flex">
@@ -561,7 +563,7 @@ Create progress bars that smoothly transition colors based on completion percent
 </div>
 ```
 
-> **Note:** While color spaces like `oklch` or `HSL` provide better color interpolation, RGB is used here for performance and simplicity in dynamically generating specific color values.
+> **Note:** While color spaces like `oklch` or `HSL` provide better color interpolation, I've used RGB  here for performance and simplicity in dynamically generating specific color values.
 
 ### Static Color Switching
 
@@ -569,7 +571,7 @@ Switch between predefined colors based on progress value using Alpine's reactive
 
 @blade
 <x-demo>
-    <div x-data="{ progress: 30 }">
+    <div x-data="{ progress: 30 }" class="w-full">
         <div class="space-y-4">
             <div class="space-y-2">
                 <x-ui.text size="sm" class="font-medium">
@@ -616,7 +618,7 @@ Display dual progress bars for buffering scenarios like video players or file do
 
 @blade
 <x-demo>
-    <div class="space-y-6" x-data="{progress: {value: 12, buffer: 34}}">
+    <div class="space-y-6 w-full" x-data="{progress: {value: 12, buffer: 34}}">
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Buffering</x-ui.text>
             <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" x-model="progress" />
@@ -666,7 +668,7 @@ For tasks with unknown duration, use the `indeterminate` property to display an 
 
 @blade
 <x-demo>
-    <div class="space-y-6" x-data="{progress: {indeterminate: true}}">
+    <div class="space-y-6 w-full" x-data="{progress: {indeterminate: true}}">
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Indeterminate Loading...</x-ui.text>
             <x-ui.progress class="[&_[data-slot=bar]]:bg-teal-500" x-model="progress" />
@@ -700,7 +702,7 @@ This example demonstrates using all compound properties together:
                 indeterminate: false
             }
         }" 
-        class="space-y-6 p-6 bg-white dark:bg-neutral-900 max-w-2xl rounded-lg border border-neutral-200 dark:border-neutral-800"
+        class="space-y-6 w-full p-6 bg-white dark:bg-neutral-900 max-w-2xl rounded-lg border border-neutral-200 dark:border-neutral-800"
     >
         <div class="space-y-2">
             <x-ui.text size="sm" class="font-medium">Video Buffering Simulation With Indeterminate Loading Support</x-ui.text>

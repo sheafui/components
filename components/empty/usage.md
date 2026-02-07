@@ -303,7 +303,7 @@ Handle empty search results with helpful messaging:
 
 Use empty states within tables for better UX:
 
-@blade
+<!-- @blade
 <x-demo class="w-full flex justify-center">
     <div class="w-full max-w-3xl rounded-box overflow-hidden">
         <x-ui.table>
@@ -343,15 +343,13 @@ Use empty states within tables for better UX:
         </x-ui.table>
     </div>
 </x-demo>
-@endblade
-
+@endblade -->
+<!-- 
 ```blade
 <x-ui.table>
-    <!-- header-->
     <x-ui.table.rows>
         @forelse ($items as $item)
             <x-ui.table.row>
-                <!-- table cells -->
             </x-ui.table.row>
         @empty
             <x-ui.table.row>
@@ -372,7 +370,7 @@ Use empty states within tables for better UX:
         @endforelse
     </x-ui.table.rows>
 </x-ui.table>
-```
+``` -->
 
 ### Multiple Actions
 
@@ -420,6 +418,27 @@ Provide users with multiple paths forward:
     </x-ui.empty.contents>
 </x-ui.empty>
 ```
+
+## Component Props
+
+#### ui.empty
+
+| Prop Name  | Type   | Default  | Required | Description                                              |
+| ---------- | ------ | -------- | -------- | -------------------------------------------------------- |
+| `class`    | string | `none`   | No       |  Tailwind class string to style the element              |
+
+#### ui.empty.media
+
+| Prop Name  | Type   | Default   | Required | Description                                              |
+| ---------- | ------ | --------- | -------- | -------------------------------------------------------- |
+| `class`    | string | `none`    | No        |  Tailwind class string to style the element              |
+
+#### ui.empty.content
+
+| Prop Name  | Type   | Default   | Required | Description                                              |
+| ---------- | ------ | --------- | -------- | -------------------------------------------------------- |
+| `class`    | string | `none`    | No       |  Tailwind class string to style the element              |
+
 
 ## Common Styling Patterns
 

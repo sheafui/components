@@ -42,7 +42,7 @@ php artisan sheaf:install dropdown
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown>
     <x-slot:button class="justify-center">
         <x-ui.button >
@@ -102,7 +102,7 @@ Add visual clarity with icons for better user experience.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown>
     <x-slot:button class="justify-center">
         <x-ui.button >
@@ -160,7 +160,7 @@ Display keyboard shortcuts for power users.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown>
     <x-slot:button class="justify-center">
         <x-ui.button >
@@ -215,7 +215,7 @@ Create navigational items that link to other pages.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown>
     <x-slot:button class="justify-center">
         <x-ui.button >
@@ -269,7 +269,7 @@ Temporarily disable certain actions while keeping them visible.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown>
     <x-slot:button class="justify-center">
         <x-ui.button >
@@ -332,7 +332,7 @@ Use separators to group related items and create visual hierarchy.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown>
     <x-slot:button class="justify-center">
         <x-ui.button >
@@ -401,7 +401,7 @@ Use groups to organize related items with optional labels.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown>
     <x-slot:button class="justify-center">
         <x-ui.button >
@@ -480,7 +480,7 @@ Control where the dropdown appears relative to the trigger button.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown position="bottom-center">
     <x-slot:button class="justify-center">
         <x-ui.button >
@@ -564,7 +564,7 @@ Create hierarchical menus with nested items.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown position="bottom-start">
     <x-slot:button>
         <x-ui.button >
@@ -690,7 +690,7 @@ Combine all features for sophisticated dropdown menus.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.dropdown position="bottom-start">
     <x-slot:button>
         <x-ui.button >
@@ -1104,7 +1104,7 @@ When `portal="true"`, the dropdown menu loses access to parent CSS custom proper
 
 ## Component Props
 
-### Dropdown (Main Component)
+### ui.dropdown
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
@@ -1116,7 +1116,7 @@ When `portal="true"`, the dropdown menu loses access to parent CSS custom proper
 | `resetFocus` | boolean | `false` | No | Return focus to trigger button when dropdown closes |
 | `checkboxVariant` | boolean | `false` | No | Use prominent checkbox UI (requires `checkbox="true"`) |
 
-### Dropdown Item
+### ui.dropdown.item
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
@@ -1132,14 +1132,14 @@ When `portal="true"`, the dropdown menu loses access to parent CSS custom proper
 | `value` | string | `null` | No | Value for checkbox/radio items |
 | `name` | string | `null` | No | Name attribute for radio groups |
 
-### Dropdown Group
+### ui.dropdown.group
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
 | `label` | string | `null` | No | Optional group label |
 | `class` | string | `''` | No | Additional CSS classes |
 
-### Dropdown Submenu
+### ui.dropdown.submenu
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
@@ -1149,7 +1149,7 @@ When `portal="true"`, the dropdown menu loses access to parent CSS custom proper
 
 > you can pass the width as w-* class to control the width of the menu
 
-### Dropdown Separator
+### ui.dropdown.separator
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
