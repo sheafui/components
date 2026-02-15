@@ -87,8 +87,8 @@ Because we're making this possible using the `x-modelable` *like* but not explic
 Choose between different handle styles to match your design.
 
 @blade
-<x-demo>
-    <div class="space-y-6" x-data="{ defaultV: [30], circle: [60] }">
+<x-demo >
+    <div class="space-y-6 w-full" x-data="{ defaultV: [30], circle: [60] }">
         <div>
             <p class="text-sm font-medium mb-2">Default Handle</p>
             <x-ui.slider 
@@ -283,7 +283,7 @@ Use the `$slider.formatTooltipUsing()` method via `x-init` to customize tooltip 
 Define the boundaries of your slider with custom minimum and maximum values.
 
 @blade
-<x-demo x-data="{ range: [40] }">
+<x-demo class="flex flex-col" x-data="{ range: [40] }">
     <x-ui.slider 
         x-model="range"
         :min-value="20"
@@ -314,7 +314,7 @@ Define the boundaries of your slider with custom minimum and maximum values.
 Control the increment between selectable values using the `step` attribute.
 
 @blade
-<x-demo x-data="{ price: [50] }">
+<x-demo class="flex flex-col" x-data="{ price: [50] }">
     <x-ui.slider 
         x-model="price"
         :fill-track="[true, false]"
@@ -338,7 +338,7 @@ Control the increment between selectable values using the `step` attribute.
 For precise control without step restrictions, specify the number of decimal places.
 
 @blade
-<x-demo x-data="{ measurement: [3.14] }">
+<x-demo class="flex flex-col" x-data="{ measurement: [3.14] }">
     <x-ui.slider 
         x-model="measurement"
         :max-value="10"
@@ -364,7 +364,7 @@ For precise control without step restrictions, specify the number of decimal pla
 Add behavioral padding to prevent values from reaching the absolute edges of the track.
 
 @blade
-<x-demo x-data="{ value: [30] }">
+<x-demo class="flex flex-col" x-data="{ value: [30] }">
     <x-ui.slider 
         x-model="value"
         :fill-track="[true, false]"
@@ -391,7 +391,7 @@ Add behavioral padding to prevent values from reaching the absolute edges of the
 For asymmetric padding, pass an array with start and end values:
 
 @blade
-<x-demo x-data="{ value: [50] }">
+<x-demo class="flex flex-col" x-data="{ value: [50] }">
     <x-ui.slider 
         x-model="value"
         :fill-track="[true, false]"
@@ -416,7 +416,7 @@ For asymmetric padding, pass an array with start and end values:
 Create range selectors with multiple draggable handles by providing an array of values.
 
 @blade
-<x-demo x-data="{ priceRange: [20, 75] }">
+<x-demo class="flex flex-col" x-data="{ priceRange: [20, 75] }">
     <x-ui.slider 
         x-model="priceRange"
         :step="1"
@@ -443,7 +443,7 @@ Create range selectors with multiple draggable handles by providing an array of 
 Ensure handles maintain a minimum distance from each other.
 
 @blade
-<x-demo x-data="{ range: [30, 70] }">
+<x-demo class="flex flex-col" x-data="{ range: [30, 70] }">
     <x-ui.slider 
         x-model="range"
         :margin="10"
@@ -471,7 +471,7 @@ Ensure handles maintain a minimum distance from each other.
 Limit the maximum distance between handles using the `limit` attribute.
 
 @blade
-<x-demo x-data="{ range: [40, 60] }">
+<x-demo class="flex flex-col" x-data="{ range: [40, 60] }">
     <x-ui.slider 
         x-model="range"
         :limit="30"
@@ -526,7 +526,7 @@ Control how frequently pips appear using the `pipsDensity` attribute. Higher val
 
 @blade
 <x-demo x-data="{ value: [50] }">
-    <div class="space-y-8 mb-20">
+    <div class="w-full space-y-8 mb-20">
         <div>
             <p class="text-sm font-medium mb-2">Density: 5 (More pips)</p>
             <x-ui.slider 
@@ -926,7 +926,7 @@ Create sliders where certain portions of the track represent different value ran
 
 > This was buggy in the original library because the slider can return strings or decimals even specifying the step to int. We need to manually fix it to integers.
 @blade
-<x-demo x-data="{ value: [50] }">
+<x-demo class="flex flex-col" x-data="{ value: [50] }">
     <x-ui.slider 
         x-model="value"
         :nonLinearPoints="['30%' => 50, '70%' => 80]"
@@ -967,7 +967,7 @@ Control how users interact with the slider using the `behavior` attribute. Avail
 - `none` - Disable click-to-move behavior
 
 @blade
-<x-demo x-data="{ range: [30, 70] }">
+<x-demo class="flex flex-col" x-data="{ range: [30, 70] }">
     <x-ui.slider 
         x-model="range"
         :fill-track="[false, true, false]"
@@ -1018,7 +1018,7 @@ Disable user interaction with the slider.
 
 @blade
 <x-demo x-data="{ priceRange: [100, 750] }">
-    <div>
+    <div class="w-full">
         <h3 class="text-lg font-semibold mb-4">Filter Products by Price</h3>
         <x-ui.slider 
             x-model="priceRange"
@@ -1083,7 +1083,7 @@ Disable user interaction with the slider.
 
 @blade
 <x-demo>
-     <div x-data="{ volume: [75] }" class="flex justify-center items-end gap-4 ">
+     <div class="w-full" x-data="{ volume: [75] }" class="flex justify-center items-end gap-4 ">
         <svg class="w-5 h-5 text-neutral-600 mb-4" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" />
         </svg>
@@ -1113,7 +1113,7 @@ Disable user interaction with the slider.
 
 @blade
 <x-demo x-data="{ meetingTime: [9, 17] }">
-    <div>
+    <div class="w-full">
         <h3 class="text-lg font-semibold mb-4">Select Meeting Hours</h3>
         <x-ui.slider 
             x-model="meetingTime"
@@ -1203,7 +1203,7 @@ Disable user interaction with the slider.
 
 @blade
 <x-demo x-data="{ rating: [3.5] }">
-    <div>
+    <div class="w-full">
         <h3 class="text-lg font-semibold mb-4">Rate Your Experience</h3>
         <x-ui.slider 
             x-model="rating"
@@ -1255,7 +1255,7 @@ Disable user interaction with the slider.
 
 @blade
 <x-demo x-data="{ temperature: [68] }">
-    <div>
+    <div class="w-full">
         <h3 class="text-lg font-semibold mb-4">Thermostat Control</h3>
         <x-ui.slider 
             x-model="temperature"
@@ -1325,7 +1325,7 @@ Disable user interaction with the slider.
 
 @blade
 <x-demo x-data="{ budgets: [2000, 5000, 8000] }">
-    <div>
+    <div class="w-full">
         <h3 class="text-lg font-semibold mb-4">Department Budget Allocation</h3>
         <x-ui.slider 
             x-model="budgets"
