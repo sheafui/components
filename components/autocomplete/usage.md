@@ -40,12 +40,12 @@ php artisan sheaf:install autocomplete
     placeholder="Type to search..."
     leftIcon="map-pin"
 >
-        <x-ui.autocomplete.item>United States</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>United Kingdom</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>Canada</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>Australia</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>Germany</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>France</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>United States</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>United Kingdom</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Canada</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Australia</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Germany</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>France</x-ui.autocomplete.item>
 </x-ui.autocomplete>
 ```
 
@@ -58,11 +58,11 @@ To use with Livewire you only need to use `wire:model="property"` to bind your i
     wire:model="product"
     placeholder="Find products..." 
 >
-        <x-ui.autocomplete.item>iPhone 15 Pro</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>MacBook Air M2</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>AirPods Pro</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>iPad Pro</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>Apple Watch Series 9</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>iPhone 15 Pro</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>MacBook Air M2</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>AirPods Pro</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>iPad Pro</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Apple Watch Series 9</x-ui.autocomplete.item>
 </x-ui.autocomplete>
 ```
 
