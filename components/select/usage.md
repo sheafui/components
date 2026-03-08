@@ -430,16 +430,57 @@ When no results match, you can offer the user the ability to create a new entry 
 </x-ui.select>
 ```
 
-```php
-public function createComponent(): void
-{
-    $component = Component::create(['name' => $this->query]);
+Here's the complete updated docs section:
 
-    $this->components = Component::limit(10)->get();
-    $this->query = '';
+### Create Option With Modal
 
-    $this->toastSuccess("'{$component->name}' created successfully.");
-}
+You can open a modal to create a new option by passing a `modal` prop with the modal's ID to `<x-ui.select.option.create>`. This is useful when creation requires a form with multiple fields.
+
+```blade
+<x-ui.select 
+    wire:model="options"
+    placeholder="Search or create..."
+    searchable
+    multiple
+>
+    <x-slot:search>
+        <x-ui.select.search wire:model.live="query" />
+    </x-slot>
+
+    @if (!$components->count())
+        @if (strlen($query) > 3)
+            <x-ui.select.option.create {+modal="create-component"+}>
+                Create "<span wire:text="query"></span>"
+            </x-ui.select.option.create>
+        @else
+            <x-ui.select.empty>
+                No results found
+            </x-ui.select.empty>
+        @endif
+    @endif
+
+    @foreach ($components as $component)
+        <x-ui.select.option 
+            wire:key="{{ $component->server_name }}" 
+            value="{{ $component->server_name }}"
+        >
+            {{ $component->name }}
+        </x-ui.select.option>
+    @endforeach
+</x-ui.select>
+
+<x-ui.modal id="create-component" heading="Create Missing Component">
+    <div class="flex flex-col gap-4">
+        <x-ui.field>
+            <x-ui.label>Component Name</x-ui.label>
+            <x-ui.input wire:model="newComponent" placeholder="datatable" />
+            <x-ui.error name="newComponent" />
+        </x-ui.field>
+        <x-ui.button class="ml-auto" wire:click="createComponent">
+            Create
+        </x-ui.button>
+    </div>
+</x-ui.modal>
 ```
 
 ### Multiple Selection
