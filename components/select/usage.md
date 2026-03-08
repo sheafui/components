@@ -92,8 +92,9 @@ You can use it outside Livewire with just Alpine (and Blade):
 </div>
 ```
 
-### Size 
-the default size of the select is designed to align up with the input component, but also we have `sm` size: 
+### Size
+
+The select comes in two sizes. The default size is designed to align with the `input` component height, making them easy to use side by side in forms. Use `size="sm"` for a more compact variant in tighter layouts like toolbars or filter bars.
 
 @blade
 <x-demo class=" justify-center">
