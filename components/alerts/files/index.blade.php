@@ -110,7 +110,7 @@
     };
 
     $containerClass = [
-        'border flex items-center rounded-xl gap-2 p-2',
+        'border flex items-center rounded-xl gap-2 p-4',
         // if it there is heading and description align the icon to the first.
         '[&:has([data-slot=alert-heading]):has([data-slot=alert-description])]:[&_[data-slot=alert-icon]]:self-start',
         'bg-[var(--bg-color)]/30 border-[var(--border-color)]/65 text-[var(--text-color)]',
