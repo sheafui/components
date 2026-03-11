@@ -23,11 +23,11 @@ $squared = $slot->isEmpty();
 /* DEALING WITH SIZES - START */
 // Determine size-specific classes, including height, text size, and padding adjustments based on squared mode and icon presence
 $sizeClasses = match($size) { 
-    'lg' => '[:where(&)]:h-12 text-md' . ' '. ( $squared ? 'w-12': ($icon ? 'ps-4' : 'ps-5') . ' ' . ($iconAfter ? 'pe-4' : 'pe-5')),
-    'md' => '[:where(&)]:h-10 text-base' . ' '. ( $squared ? 'w-10': ($icon ? 'ps-3' : 'ps-4') . ' ' . ($iconAfter ? 'pe-3' : 'pe-4')), // default
-    'sm' => '[:where(&)]:h-9 text-sm' . ' '. ( $squared ? 'w-9': ($icon ? 'ps-2' : 'ps-3') . ' ' . ($iconAfter ? 'pe-2' : 'pe-3')),
-    'xs' => '[:where(&)]:h-6 text-xs' . ' '. ( $squared ? 'w-6': ($icon ? 'ps-1' : 'ps-2') . ' ' . ($iconAfter ? 'pe-1' : 'pe-2')),
-    default => '[:where(&)]:h-10 text-sm' . ' '. ( $squared ? 'w-10': ($icon ? 'ps-3' : 'ps-4') . ' ' . ($iconAfter ? 'pe-3' : 'pe-4')),
+    'lg' => '[:where(&)]:h-12 rounded-lg text-md' . ' '. ( $squared ? 'w-12': ($icon ? 'ps-4' : 'ps-5') . ' ' . ($iconAfter ? 'pe-4' : 'pe-5')),
+    'md' => '[:where(&)]:h-10 rounded-lg text-base' . ' '. ( $squared ? 'w-10': ($icon ? 'ps-3' : 'ps-4') . ' ' . ($iconAfter ? 'pe-3' : 'pe-4')), // default
+    'sm' => '[:where(&)]:h-9 rounded-lg text-sm' . ' '. ( $squared ? 'w-9': ($icon ? 'ps-2' : 'ps-3') . ' ' . ($iconAfter ? 'pe-2' : 'pe-3')),
+    'xs' => '[:where(&)]:h-6 rounded-md text-xs' . ' '. ( $squared ? 'w-6': ($icon ? 'ps-1' : 'ps-2') . ' ' . ($iconAfter ? 'pe-1' : 'pe-2')),
+    default => '[:where(&)]:h-10 rounded-lg text-sm' . ' '. ( $squared ? 'w-10': ($icon ? 'ps-3' : 'ps-4') . ' ' . ($iconAfter ? 'pe-3' : 'pe-4')),
 };
 /* SIZES - END */
 
@@ -119,7 +119,7 @@ $classes = [
     'relative [:where(&)]:inline-flex items-center font-medium justify-center gap-x-2 whitespace-nowrap transition-colors duration-200',
     'disabled:opacity-55 dark:disabled:opacity-55 disabled:cursor-default disabled:pointer-events-none cursor-pointer',
     '[&_a]:no-underline [&_a]:decoration-none [&_a:hover]:no-underline' => $variant !== 'none' , // Handle anchor tags inside the button
-    '[:where(&)]:rounded-field' => $variant !== 'none' , // Apply rounding unless variant is 'none'
+    // '[:where(&)]:rounded-field' => $variant !== 'none' , // Apply rounding unless variant is 'none'
     
     // Handling loading logic via CSS: Show loading indicator as flex and set opacity-0 on its siblings
     '[&>[data-loading=true]:first-child]:flex', // Override 'hidden' to display the loading div during loading
@@ -184,4 +184,5 @@ $loadingAttributes = $loadingAttributes->merge($loading ? [
     @if(filled($iconAfter))
         <x-ui.icon :name="$iconAfter" :variant="$iconVariant" :attributes="$iconAttributes" data-slot="left-icon"/>
     @endif
+
 </x-ui.button.abstract>
