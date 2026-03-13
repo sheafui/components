@@ -288,10 +288,14 @@ When using server-side search, a loading indicator is shown automatically while 
 
 When no results match the user's query, you can offer an inline create action using `<x-ui.combobox.option.create>`:
 
+> the `:preventLoading` flag is a workaround to hide loading indicator while the requests been sent to the server, due that there is no straight way to prevent them conditionally
+
+
 ```blade
 <x-ui.combobox
     wire:model="options"
     placeholder="Search or create..."
+    :preventLoading="strlen($query) > 3"
     multiple
 >
     @if (!$components->count())

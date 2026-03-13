@@ -525,10 +525,13 @@ When no results match, you can offer the user the ability to create a new entry 
 
 You can open a modal to create a new option by passing a `modal` prop with the modal's ID to `<x-ui.select.option.create>`. This is useful when creation requires a form with multiple fields.
 
+> the `:preventLoading` flag is a workaround to hide loading indicator while the requests been sent to the server, due that there is no straight way to prevent them conditionally
+
 ```blade
 <x-ui.select 
     wire:model="options"
     placeholder="Search or create..."
+    :preventLoading="strlen($query) > 3"
     searchable
     multiple
 >
