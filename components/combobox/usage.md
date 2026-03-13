@@ -99,6 +99,61 @@ The combobox comes in two sizes. The default size aligns with the `input` compon
 </x-ui.combobox>
 ```
 
+@blade
+<x-demo class=" justify-center">
+    <div class="space-y-4">
+        <div
+            class="max-x-2xs mx-auto"
+            x-data="{
+                members:[]
+            }"
+        >
+            <x-ui.combobox 
+                class="w-3xs"
+                placeholder="Team members"
+                icon="users"
+                x-model="members"
+                searchable
+                multiple
+                clearable
+                >
+                    <x-ui.combobox.option value="john" icon="user">John Doe</x-ui.combobox.option>
+                    <x-ui.combobox.option value="jane" icon="user">Jane Smith</x-ui.combobox.option>
+                    <x-ui.combobox.option value="mike" icon="user">Mike Johnson</x-ui.combobox.option>
+                    <x-ui.combobox.option value="sarah" icon="user">Sarah Wilson</x-ui.combobox.option>
+                    <x-ui.combobox.option value="david" icon="user">David Brown</x-ui.combobox.option>
+                    <x-ui.combobox.option value="lisa" icon="user">Lisa Davis</x-ui.combobox.option>
+            </x-ui.combobox>
+        </div>
+        <div
+            class="max-x-2xs mx-auto"
+            x-data="{
+                members:[]
+            }"
+        >
+            <x-ui.combobox 
+                class="w-3xs"
+                placeholder="Team members"
+                icon="users"
+                x-model="members"
+                size="sm"
+                searchable
+                multiple
+                clearable
+                >
+                    <x-ui.combobox.option value="john" icon="user">John Doe</x-ui.combobox.option>
+                    <x-ui.combobox.option value="jane" icon="user">Jane Smith</x-ui.combobox.option>
+                    <x-ui.combobox.option value="mike" icon="user">Mike Johnson</x-ui.combobox.option>
+                    <x-ui.combobox.option value="sarah" icon="user">Sarah Wilson</x-ui.combobox.option>
+                    <x-ui.combobox.option value="david" icon="user">David Brown</x-ui.combobox.option>
+                    <x-ui.combobox.option value="lisa" icon="user">Lisa Davis</x-ui.combobox.option>
+            </x-ui.combobox>
+        </div>
+    </div>
+</x-demo>
+@endblade
+
+
 ### Icons
 
 Add a leading icon to the trigger and per-option icons for better visual communication.
@@ -229,6 +284,10 @@ The combobox is purpose-built for server-driven search. Because the input is alw
     placeholder="Search components..."
     multiple
 >
+{+    <x-slot:search>
+        <x-ui.combobox.input wire:model.live="query"/>
+    </x-slot>+}
+
     @foreach ($components as $item)
         <x-ui.combobox.option
             wire:key="{{ $item->server_name }}"
@@ -270,9 +329,9 @@ When using server-side search, a loading indicator is shown automatically while 
     wire:model="options"
     placeholder="Search..."
 >
-    <x-slot:loading>
+{+    <x-slot:loading>
         loading...
-    </x-slot>
+    </x-slot>+}
 
     @foreach ($results as $item)
         <x-ui.combobox.option value="{{ $item->id }}">
@@ -293,24 +352,25 @@ Customize the empty state for both client-side and server-driven search.
 
 ```blade
 <x-ui.combobox wire:model="options" placeholder="Search...">
-    <x-slot:empty>
-        <x-ui.select.option.empty>Nothing here</x-ui.select.option.empty>
-    </x-slot:empty>
+{+    <x-slot:empty>
+        <x-ui.combobox.option.empty>Nothing here</x-ui.combobox.option.empty>
+    </x-slot:empty>+}
+    <!-- ... -->
 </x-ui.combobox>
 ```
 
 **Server-driven search**
 
 ```blade
-<x-ui.select>
-    @if (!$components->count())
-        <x-ui.select.option.empty>No component found</x-ui.select.option.empty>
-    @endif
+<x-ui.combobox>
+{+    @if (!$components->count())
+        <x-ui.combobox.option.empty>No component found</x-ui.combobox.option.empty>
+    @endif+}
 
     @foreach ($iterable as $item)
         <!-- item -->
     @endforeach
-</x-ui.select>
+</x-ui.combobox>
 ```
 
 > You can also use the [empty component](/docs/components/empty) for richer empty states.
@@ -331,9 +391,9 @@ When no results match the user's query, you can offer an inline create action us
 >
     @if (!$components->count())
         @if (strlen($query) > 3)
-            {+<x-ui.combobox.option.create wire:click="createComponent">+}
+{+              <x-ui.combobox.option.create wire:click="createComponent">
                 Create "<span wire:text="query"></span>"
-            {+</x-ui.combobox.option.create>+}
+            </x-ui.combobox.option.create>+}
         @else
             <x-ui.combobox.empty>
                 No results found
@@ -356,6 +416,22 @@ When no results match the user's query, you can offer an inline create action us
 
 Apply error styling with the `invalid` prop:
 
+@blade
+<x-demo class="flex justify-center">
+    <div class="max-x-2xs mx-auto space-y-4">
+        <x-ui.combobox 
+            class="w-3xs"
+            placeholder="Choose option..."
+            icon="exclamation-circle"
+            :invalid="true"
+        >
+                <x-ui.combobox.option value="option1">Option 1</x-ui.combobox.option>
+                <x-ui.combobox.option value="option2">Option 2</x-ui.combobox.option>
+        </x-ui.combobox>
+    </div>
+</x-demo>
+@endblade
+
 ```blade
 <x-ui.combobox
     placeholder="Choose option..."
@@ -368,6 +444,21 @@ Apply error styling with the `invalid` prop:
 ```
 
 ### Disabled State
+
+@blade
+<x-demo class="flex justify-center">
+    <div class="max-x-2xs mx-auto">
+        <x-ui.combobox 
+            class="w-3xs"
+            placeholder="This is disabled..."
+            disabled
+        >
+                <x-ui.combobox.option value="option1">Option 1</x-ui.combobox.option>
+                <x-ui.combobox.option value="option2">Option 2</x-ui.combobox.option>
+        </x-ui.combobox>
+    </div>
+</x-demo>
+@endblade
 
 ```blade
 <x-ui.combobox
@@ -384,6 +475,22 @@ Apply error styling with the `invalid` prop:
 
 Individual options can be disabled while the rest remain interactive:
 
+@blade
+<x-demo class="flex justify-center">
+    <div class="max-x-2xs mx-auto">
+        <x-ui.combobox 
+            class="w-3xs"
+            placeholder="This is disabled..."
+        >
+            <x-ui.combobox.option value="option1">Option 1</x-ui.combobox.option>
+            <x-ui.combobox.option value="option2" disabled>Option 2</x-ui.combobox.option>
+            <x-ui.combobox.option value="option3">Option 3</x-ui.combobox.option>
+            <x-ui.combobox.option value="option4" disabled>Option 4</x-ui.combobox.option>
+        </x-ui.combobox>
+    </div>
+</x-demo>
+@endblade
+
 ```blade
 <x-ui.combobox wire:model="value" placeholder="Choose...">
     <x-ui.combobox.option value="option1">Option 1</x-ui.combobox.option>
@@ -392,28 +499,6 @@ Individual options can be disabled while the rest remain interactive:
     <x-ui.combobox.option value="option4" disabled>Option 4</x-ui.combobox.option>
 </x-ui.combobox>
 ```
-
-## Conventions
-
-### Listening for Changes
-
-React to selection changes with the `@change` event. The selected value is available in `$event.detail.value`:
-
-```blade
-<div x-data="{ country: '' }">
-    <x-ui.combobox
-        class="w-3xs"
-        x-model="country"
-        placeholder="Choose a country..."
-        @change="fetchRegionalData($event.detail.value)"
-    >
-        <x-ui.combobox.option value="us">United States</x-ui.combobox.option>
-        <x-ui.combobox.option value="uk">United Kingdom</x-ui.combobox.option>
-        <x-ui.combobox.option value="ca">Canada</x-ui.combobox.option>
-    </x-ui.combobox>
-</div>
-```
-
 
 ## Component Props
 
