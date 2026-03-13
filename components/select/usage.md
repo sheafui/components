@@ -485,7 +485,7 @@ public function updatedQuery(): void
 When using server-side search, a loading indicator is shown automatically while Livewire is processing. You can customize it via the `loading` slot:
 
 ```blade
-<x-ui.combobox
+<x-ui.select
     wire:model="options"
     placeholder="Search..."
 >
@@ -494,15 +494,15 @@ When using server-side search, a loading indicator is shown automatically while 
     </x-slot>
 
     @foreach ($results as $item)
-        <x-ui.combobox.option value="{{ $item->id }}">
+        <x-ui.select.option value="{{ $item->id }}">
             {{ $item->name }}
-        </x-ui.combobox.option>
+        </x-ui.select.option>
     @endforeach
-</x-ui.combobox>
+</x-ui.select>
 ```
 
 
-> To disable the automatic loading indicator entirely (e.g., when you handle it yourself), pass `prevent-loading` to the combobox.
+> To disable the automatic loading indicator entirely (e.g., when you handle it yourself), pass `prevent-loading` to the select.
 
 ### Empty State
 
@@ -511,11 +511,11 @@ Customize the empty state for both client-side and server-driven search.
 **Client-side search**
 
 ```blade
-<x-ui.combobox wire:model="options" placeholder="Search...">
+<x-ui.select wire:model="options" placeholder="Search...">
     <x-slot:empty>
         <x-ui.select.option.empty>Nothing here</x-ui.select.option.empty>
     </x-slot:empty>
-</x-ui.combobox>
+</x-ui.select>
 ```
 
 **Server-driven search**

@@ -284,6 +284,37 @@ When using server-side search, a loading indicator is shown automatically while 
 
 > To disable the automatic loading indicator entirely (e.g., when you handle it yourself), pass `prevent-loading` to the combobox.
 
+
+### Empty State
+
+Customize the empty state for both client-side and server-driven search.
+
+**Client-side search**
+
+```blade
+<x-ui.combobox wire:model="options" placeholder="Search...">
+    <x-slot:empty>
+        <x-ui.select.option.empty>Nothing here</x-ui.select.option.empty>
+    </x-slot:empty>
+</x-ui.combobox>
+```
+
+**Server-driven search**
+
+```blade
+<x-ui.select>
+    @if (!$components->count())
+        <x-ui.select.option.empty>No component found</x-ui.select.option.empty>
+    @endif
+
+    @foreach ($iterable as $item)
+        <!-- item -->
+    @endforeach
+</x-ui.select>
+```
+
+> You can also use the [empty component](/docs/components/empty) for richer empty states.
+
 ### Create Option
 
 When no results match the user's query, you can offer an inline create action using `<x-ui.combobox.option.create>`:
