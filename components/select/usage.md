@@ -1,6 +1,6 @@
 ---
 name: select
-new: [create option, size, custom slot,separator, groups, server-side search with livewire, pillbox selection, create option with modal, option specific disabled state ]
+new: [create option, size, custom slot,separator, groups, server-side search with livewire, pillbox selection, create option with modal, option specific disabled state, loading state, empty state]
 ---
 
 ## Introduction
@@ -480,6 +480,59 @@ public function updatedQuery(): void
 
 > The custom search slot completely bypasses the built-in client-side filtering. All matching logic lives in your Livewire component — the select simply renders whatever options are present in the DOM.
 
+### Loading State
+
+When using server-side search, a loading indicator is shown automatically while Livewire is processing. You can customize it via the `loading` slot:
+
+```blade
+<x-ui.combobox
+    wire:model="options"
+    placeholder="Search..."
+>
+    <x-slot:loading>
+        loading...
+    </x-slot>
+
+    @foreach ($results as $item)
+        <x-ui.combobox.option value="{{ $item->id }}">
+            {{ $item->name }}
+        </x-ui.combobox.option>
+    @endforeach
+</x-ui.combobox>
+```
+
+
+> To disable the automatic loading indicator entirely (e.g., when you handle it yourself), pass `prevent-loading` to the combobox.
+
+### Empty State
+
+Customize the empty state for both client-side and server-driven search.
+
+**Client-side search**
+
+```blade
+<x-ui.combobox wire:model="options" placeholder="Search...">
+    <x-slot:empty>
+        <x-ui.select.option.empty>Nothing here</x-ui.select.option.empty>
+    </x-slot:empty>
+</x-ui.combobox>
+```
+
+**Server-driven search**
+
+```blade
+<x-ui.select>
+    @if (!$components->count())
+        <x-ui.select.option.empty>No component found</x-ui.select.option.empty>
+    @endif
+
+    @foreach ($iterable as $item)
+        <!-- item -->
+    @endforeach
+</x-ui.select>
+```
+
+> You can also use the [empty component](/docs/components/empty) for richer empty states.
 
 ### Create Option
 

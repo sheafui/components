@@ -271,7 +271,7 @@ When using server-side search, a loading indicator is shown automatically while 
     placeholder="Search..."
 >
     <x-slot:loading>
-        <x-ui.icon.loading class="opacity-50 text-brand-500" />
+        loading...
     </x-slot>
 
     @foreach ($results as $item)

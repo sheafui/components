@@ -73,9 +73,9 @@ Change the separator between keys using the `separator` prop.
 <x-ui.kbd keys="Ctrl|Alt|Delete" separator="|" />
 ```
 
-## Component Props Reference
+## Component Props 
 
-### Kbd Props
+### ui.kbd
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
