@@ -1,3 +1,6 @@
+---
+name: rover primitive
+---
 # Rover
 
 Rover is a lightweight Alpine.js plugin that manages **keyboard navigation, activation state, and search filtering** for listable UI components — selects, comboboxes, autocompletes, command palettes, and anything else that renders a navigable list of options.
