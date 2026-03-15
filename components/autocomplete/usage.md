@@ -1,5 +1,6 @@
 ---
 name: autocomplete
+new: [disabled individual items]
 ---
 
 ## Introduction
@@ -13,6 +14,14 @@ Use the [sheaf artisan command](/docs/guides/cli-installation#content-component-
 php artisan sheaf:install autocomplete
 ```
 
+> **Requires Rover Plugin.** This component is powered by the [Rover primitive](/docs/primitives/rover). Make sure it's installed and registered before using Component.
+
+and then import the `autocomplete.js` file in your js entry point:
+
+```js
+// app.js
+import './components/autocomplete.js';
+```
 > Once installed, you can use the `<x-ui.autocomplete />` component in any Blade view.
 
 ## Usage
@@ -20,33 +29,32 @@ php artisan sheaf:install autocomplete
 <x-demo>
     <div class="w-full max-w-3xs mx-auto">
         <x-ui.autocomplete 
-            label="Search Countries" 
             placeholder="Type to search..."
             leftIcon="map-pin"
-            >
-                <x-ui.autocomplete.item>United States</x-ui.autocomplete.item>
-                <x-ui.autocomplete.item>United Kingdom</x-ui.autocomplete.item>
-                <x-ui.autocomplete.item>Canada</x-ui.autocomplete.item>
-                <x-ui.autocomplete.item>Australia</x-ui.autocomplete.item>
-                <x-ui.autocomplete.item>Germany</x-ui.autocomplete.item>
-                <x-ui.autocomplete.item>France</x-ui.autocomplete.item>
+        >
+            <x-ui.autocomplete.item>Khouribga</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Casablanca</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Rabat</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Marrakech</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Fès</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Tanger</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Agadir</x-ui.autocomplete.item>
         </x-ui.autocomplete>
     </div>
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.autocomplete 
-    label="Search Countries" 
     placeholder="Type to search..."
     leftIcon="map-pin"
-    >
-        <x-ui.autocomplete.item>United States</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>United Kingdom</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>Canada</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>Australia</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>Germany</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>France</x-ui.autocomplete.item>
+>
+    <x-ui.autocomplete.item>United States</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>United Kingdom</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Canada</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Australia</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Germany</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>France</x-ui.autocomplete.item>
 </x-ui.autocomplete>
 ```
 
@@ -54,18 +62,16 @@ php artisan sheaf:install autocomplete
 
 To use with Livewire you only need to use `wire:model="property"` to bind your input state:
 
-```html
+```blade
 <x-ui.autocomplete 
-    label="Search Products" 
     wire:model="product"
     placeholder="Find products..." 
-    description="Search through our product catalog"
-    >
-        <x-ui.autocomplete.item>iPhone 15 Pro</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>MacBook Air M2</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>AirPods Pro</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>iPad Pro</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>Apple Watch Series 9</x-ui.autocomplete.item>
+>
+    <x-ui.autocomplete.item>iPhone 15 Pro</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>MacBook Air M2</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>AirPods Pro</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>iPad Pro</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Apple Watch Series 9</x-ui.autocomplete.item>
 </x-ui.autocomplete>
 ```
 
@@ -73,13 +79,11 @@ To use with Livewire you only need to use `wire:model="property"` to bind your i
 
 You can use it outside Livewire with just Alpine (and Blade):
 
-```html
+```blade
 <x-ui.autocomplete 
-    label="Search Products" 
     x-model="product"
     placeholder="Find products..." 
-    description="Search through our product catalog"
-    >
+>
         <x-ui.autocomplete.item>iPhone 15 Pro</x-ui.autocomplete.item>
         <x-ui.autocomplete.item>MacBook Air M2</x-ui.autocomplete.item>
         <x-ui.autocomplete.item>AirPods Pro</x-ui.autocomplete.item>
@@ -88,7 +92,35 @@ You can use it outside Livewire with just Alpine (and Blade):
 </x-ui.autocomplete>
 ```
 
-### Autocomplete with Icons
+### Add Label & Description
+@blade
+<x-demo>
+    <x-ui.field class="max-w-64">
+        <x-ui.label>Search Products</x-ui.label>
+        <x-ui.description>Search through our product catalog</x-ui.description>
+        <x-ui.autocomplete 
+            placeholder="Find products..." 
+        >
+                <x-ui.autocomplete.item>iPhone 15 Pro</x-ui.autocomplete.item>
+                <x-ui.autocomplete.item>MacBook Air M2</x-ui.autocomplete.item>
+                <x-ui.autocomplete.item>AirPods Pro</x-ui.autocomplete.item>
+                <x-ui.autocomplete.item>iPad Pro</x-ui.autocomplete.item>
+                <x-ui.autocomplete.item>Apple Watch Series 9</x-ui.autocomplete.item>
+        </x-ui.autocomplete>
+    </x-ui.field>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.field class="max-w-64">
+    <x-ui.label>Search Products</x-ui.label>
+    <x-ui.description>Search through our product catalog</x-ui.description>
+    <x-ui.autocomplete>
+        <!-- items -->
+    </x-ui.autocomplete>
+</x-ui.field>
+```
+### with Icons
 
 Enhance the autocomplete with leading and trailing icons for better visual communication.
 
@@ -111,9 +143,8 @@ Enhance the autocomplete with leading and trailing icons for better visual commu
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.autocomplete 
-    label="Search Technologies" 
     placeholder="Find your favorite tech..."
     leftIcon="code-bracket"
     rightIcon="magnifying-glass"
@@ -127,7 +158,7 @@ Enhance the autocomplete with leading and trailing icons for better visual commu
 </x-ui.autocomplete>
 ```
 
-### Clearable Autocomplete
+### Clearable
 
 Add a clear button to easily reset the input value.
 
@@ -151,9 +182,8 @@ Add a clear button to easily reset the input value.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.autocomplete 
-    label="Search Cities" 
     placeholder="Type city name..."
     icon="map-pin"
     clearable="true"
@@ -176,7 +206,6 @@ Show different states for validation feedback.
 <x-demo>
     <div class="w-full max-w-3xs mx-auto space-y-4">
         <x-ui.autocomplete 
-            label="Invalid Selection" 
             placeholder="Search..."
             icon="exclamation-circle"
             invalid="true"
@@ -189,10 +218,9 @@ Show different states for validation feedback.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Invalid state -->
 <x-ui.autocomplete 
-    label="Invalid Selection" 
     placeholder="Search..."
     icon="exclamation-circle"
     invalid="true"
@@ -210,16 +238,15 @@ Show different states for validation feedback.
     <div class="w-full max-w-3xs mx-auto space-y-4">
         <x-ui.autocomplete 
             placeholder="This is disabled..."
-            :disabled="true"
-            >
-                <x-ui.autocomplete.item>Option 1</x-ui.autocomplete.item>
-                <x-ui.autocomplete.item>Option 2</x-ui.autocomplete.item>
+            disabled
+        >
+            <x-ui.autocomplete.item>Option 1</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Option 2</x-ui.autocomplete.item>
         </x-ui.autocomplete>
         <x-ui.autocomplete 
-            label="Readonly Autocomplete" 
             placeholder="This is readonly..."
             readonly
-            >
+        >
                 <x-ui.autocomplete.item>Option 1</x-ui.autocomplete.item>
                 <x-ui.autocomplete.item>Option 2</x-ui.autocomplete.item>
         </x-ui.autocomplete>
@@ -227,10 +254,9 @@ Show different states for validation feedback.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Disabled -->
 <x-ui.autocomplete 
-    label="Disabled Autocomplete" 
     placeholder="This is disabled..."
     disabled="true"
     wire:model="disabledValue">
@@ -240,7 +266,6 @@ Show different states for validation feedback.
 
 <!-- Readonly -->
 <x-ui.autocomplete 
-    label="Readonly Autocomplete" 
     placeholder="This is readonly..."
     readonly
     wire:model="readonlyValue">
@@ -248,31 +273,50 @@ Show different states for validation feedback.
         <x-ui.autocomplete.item>Option 2</x-ui.autocomplete.item>
 </x-ui.autocomplete>
 ```
+### Disabled Individual Items
 
-## Customization
+@blade
+<x-demo>
+    <div class="w-full max-w-3xs mx-auto space-y-4">
+        <x-ui.autocomplete 
+            placeholder="have a disabled item ..."
+        >
+            <x-ui.autocomplete.item>United States</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item disabled>United Kingdom</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Canada</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Australia</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>Germany</x-ui.autocomplete.item>
+            <x-ui.autocomplete.item>France</x-ui.autocomplete.item>
+        </x-ui.autocomplete>
+    </div>
+</x-demo>
+@endblade
 
-### Custom Input Classes
-
-```html
+```blade
 <x-ui.autocomplete 
-    label="Custom Styled" 
-    inputClasses="bg-blue-50 border-blue-200 focus:border-blue-500"
-    placeholder="Search..."
-    wire:model="customValue">
-        <x-ui.autocomplete.item>Option 1</x-ui.autocomplete.item>
-        <x-ui.autocomplete.item>Option 2</x-ui.autocomplete.item>
+    placeholder="have a disabled item ..."
+>
+    <x-ui.autocomplete.item>United States</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item 
+        disabled
+    > 
+        United Kingdom
+    </x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Canada</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Australia</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>Germany</x-ui.autocomplete.item>
+    <x-ui.autocomplete.item>France</x-ui.autocomplete.item>
 </x-ui.autocomplete>
 ```
 
+## Component Prop
 
-## Component Props
+### ui.autocomplete
 
 | Prop Name      | Type    | Default       | Required | Description                                                                  |
 | -------------- | ------- | ------------- | -------- | ---------------------------------------------------------------------------- |
 | `label`        | string  | `''`          | No       | Label text displayed above the input                                         |
 | `name`         | string  | `wire:model`  | No       | Name attribute for the input (auto-detected from wire:model)                |
-| `type`         | string  | `text`        | No       | Input type attribute                                                         |
-| `description`  | string  | `''`          | No       | Helper text displayed below the input                                        |
 | `placeholder`  | string  | `Search...`   | No       | Placeholder text for the input                                               |
 | `variant`      | string  | `default`     | No       | Visual variant (currently only `default` supported)                         |
 | `disabled`     | boolean | `false`       | No       | Whether the input is disabled                                                |
@@ -280,6 +324,13 @@ Show different states for validation feedback.
 | `invalid`      | boolean | `false`       | No       | Whether to show invalid/error state styling                                  |
 | `leftIcon`         | string  | `''`          | No       | left side of the icon name                                                            |
 | `rightIcon` | string  | `''`          | No       | Right side of the icon name                                                           |
-| `clearable`    | boolean | `false`       | No       | Whether to show a clear button                                               |
-| `inputClasses`   | string  | `''`          | No       | Additional CSS classes for the input element                                 |
-| `slot`         | mixed   | `''`          | Yes      | Dropdown items using `<div data-slot="autocomplete-item">` elements         |
+| `copyable` | boolean | `false` | No | Add copy to clipboard button |
+| `clearable` | boolean | `false` | No | Add clear input button |
+| `revealable` | boolean | `false` | No | Add password reveal toggle |
+
+### ui.autocomplete.item
+| Prop         | Type      | Default       | Description                                                                 |
+| ------------ | --------- | ------------- | --------------------------------------------------------------------------- |
+| `value`      | `string`  | slot content  | The value bound to the model on selection. Falls back to slot text content. |
+| `label`      | `string`  | slot content  | Display label used in search filtering. Falls back to slot text content.    |
+| `disabled`   | `boolean` | `false`       | Prevents the item from being selected.                                      |

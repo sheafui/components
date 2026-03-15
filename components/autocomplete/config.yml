@@ -2,6 +2,7 @@ files:
   index: resources/views/components/ui/autocomplete/index.blade.php
   items: resources/views/components/ui/autocomplete/items.blade.php
   item:  resources/views/components/ui/autocomplete/item.blade.php
+  autocomplete:  resources/js/components/autocomplete.js
 
 dependencies:
   internal: [icon]

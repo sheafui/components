@@ -28,7 +28,7 @@
 
         'relative flex items-stretch w-full shadow-xs disabled:shadow-none transition-colors duration-200',
 
-        'rounded-box',
+        'rounded-box min-h-10',
         // Tailwind v4 '_input' means space + 'input'; these selectors target the input child
         '[&:has([data-slot=input-prefix])_input]:rounded-l-none',  // remove left border-radius if prefix exists
 

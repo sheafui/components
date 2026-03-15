@@ -1,8 +1,16 @@
 files:
+  option/create: resources/views/components/ui/select/option/create.blade.php
+  option/empty: resources/views/components/ui/select/option/empty.blade.php
+  pillbox-trigger: resources/views/components/ui/select/pillbox-trigger.blade.php
+  group: resources/views/components/ui/select/group.blade.php
   index: resources/views/components/ui/select/index.blade.php
+  loading: resources/views/components/ui/select/loading.blade.php
   option: resources/views/components/ui/select/option.blade.php
   options: resources/views/components/ui/select/options.blade.php
-  trigger: resources/views/components/ui/select/trigger.blade.php
+  search: resources/views/components/ui/select/search.blade.php
+  select: resources/js/components/select.js
+  separator: resources/views/components/ui/separator.blade.php
+  trigger: resources/views/components/ui/trigger.blade.php
 dependencies:
   internal: [icon,text]
   helpers: [popup]

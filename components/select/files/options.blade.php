@@ -1,62 +1,72 @@
 @aware([
     'searchable' => false,
+    'search' => null,
+    'empty' => 'no results found',
+    'loading' => null,
+    'label' => null,
+    'preventLoading' => false,
 ])
 
 @props([
-    'checkIcon' => 'check'
+    'checkIcon' => 'check',
+    'empty' => 'no results found'
 ])
 
-<x-ui.popup
-    x-show="open"
-    x-on:click.away="close()"
-    x-on:keydown.escape="close()"
-    x-anchor.offset.3="$refs.selectTrigger"
+<div 
+    class="absolute z-50 bg-white [:where(&)]:w-full dark:bg-neutral-800 mt-1 backdrop-blur-xl border dark:border-neutral-700 border-neutral-200 rounded-(--popup-round) shadow-lg py-(--popup-padding)"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 transform scale-95"
+    x-transition:enter-end="opacity-100 transform scale-100"
+    x-transition:leave="transition ease-in duration-150 pointer-events-none"
+    x-transition:leave-start="opacity-100 scale-100"
+    x-transition:leave-end="opacity-0 scale-95"
+    x-on:click.away="handleClickAway($event.target)"
+    x-show="__isOpen"
+    x-cloak  
 >
     @if ($searchable)
-        <div
-            @class([
-                'grid items-center justify-center grid-cols-[20px_1fr] px-2 mb-1', // give the icon 20 px and leave the input take the rest
-                '[&>[data-slot=icon]+[data-slot=search-control]]:pl-6', // because there is an icon give it 6 padding   
-                'w-full border-b border-neutral-200 dark:border-neutral-700',
-            ])    
-        >
-            <x-ui.icon 
-                name="magnifying-glass"
-                class="col-span-1 col-start-1 row-start-1 !text-neutral-500 dark:!text-neutral-400 !size-5"
-            />
+        @if ($search instanceof \Illuminate\View\ComponentSlot)
+            {{ $search }}
+        @else
+            <x-ui.select.search />
+        @endif
 
-            <input 
-                x-model="search"
-                x-on:input.stop="isTyping = true"
-                x-on:keydown.down.prevent.stop="handleKeydown($event)"
-                x-on:keydown.up.prevent.stop="handleKeydown($event)"
-                x-on:keydown.enter.prevent.stop="handleKeydown($event)"
-                x-bind:aria-activedescendant="activeIndex !== null ? 'option-' + activeIndex : null"
-                type="text"
-                x-ref='searchControl'
-                data-slot="search-control"
-                placeholder="search..."
-                @class([
-                    'bg-transparent placeholder:text-neutral-500 dark:placeholder:text-neutral-400 dark:text-neutral-50 text-neutral-900 ',
-                    'ring-0 ring-offset-0 outline-none focus:ring-0 border-0',
-                    'col-span-4 col-start-1 row-start-1',
-                ])
-            >
-        </div>
     @endif
     
-    <ul 
-        role="listbox"
-        x-on:keydown.enter.prevent.stop="select($focus.focused().dataset.value)"
-        x-on:keydown.up.prevent.stop="$focus.wrap().prev()"
-        x-on:keydown.down.prevent.stop="$focus.wrap().next()"
-        class="grid grid-cols-[auto_auto_1fr] gap-y-1 overflow-y-auto max-h-60"
+    <ul  
+        class="grid grid-cols-[auto_auto_1fr] gap-y-1 relative overflow-y-auto data-loading:h-24 px-(--popup-padding) max-h-60"
+        x-bind:aria-multiselectable="__isMultiple ? 'true' : 'false'"
+        {{ $attributes->whereStartsWith('wire:target') }} 
+        x-bind:aria-label="@js($label ?? 'Options')"
+        @if (!$preventLoading)
+            wire:loading.attr="data-loading"
+        @endif
+        x-rover:options
     >
         {{ $slot }}
+        
+        {{-- Empty and loading states are <li> elements to maintain valid HTML inside <ul>.
+            col-span-full spans all 3 grid columns so they don't break the layout. --}}
+        <li 
+            class="col-span-full [ul:is([data-loading])_&]:hidden"
+            x-rover:empty 
+        >
+            @if ($empty instanceof \Illuminate\View\ComponentSlot)
+                {{ $empty }}
+            @else
+                <x-ui.text class="h-14 flex items-center justify-center">
+                    {{ $empty }}
+                </x-ui.text>
+            @endif
+        </li>
+
+        {{-- loading indicators --}}
+        <x-ui.select.loading>
+            @if( $loading instanceof \Illuminate\View\ComponentSlot)
+                {{ $loading }}
+            @else
+                <x-ui.icon.loading class="opacity-50"/>
+            @endif
+        </x-ui.select.loading>
     </ul>
-    <template x-if="isSearchable && isTyping && !hasFilteredResults">
-        <x-ui.text class="h-14 flex items-center justify-center">
-            no results found
-        </x-ui.text>
-    </template>
-</x-ui.popup>
+</div>

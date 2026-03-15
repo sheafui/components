@@ -1,23 +1,21 @@
-
-<x-ui.popup
-    x-show="popupShouldShown" 
-    x-anchor.offset.3="$refs.autocompleteControl" 
-    x-on:click.away="handleClickAway($event)"  
-    x-ref="dropdown"
-    :autofocus="false"
+@php
+    $classes = [
+        "absolute z-50 bg-white [:where(&)]:w-full dark:bg-neutral-800 mt-1 backdrop-blur-xl border dark:border-neutral-700 border-neutral-200 rounded-(--popup-round) shadow-lg py-(--popup-padding)",
+    ]
+@endphp
+<div 
+    @class($classes)
+    x-transition
+    x-on:click.away="handleClickAway($event.target)"
+    x-anchor="$refs.autocompleteControl" 
+    x-show="isShown" 
+    x-cloak  
 >
     <ul 
-        x-ref="autocompleteOptions" 
-        class="flex flex-col gap-y-1"  
+        x-rover:options
+        class="flex flex-col gap-y-1 px-(--popup-padding)"  
         role="listbox"              
     >
         {{ $slot }}
-        <!-- no result shown fallback -->          
-        <li 
-            x-show="!hasVisibleItems" 
-            class="px-3 py-2 text-center rounded-[calc(var(--popup-round)-var(--padding-popover))] text-neutral-500 dark:text-neutral-400"
-        >
-            No results found
-        </li>
     </ul>
-</x-ui.popup>
+</div>

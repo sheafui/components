@@ -1,76 +1,85 @@
 @aware([
     'checkIcon' => 'check',
     'checkIconClass' => '',
-    'searchable' => false
+    'searchable' => false,
+    'allowCustomSlots' => false
 ])
 
 @props([
     'value' => null,
     'label' => null,
+    'searchLabel' => null,
     'icon' => null,
     'iconClass' => null,
+    'disabled' => false,
+    'allowCustomSlots' => false
 ])
 
 @php
-    // if there no label provided (when the value is the same as label) give the slot the value's value
-    $slot = filled($slot->__toString()) ? $slot->__toString() : $value;
+    if (!$allowCustomSlots) {
+        $value = filled($value) ? $value : $slot->__toString();
+        $label = filled($label) ? $label : $slot->__toString();
+        $searchLabel = filled($searchLabel) ? $searchLabel : $label;
+    } else {
+        if (blank($label)) {
+            throw new RuntimeException("A string label prop is required for custom slots");
+        }
+
+        $value = filled($value) ? $value : $label;
+        $searchLabel = filled($searchLabel) ? $searchLabel : $label;
+    }
+
+    $classes = [
+        "rounded-[calc(var(--popup-round)-var(--popup-padding))] group self-center gap-x-2 items-center",
+        "focus:bg-neutral-100 focus:dark:bg-neutral-700 px-3 py-0.5 w-full text-[1rem]",
+        "data-active:bg-neutral-800/5 dark:data-active:bg-white/5",
+        "col-span-full grid grid-cols-subgrid" => !$allowCustomSlots,
+        'col-span-full' => $allowCustomSlots,
+        '[&[aria-disabled=true]]:pointer-events-none [&[aria-disabled=true]]:opacity-50',
+        '[ul:is([data-loading])>&]:hidden'
+    ];
 @endphp
 
 <li 
-    
-    tabindex="0"
-
-    x-bind:data-value="@js($value)"
-    x-bind:data-label="@js($slot)"
-
-    x-show="isItemShown(@js($slot))"
-
-    x-on:mouseleave="handleMouseLeave($el)"
-    
-    {{--
-        this required only when using none searchable select because 
-        it moves out the focus state from the input
-    --}}
-    @if(!$searchable)
-        x-on:mouseover="$focus.focus($el)"
-    @endif
-
-    x-on:mouseover="handleMouseEnter(@js($value))"
-
-
-    x-bind:id="'option-' + getFilteredIndex(@js($value))"
-    x-on:click="select(@js($value))"
-    
-    x-bind:class="{
-        'bg-neutral-300 dark:bg-neutral-700 ': isFocused(@js($value)),
-        {{-- 'hover:bg-neutral-100 hover:dark:bg-neutral-700': !isFocused(@js($value)), --}}
-        '[&>[data-slot=icon]]:opacity-100': isSelected(@js($value)),
-    }"
-    role="option"
+    data-search="{{ $searchLabel }}"
+    data-label="{{ $label }}"
+    value="{{ $value }}"
     data-slot="option"
+    x-rover:option
     
-    class="
-        rounded-[calc(var(--popup-round)-var(--popup-padding))] col-span-full grid grid-cols-subgrid items-center
-        focus:bg-neutral-100 focus:dark:bg-neutral-700 px-3 py-0.5 w-full text-base sm:text-sm
-        self-center gap-x-2 
-    "
+    {{-- morph will remove data-value for none changed els so the init ain't rerun --}} 
+    wire:ignore.self
+    
+    @if($disabled) disabled aria-disabled="true" @endif
+
+    {{ $attributes->class($classes) }}
 >
-    <x-ui.icon 
-        :name="$checkIcon"
-        @class([
-            ' z-10 place-self-center opacity-0 size-[1.15rem]',
-            $checkIconClass,
-        ])
-    />
-    @if (filled($icon))
+    @if (!$allowCustomSlots)
+        {{-- Check Icon for selected state --}}
         <x-ui.icon 
-            :name="$icon"
+            :name="$checkIcon"
             @class([
-                'z-10 pl-1.5',
-                $iconClass
-            ]) 
+                'z-10 place-self-center opacity-0 group-data-selected:opacity-100 size-[1.15rem]',
+                $checkIconClass,
+            ])
         />
+
+        {{-- Optional icon --}}
+        @if (filled($icon))
+            <x-ui.icon 
+                :name="$icon"
+                @class([
+                    'z-10 pl-1.5',
+                    $iconClass
+                ]) 
+            />
+        @endif
+
+        {{-- Option label --}}
+        <span class="col-start-3 text-start text-neutral-950 dark:text-neutral-50">
+            {{ $slot }}
+        </span>
+    @else
+        {{ $slot }}
     @endif
-    
-    <span class="col-start-3 text-start text-neutral-950 dark:text-neutral-50">{{ $slot  }}</span>
 </li>
