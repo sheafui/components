@@ -1,55 +1,48 @@
 ---
 name: rover primitive
 ---
+
 # Rover
 
-Rover is a lightweight Alpine.js engine that manages **keyboard navigation, activation state, and search filtering** for listable UI components: selects, comboboxes, autocompletes, command palettes, and anything else that renders a navigable list of options.
+Rover is a lightweight Alpine.js engine that manages keyboard navigation, activation state, and search filtering for listable UI components — selects, comboboxes, autocompletes, command palettes, and anything else built around a navigable list of options.
 
 It exposes a declarative directive API (`x-rover`, `x-rover:input`, `x-rover:options`, etc.) and a programmatic magic API (`$rover`) that your component logic calls into.
-
 
 ## Installation
 
 ### CDN
 
-make sure to register it, before alpine start.
+Register it before Alpine starts.
 ```html
 <script src="https://unpkg.com/@sheaf/rover@latest/dist/cdn.min.js"></script>
 ```
-### Bundle (recomended)
 
+### Bundle
 ```bash
 npm i @sheaf/rover
 ```
 
-### then register it as plugin 
-
-**when using livewire:**
-
+**With Livewire:**
 ```js
-import {
-    Livewire,
-    Alpine,
-} from "../../vendor/livewire/livewire/dist/livewire.esm";
-
+import { Livewire, Alpine } from "../../vendor/livewire/livewire/dist/livewire.esm"
 import rover from "@sheaf/rover"
 
-Alpine.plugin(rover);
-
-Livewire.start();
+Alpine.plugin(rover)
+Livewire.start()
 ```
 
-**alpine only:**
-
+**Alpine only:**
 ```js
 import Alpine from 'alpinejs'
 import rover from "@sheaf/rover"
 
-Alpine.plugin(rover);
-Alpine.start();
+Alpine.plugin(rover)
+Alpine.start()
 ```
 
----
+## Notes
+
+This page is an API reference. To see Rover in action, explore the [Select](/docs/components/select), [Autocomplete](/docs/components/autocomplete), and [Combobox](/docs/components/combobox) source — more components like a command palette and time picker are on the way.
 
 ## Core concepts
 
@@ -76,7 +69,6 @@ Apply these as attributes on your HTML elements.
 | `x-rover:group` | Option group | Groups options under a `role="group"` with an `aria-labelledby`. Automatically hides when all its options are filtered out. |
 | `x-rover:separator` | Divider | Gets `role="separator"`. Hidden automatically during search. |
 | `x-rover:empty` | Empty state | Shown when the search query yields no results. Use `.hide` modifier to invert: `x-rover:empty.hide` hides the element when empty. |
-| `x-rover:loading` | Loading indicator | Shown when `pending` is true. Use `.hide` modifier to invert. Gets `role="status"` and `aria-live="polite"`. |
 
 ### Option attributes
 
@@ -105,7 +97,6 @@ Each `x-rover:option` element reads a few data attributes to configure itself:
   <!-- The list -->
   <ul x-rover:options>
 
-    <!-- Group (optional) -->
     <li x-rover:group>
       <span id="group-label">Fruits</span>
 
@@ -126,10 +117,6 @@ Each `x-rover:option` element reads a few data attributes to configure itself:
 
   <!-- Empty state -->
   <p x-rover:empty>No results found.</p>
-
-  <!-- Loading indicator -->
-  <p x-rover:loading>Loading...</p>
-
 </div>
 ```
 
