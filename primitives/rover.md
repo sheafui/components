@@ -3,11 +3,10 @@ name: rover primitive
 ---
 # Rover
 
-Rover is a lightweight Alpine.js plugin that manages **keyboard navigation, activation state, and search filtering** for listable UI components — selects, comboboxes, autocompletes, command palettes, and anything else that renders a navigable list of options.
+Rover is a lightweight Alpine.js engine that manages **keyboard navigation, activation state, and search filtering** for listable UI components: selects, comboboxes, autocompletes, command palettes, and anything else that renders a navigable list of options.
 
 It exposes a declarative directive API (`x-rover`, `x-rover:input`, `x-rover:options`, etc.) and a programmatic magic API (`$rover`) that your component logic calls into.
 
----
 
 ## Installation
 
@@ -18,7 +17,6 @@ It exposes a declarative directive API (`x-rover`, `x-rover:input`, `x-rover:opt
 <script src="/path/to/rover.cdn.js" defer></script>
 ```
 
-Rover registers itself on the `alpine:init` event — no manual setup needed.
 
 ### As a plugin
 
@@ -36,13 +34,12 @@ Alpine.start()
 
 Rover is built around three layers:
 
-1. **`RoverCollection`** — the internal engine. Holds all registered options, tracks activation state, builds navigation indexes, and runs search. You rarely touch this directly; you go through `$rover`.
+1. **`RoverCollection`** — the internal engine. Holds all registered options, tracks activation state, builds navigation indexes, and runs search. You don't touch this directly, you go through `$rover`.
 
 2. **Directives** — HTML attributes that wire up your markup. They handle ARIA, ID management, and connect elements to the collection engine.
 
 3. **Managers** — helpers (`InputManager`, `OptionsManager`, `ButtonManager`, `OptionManager`) that abstract event binding on specific elements. Accessed via `$rover.input`, `$rover.options`, `$rover.button`, `$rover.option`.
 
----
 
 ## Directives
 
