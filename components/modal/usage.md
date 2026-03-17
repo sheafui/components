@@ -262,30 +262,29 @@ Pass `:shortcut` to `modal.trigger` to bind one or more keyboard shortcuts — A
 
 @blade
 <x-demo>
-    <x-ui.modal.trigger id="shortcut-demo" :shortcut="['ctrl.k']">
-        <x-ui.input as="button" kbd="⌘K" placeholder="Search..." leftIcon="magnifying-glass" class="w-64!" />
+    <x-ui.modal.trigger id="shortcut-demo" :shortcut="['ctrl.k', 'cmd.k']">
+        <x-ui.input as="button" kbd="⌘K" placeholder="Search..." leftIcon="magnifying-glass" />
     </x-ui.modal.trigger>
-
-    <x-ui.modal id="shortcut-demo" width="xl">
-        <x-ui.command>
-            <x-ui.command.input clearable/>
-            <x-ui.command.items>
-                <x-ui.command.item icon="home" kbd="⌘H">Go to Dashboard</x-ui.command.item>
-                <x-ui.command.item icon="magnifying-glass" kbd="⌘F">Search Files</x-ui.command.item>
-            </x-ui.command.items>
-        </x-ui.command>
-    </x-ui.modal>
+    <x-ui.modal 
+        id="shortcut-demo" 
+        width="xl"
+        heading="Opened With Shortcut "
+        description="This is a modal "
+    />
 </x-demo>
 @endblade
 
 ```blade
-<x-ui.modal.trigger id="shortcut-exo" :shortcut="['ctrl.k', 'ctrl.o']">
+<x-ui.modal.trigger id="shortcut-demo" :shortcut="['ctrl.k', 'cmd.k']">
     <x-ui.input as="button" kbd="⌘K" placeholder="Search..." leftIcon="magnifying-glass" />
 </x-ui.modal.trigger>
 
-<x-ui.modal id="shortcut-exo" bare width="xl">
-    I am 
-</x-ui.modal>
+    <x-ui.modal 
+        id="shortcut-demo" 
+        width="xl"
+        heading="Opened With Shortcut "
+        description="This is a modal "
+    />
 ```
 
 ## Backdrop Options
