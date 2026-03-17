@@ -1,5 +1,6 @@
 ---
 name: 'modal'
+new: [bare, shortcut]
 ---
 
 # Modal Component

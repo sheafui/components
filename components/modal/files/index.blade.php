@@ -25,6 +25,7 @@
     'persistent' => false, // prevents closing by clicking away or escape
     'animation' => null, // scale, slide, fade
     'position' => 'top', // center, top, bottom
+    'bare' => false,
 ])
 
 @php
@@ -267,9 +268,10 @@
                     @endif
 
                     @class([
-                        'relative flex w-full flex-col bg-white shadow-xl ring-1 ring-neutral-900/5 dark:bg-neutral-900 dark:ring-white/10',
+                        'relative flex w-full flex-col bg-white shadow-xl dark:bg-neutral-900',
+                        'ring-1 ring-neutral-900/5 dark:ring-white/10' => !$bare,
                         $widthClass,
-                        'rounded-box' => !$slideover && $width !== 'screen',
+                        'rounded-[calc(1.5*var(--radius-box))]' => !$slideover && $width !== 'screen',
                         'h-[100vh]' => $slideover || $width === 'screen',
                         'ml-auto ' => $slideover,
                         'overflow-hidden' => $stickyHeader || $stickyFooter,
@@ -279,91 +281,95 @@
                     {{-- close by swap feature --}}
                     <x-ui.modal.grab-handle />
                     {{-- Header --}}
-                    @if($hasHeading  || $closeButton)
-                    <div
-                        @class([
-                            'modal-header flex  items-start',
-                            'p-3' => in_array($width, ['xs','sm','md','lg','xl','2xl','3xl','4xl','screen-md','screen-sm','screen-lg','screen-xl','screen-2xl']),
-                            'p-4' => in_array($width, ['5xl','6xl','7xl','full']),
-                            'p-6' => $width === 'screen',
-                            'border-neutral-100 dark:border-neutral-800' => $hasSlot || $hasFooter,
-                            'sticky top-0 z-40 bg-white dark:bg-neutral-900' => $stickyHeader,
-                            'border-b' => $hasHeading,
-                            $alignmentClass,
-                        ])
-                    >
+                    @if ($bare)
+                        {{ $slot }}
+                    @else
+                        @if($hasHeading  || $closeButton)
+                            <div
+                                @class([
+                                    'modal-header flex  items-start',
+                                    'p-3' => in_array($width, ['xs','sm','md','lg','xl','2xl','3xl','4xl','screen-md','screen-sm','screen-lg','screen-xl','screen-2xl']),
+                                    'p-4' => in_array($width, ['5xl','6xl','7xl','full']),
+                                    'p-6' => $width === 'screen',
+                                    'border-neutral-100 dark:border-neutral-800' => $hasSlot || $hasFooter,
+                                    'sticky top-0 z-40 bg-white dark:bg-neutral-900' => $stickyHeader,
+                                    'border-b' => $hasHeading,
+                                    $alignmentClass,
+                                ])
+                            >
 
-                        @if($hasIcon)
-                            <div class="mr-4 flex-shrink-0">
-                                <div
-                                    @class([
-                                        'rounded-full p-2',
-                                        $iconColorClass,
-                                    ])
-                                >
-                                    <x-ui.icon :name="$icon"/>
-                                </div>
-                            </div>
-                        @endif
-                        @if($hasHeading || $hasDescription )
-                            <div class="flex-1 min-w-0">
-                                @if($hasHeading)
-                                    <h2
-                                        x-bind:id="$id('modal') + '-heading'"
-                                        class="text-lg font-semibold text-neutral-900 dark:text-white"
-                                    >
-                                        {{ $heading }}
-                                    </h2>
+                                @if($hasIcon)
+                                    <div class="mr-4 flex-shrink-0">
+                                        <div
+                                            @class([
+                                                'rounded-full p-2',
+                                                $iconColorClass,
+                                            ])
+                                        >
+                                            <x-ui.icon :name="$icon"/>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if($hasHeading || $hasDescription )
+                                    <div class="flex-1 min-w-0">
+                                        @if($hasHeading)
+                                            <h2
+                                                x-bind:id="$id('modal') + '-heading'"
+                                                class="text-lg font-semibold text-neutral-900 dark:text-white"
+                                            >
+                                                {{ $heading }}
+                                            </h2>
+                                        @endif
+
+                                        @if($hasDescription)
+                                            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                                                {{ $description }}
+                                            </p>
+                                        @endif
+                                    </div>
                                 @endif
 
-                                @if($hasDescription)
-                                    <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                                        {{ $description }}
-                                    </p>
+                                {{-- Close Button --}}
+                                @if($closeButton)
+                                    <x-ui.button
+                                        x-on:click="$data.close();"
+                                        variant="none"
+                                        {{-- prevent the icon to be aware of our current icon --}}
+                                        :icon="null"
+                                        size="sm"
+                                        class="rounded-field bg-black/5 dark:bg-white/5"
+                                        icon-after="x-mark"
+                                    />
                                 @endif
                             </div>
                         @endif
 
-                        {{-- Close Button --}}
-                        @if($closeButton)
-                            <x-ui.button
-                                x-on:click="$data.close();"
-                                variant="none"
-                                {{-- prevent the icon to be aware of our current icon --}}
-                                :icon="null"
-                                size="sm"
-                                class="rounded-field bg-black/5 dark:bg-white/5"
-                                icon-after="x-mark"
-                            />
+                        {{-- ACTUAL SLOT CONTENTS --}}
+                        @if($hasSlot)
+                            <div
+                                @class([
+                                    'modal-content flex-1 px-6 py-4 min-h-0 text-neutral-900 dark:text-neutral-50',
+                                    'overflow-y-auto' => $slideover || $width === 'screen' || $stickyFooter || $stickyHeader,
+                                    'max-h-[calc(100vh-13.8rem)]' => ($stickyHeader || $stickyFooter) && !$slideover && $width !== 'screen',
+                                ])
+                            >
+                                {{ $slot }}
+                            </div>
                         @endif
-                    </div>
-                    @endif
 
-                    {{-- ACTUAL SLOT CONTENTS --}}
-                    @if($hasSlot)
-                        <div
-                            @class([
-                                'modal-content flex-1 px-6 py-4 min-h-0 text-neutral-900 dark:text-neutral-50',
-                                'overflow-y-auto' => $slideover || $width === 'screen' || $stickyFooter || $stickyHeader,
-                                'max-h-[calc(100vh-13.8rem)]' => ($stickyHeader || $stickyFooter) && !$slideover && $width !== 'screen',
-                            ])
-                        >
-                            {{ $slot }}
-                        </div>
-                    @endif
-
-                    {{-- FOOTER --}}
-                    @if($hasFooter)
-                        <div
-                            @class([
-                                'modal-footer px-6 py-4',
-                                'border-t border-neutral-200 dark:border-neutral-700',
-                                'sticky bottom-0 z-10 bg-white dark:bg-neutral-900' => $stickyFooter,
-                                'flex flex-wrap gap-3',
-                            ])
-                        >
-                            {{ $footer }}
-                        </div>
+                        {{-- FOOTER --}}
+                        @if($hasFooter)
+                            <div
+                                @class([
+                                    'modal-footer px-6 py-4',
+                                    'border-t border-neutral-200 dark:border-neutral-700',
+                                    'sticky bottom-0 z-10 bg-white dark:bg-neutral-900' => $stickyFooter,
+                                    'flex flex-wrap gap-3',
+                                ])
+                            >
+                                {{ $footer }}
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>
