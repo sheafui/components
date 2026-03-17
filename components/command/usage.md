@@ -1,9 +1,7 @@
 Looking at the source, here's the full command palette docs matching your select doc style exactly:
 
 ````markdown
----
 name: command
----
 
 ## Introduction
 
@@ -179,7 +177,6 @@ When search yields no results, a default empty message is shown automatically. C
 <x-ui.command.item icon="lock-closed" disabled>Restricted Action</x-ui.command.item>
 ```
 
----
 
 ## As a Command Palette
 
@@ -250,7 +247,6 @@ The real power of `Command` is inside a modal triggered by a keyboard shortcut. 
 
 > `bare` strips the modal's own heading, padding, and close button — leaving `Command` in full control of its appearance. Escape closes the palette automatically via the command's built-in keydown handler.
 
----
 
 ## Component Props
 
