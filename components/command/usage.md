@@ -1,7 +1,6 @@
-Looking at the source, here's the full command palette docs matching your select doc style exactly:
-
-````markdown
+---
 name: command
+---
 
 ## Introduction
 
