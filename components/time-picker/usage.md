@@ -1,6 +1,5 @@
 ---
 name: time-picker
-new: [input trigger, chips trigger, multiple selection, interval, min/max, unavailable times, open-to, locale, 12/24-hour format]
 ---
 
 ## Introduction
