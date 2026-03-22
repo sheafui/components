@@ -2,7 +2,7 @@
 id: slider
 title: Build an Advanced Slider Component for TALL Stack Apps
 slug: build-advanced-slider-component-tall-stack
-excerpt: HTML range inputs are limiting. Third-party slider libraries break with Livewire. Building from scratch takes forever. Here's how to create a powerful, production-ready slider component that works beautifully with the TALL stack—complete with tooltips, multiple handles, pips, and dead-simple syntax.
+excerpt: HTML range inputs are limiting. Third-party slider libraries break with Livewire. Building from scratch takes forever. Here's how to create a powerful, production ready slider component that works beautifully with the TALL stack complete with tooltips, multiple handles, pips, and dead simple syntax.
 author: mohamed charrafi
 created_at: 04-12-2025
 published_at: 29-11-2025  
@@ -70,7 +70,6 @@ Let's be honest: I spent hours crafting this explanation because building a prod
 By the end, you'll understand how to build a slider component that's:
 - **Feature-rich**: Multiple handles, ranges, tooltips, pips, and custom formatting
 - **Highly customizable**: Every visual and behavioral aspect can be tailored
-- **Production-ready**: Handles edge cases, accessibility, and real-world requirements
 
 ## Why Even Bother?
 
