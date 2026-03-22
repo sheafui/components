@@ -20,7 +20,7 @@ Then import the script in your JS entry point:
 
 ```js
 // app.js
-import './components/time-picker.js';
+import './components/time-picker/index.js';
 ```
 
 > Once installed, you can use the `<x-ui.time-picker />` component in any Blade view.
@@ -29,7 +29,7 @@ import './components/time-picker.js';
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.time-picker class="w-48" placeholder="Select a time" clearable />
+    <x-ui.time-picker  placeholder="Select a time" clearable />
 </x-demo>
 @endblade
 
@@ -73,7 +73,7 @@ Attach the picker to a segmented `HH:MM` input for direct keyboard entry. Arrow 
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.time-picker trigger="input" class="w-48" />
+    <x-ui.time-picker trigger="input"  />
 </x-demo>
 @endblade
 
@@ -83,13 +83,26 @@ Attach the picker to a segmented `HH:MM` input for direct keyboard entry. Arrow 
 
 > In 12-hour locales, an AM/PM toggle appears automatically next to the minute segment.
 
+**without time slots panel**
+
+
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.time-picker trigger="input" :open-panel="false"  />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.time-picker trigger="input" :open-panel="false" wire:model="time" />
+```
+
 ### Pills
 
 The pills trigger renders each selected time as a removable pill inside the trigger. Best used with `multiple`.
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.time-picker trigger="pills" multiple clearable class="w-56" />
+    <x-ui.time-picker trigger="pills" multiple clearable  />
 </x-demo>
 @endblade
 
@@ -103,7 +116,7 @@ Allow users to select more than one time slot. The panel stays open after each s
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.time-picker multiple clearable class="w-48" />
+    <x-ui.time-picker multiple clearable  />
 </x-demo>
 @endblade
 
@@ -113,19 +126,13 @@ Allow users to select more than one time slot. The panel stays open after each s
 
 **Example value:** `"09:00,13:30,17:00"`
 
-You can also use the `mode` prop explicitly:
-
-```blade
-<x-ui.time-picker mode="multiple" wire:model="times" />
-```
-
 ### Checkbox Variant
 
 In multiple mode, use `variant="checkbox"` to replace the check icon with a mini checkbox for each option:
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.time-picker multiple variant="checkbox" clearable class="w-48" />
+    <x-ui.time-picker multiple variant="checkbox" clearable  />
 </x-demo>
 @endblade
 
@@ -158,8 +165,8 @@ Control the number of minutes between each displayed slot. Default is `30`.
 
 @blade
 <x-demo class="flex gap-4 justify-center">
-    <x-ui.time-picker :interval="15" placeholder="Every 15 min" class="w-44" />
-    <x-ui.time-picker :interval="60" placeholder="Every hour" class="w-44" />
+    <x-ui.time-picker :interval="15" placeholder="Every 15 min" />
+    <x-ui.time-picker :interval="60" placeholder="Every hour"  />
 </x-demo>
 @endblade
 
@@ -177,7 +184,7 @@ Restrict the selectable range with `min` and `max`. Both accept a `H:i` string o
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.time-picker min="09:00" max="17:00" placeholder="Business hours" class="w-48" />
+    <x-ui.time-picker min="09:00" max="17:00" placeholder="Business hours"  />
 </x-demo>
 @endblade
 
@@ -201,7 +208,7 @@ Disable specific times or ranges using a comma-separated string. Ranges use a `-
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.time-picker unavailable="12:00,12:30,14:00-15:30" placeholder="Some times blocked" class="w-48" />
+    <x-ui.time-picker unavailable="12:00,12:30,14:00-15:30" placeholder="Some times blocked"  />
 </x-demo>
 @endblade
 
@@ -224,8 +231,8 @@ By default the picker uses the browser locale (`navigator.language`). Override i
 
 @blade
 <x-demo class="flex gap-4 justify-center">
-    <x-ui.time-picker locale="ja-JP" placeholder="ja-JP" class="w-44" />
-    <x-ui.time-picker locale="fr" placeholder="fr" class="w-44" />
+    <x-ui.time-picker locale="ja-JP" placeholder="ja-JP"  />
+    <x-ui.time-picker locale="fr" placeholder="fr"  />
 </x-demo>
 @endblade
 
@@ -242,8 +249,8 @@ The picker comes in Two sizes. The default aligns with the standard `input` heig
 
 @blade
 <x-demo class="flex flex-col gap-3 items-center">
-    <x-ui.time-picker size="default" placeholder="Default" class="w-48" />
-    <x-ui.time-picker size="sm"      placeholder="Small"   class="w-48" />
+    <x-ui.time-picker size="default" placeholder="Default"  />
+    <x-ui.time-picker size="sm"      placeholder="Small"    />
 </x-demo>
 @endblade
 
@@ -267,7 +274,7 @@ Show a clear button when a value is selected. In `trigger="pills"` mode this cle
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.time-picker :invalid="true" placeholder="Required field" class="w-48" />
+    <x-ui.time-picker :invalid="true" placeholder="Required field"  />
 </x-demo>
 @endblade
 
@@ -279,7 +286,7 @@ Show a clear button when a value is selected. In `trigger="pills"` mode this cle
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.time-picker disabled placeholder="Not available" class="w-48" />
+    <x-ui.time-picker disabled placeholder="Not available"  />
 </x-demo>
 @endblade
 
