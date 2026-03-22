@@ -127,7 +127,7 @@ OR
 
 And have it just *work* with 1 stepped and have a top tooltip. No fuss, no muss.
 
-> just try to understand the idea, you'll find the whole code source of the blade file at end of the step
+> just try to understand the idea, you'll find the whole code source of the blade file at [end of the step](#content-heres-the-full-blade-component) 
 
 
 Here's the approach see [[codesource below](#content-heres-the-full-blade-component)]: we'll accept a ton of props but make them all optional with sensible defaults. The component should be smart enough to handle both Livewire (`wire:model`) and Alpine (`x-model`) without the developer even having to think about it.
@@ -135,8 +135,6 @@ Here's the approach see [[codesource below](#content-heres-the-full-blade-compon
 ```blade
 @props([
     'id' => null,
-    'name' => $attributes->whereStartsWith('wire:model')->first() 
-        ?? $attributes->whereStartsWith('x-model')->first(),
     'minValue' => 0,
     'maxValue' => 100,
     'step' => null,
@@ -337,7 +335,7 @@ const sliderComponent = ({
 
 ### The Synchronization Problem (And How We Solved It)
 
-Here's where it gets tricky—and honestly, this is where I spent most of my debugging time. We need to sync state between multiple places:
+Here's where it gets tricky and honestly, this is where I spent most of my debugging time. We need to sync state between multiple places:
 
 1. The internal slider state (`_state`)
 2. Alpine's `x-model` (if using Alpine)
@@ -347,7 +345,7 @@ And here's the kicker: they all need to stay in sync **both ways**. When the sli
 
 ### The Livewire Entanglement - The Secret Sauce
 
-Here's the part that took me forever to get right. Livewire has this amazing feature called "entanglement" that creates a two-way reactive binding between JavaScript and PHP. But you need to set it up correctly.
+Here's the part that  get it right. Livewire has this amazing feature called "entanglement" that creates a two-way reactive binding between JavaScript and PHP. But you need to set it up correctly.
 
 First, we need to pass Livewire context and model information from Blade to our JavaScript component. Look at how we initialize state:
 
