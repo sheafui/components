@@ -18,6 +18,7 @@
     x-on:click.away="handleClickAway($event.target)"
     x-transition:leave-end="opacity-0 scale-95"
     x-show="__isOpen"
+    x-anchor="$refs.trigger"
     x-cloak
 >
     <ul

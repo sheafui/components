@@ -302,4 +302,39 @@ const comboboxComponent = ({
     };
 };
 
+const CreateNewOptionActivator = () => ({
+    init() {
+        // defer until Alpine finishes bootstrapping (on the current microtask)
+        //  this element's directives
+        queueMicrotask(() => this.activate())
+
+        if (window.Livewire !== undefined) {
+            window.Livewire.hook('commit', ({ component, succeed }) => {
+                if (component.id === LIVEWIRE_ID) {
+                    succeed(() => {
+                        // wait for Alpine's scheduler to flush 
+                        // after the Livewire commit
+                        this.$nextTick(() => this.activate());
+                    });
+                }
+            });
+        }
+
+        this.$rover.input.on('keydown', (event,) => {
+            if (event.key === "Enter") {
+                this.$el.click();
+            }
+        })
+    },
+    activate() {
+        this.$el.dataset.active = 'true';
+    },
+    deactivate() {
+        delete this.$el.dataset.active;
+    },
+    destroy() {
+        this.deactivate();
+    }
+});
+Alpine.data('CreateNewOptionActivator', CreateNewOptionActivator);
 Alpine.data('comboboxComponent', comboboxComponent);
