@@ -47,12 +47,12 @@
         </li>
 
         {{-- Loading state --}}
-        <x-ui.select.loading>
+        <x-ui.combobox.loading>
             @if ($loading instanceof \Illuminate\View\ComponentSlot)
                 {{ $loading }}
             @else
                 <x-ui.icon.loading class="opacity-50" />
             @endif
-        </x-ui.select.loading>
+        </x-ui.combobox.loading>
     </ul>
 </div>
