@@ -1,0 +1,14 @@
+files:
+  option/create: resources/views/components/ui/combobox/option/create.blade.php
+  option/empty: resources/views/components/ui/combobox/option/empty.blade.php
+  group: resources/views/components/ui/combobox/group.blade.php
+  index: resources/views/components/ui/combobox/index.blade.php
+  loading: resources/views/components/ui/combobox/loading.blade.php
+  option: resources/views/components/ui/combobox/option.blade.php
+  options: resources/views/components/ui/combobox/options.blade.php
+  input: resources/views/components/ui/combobox/input.blade.php
+  combobox: resources/js/components/combobox.js
+  separator: resources/views/components/ui/combobox/separator.blade.php
+  trigger: resources/views/components/ui/combobox/trigger.blade.php
+dependencies:
+  internal: [icon,text]
