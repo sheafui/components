@@ -605,7 +605,7 @@ Add interactive aligned elements to columns footers:
             <!--  -->
             <x-ui.kanban.footer>
                 <div class="space-y-2">
-                    <x-ui.input/>
+                    <x-ui.input placeholder="add new problem..."/>
                     <div class="flex gap-2">
                         <x-ui.button 
                             color="blue" 
@@ -909,7 +909,122 @@ class KanbanBoard extends Component
 - **`moveBetweenScopes()`**: When you drag a card from "Conjectures" to "Under Review", the trait handles removing it from the old column, shifting remaining cards, and inserting it at the new position
 - **`reorderTransaction()`**: Wraps everything in a database transaction so if anything fails, no partial updates occur
 
-<!-- to continue later  -->
+
+### Blade View Implementation
+
+Now create the view with drag-and-drop enabled:
+
+```blade
+<div class="min-h-screen py-12 px-4">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center space-y-2 mb-8">
+            <h1 class="text-3xl font-bold">Mathematical Research Board</h1>
+            <p class="text-neutral-600 dark:text-neutral-400">
+                Track conjectures through peer review to proven theorems
+            </p>
+        </div>
+
+        <x-ui.kanban 
+            class="max-h-[800px]"
+            x-sort="$wire.sortColumns"
+            x-sort:config="{forceFallback: true}"
+        >
+            @foreach ($this->board->columns as $column)
+                <x-ui.kanban.column 
+                    size="sm"
+                    x-sort:item="'{{ $column->id }}'"
+                >
+                    <x-ui.kanban.header :count="count($column->statements)">
+                        <x-ui.heading>{{ $column->title }}</x-ui.heading>
+                        <x-ui.text>{{ $column->description }}</x-ui.text>
+                    </x-ui.kanban.header>
+
+                    <x-ui.kanban.cards
+                        x-data="{
+                            handle: (item, position) => {
+                                $wire.sortCards(item, position, {{ $column->id }})
+                            }
+                        }"  
+                        x-sort:config="{forceFallback: true}"
+                        x-sort="handle" 
+                        x-sort:group="board-{{ $board->id }}"
+                    >
+                        @if($column->statements->isEmpty())
+                            <x-slot:empty>
+                                <div class="text-center py-8">
+                                    <p class="text-neutral-500">No statements yet</p>
+                                </div>
+                            </x-slot:empty>
+                        @else
+                            @foreach ($column->statements as $statement)
+                                <x-ui.kanban.card 
+                                    size="sm"
+                                    x-sort:item="{{ $statement->id }}"
+                                >
+                                    <x-slot:top>
+                                        <div class="flex items-center justify-between mb-2">
+                                            @php
+                                                $fieldColors = [
+                                                    'number_theory' => 'yellow',
+                                                    'topology' => 'blue',
+                                                    'analysis' => 'indigo',
+                                                    'graph_theory' => 'pink',
+                                                ];
+                                                $color = $fieldColors[$statement->field] ?? 'neutral';
+                                            @endphp
+                                            
+                                            <x-ui.badge 
+                                                variant="outline" 
+                                                color="{{ $color }}" 
+                                                size="sm"
+                                            >
+                                                {{ ucfirst(str_replace('_', ' ', $statement->field)) }}
+                                            </x-ui.badge>
+                                            
+                                            <x-ui.text size="xs" class="opacity-60">
+                                                {{ $statement->year }}
+                                            </x-ui.text>
+                                        </div>
+                                    </x-slot:top>
+
+                                    <div>
+                                        <x-ui.text class="font-semibold">
+                                            {{ $statement->title }}
+                                        </x-ui.text>
+                                        <x-ui.text size="xs" class="opacity-60 mt-1">
+                                            {{ $statement->description }}
+                                        </x-ui.text>
+                                        
+                                        @if($statement->status === 'review')
+                                            <div class="mt-2">
+                                                <x-ui.progress 
+                                                    :value="$statement->progress"
+                                                    color="blue"
+                                                    size="sm"
+                                                    showValue
+                                                    label="Verification"
+                                                />
+                                            </div>
+                                        @endif
+                                    </div>
+                                </x-ui.kanban.card>
+                            @endforeach
+                        @endif
+                    </x-ui.kanban.cards>
+                </x-ui.kanban.column>
+            @endforeach
+        </x-ui.kanban>
+    </div>
+</div>
+```
+
+**Key Attributes Explained:**
+
+- **`x-sort="$wire.sortColumns"`** on the board - Enables column drag-and-drop
+- **`x-sort:item="'{{ $column->id }}'"`** - Identifies which column is being dragged
+- **`x-sort="handle"`** on cards container - Uses custom handler for card sorting
+- **`x-sort:group="board-{{ $board->id }}"`** - Allows cards to be dragged between columns
+- **`x-sort:item="{{ $statement->id }}"`** - Identifies which card is being dragged
 
 ## Component Props
 
