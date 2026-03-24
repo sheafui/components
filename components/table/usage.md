@@ -398,6 +398,7 @@ you can completly customize the loading state stuffs by using the `loading` slot
 
 ```
 
+---
 
 ## Ordering
 
@@ -415,7 +416,7 @@ To enable row reordering, mark the table as reorderable.
 </x-ui.table>
 ```
 
-Each table row must expose its current order value. This value determines the row’s position.
+Each table row must expose its current order value. This value determines the row's position.
 
 ```blade
 <x-ui.table.rows>
@@ -433,130 +434,55 @@ Each table row must expose its current order value. This value determines the ro
 
 When a row is moved, the table emits the moved item identifier and its target position.
 
-
 ### Backend Handling
 
-By default, the table expects a `handleReordering` method on the Livewire component to persist changes.
+Add the `App\Livewire\Concerns\Reorderable` trait to your component and implement `handleReordering`:
 
 ```php
-{~
-use App\Models\User;
-use App\Livewire\Concerns\WithSorting;
-use App\Livewire\Concerns\WithPagination;
+use App\Livewire\Concerns\Reorderable;
 
 class UsersTable extends Component
-{~}
+{
+{+    use Reorderable;+}
+
     public function render()
     {
-        $users = User::query()
-            ->when(filled($this->sortBy), function ($query) {
-                return $this->applySorting($query);
-            })
-            ->paginate();
+        $users = User::query()->paginate();
 
-        return view('livewire.users-table', [
-            'users' => $users,
-        ]);
+        return view('livewire.users-table', ['users' => $users]);
     }
 
-{+    public function handleReordering($item, $position)
+{+    public function handleReordering($item, int $position): void
     {
-        // save changes based on $item and $position
+        $this->reorderTransaction(function () use ($item, $position) {
+            $user = User::findOrFail($item);
+
+            $this->reorderWithinScope(model: $user, newPosition: $position);
+        });
     }+}
 }
 ```
 
 If you prefer a different method name, update the `x-sort="$wire.handleReordering"` binding on `table.rows`.
 
+### Scoping Reorders
 
-### Ordering Algorithm
-
-**Concept**
-
-The ordering system is based on a single invariant:
-
-> At any time, each row has a unique numeric `order` value.
-
-Reordering an item consists of moving it to a new position and shifting all affected rows accordingly.
-
-**Pseudo Algorithm**
-
-1. Fetch the moved item
-2. If the target position equals the current one, stop
-3. Temporarily move the item out of the ordering range
-4. Shift affected rows up or down
-5. Assign the target order to the moved item
-6. Commit atomically
-
-**Database Implementation Example**
-
-Below is implementation of this algorithm in db level.
+If your rows belong to a parent, a category, a board column, a project, pass a `scope` closure so only sibling rows are shifted. Without it, the trait shifts every row in the table.
 
 ```php
-public const MAX_ORDER = 4294967295;
-
-public function reorderUsers(int $item, int $position)
+public function handleReordering($item, int $position): void
 {
-    $user = $this->User::query()->findOrFail($item);
+    $this->reorderTransaction(function () use ($item, $position) {
+        $task = Task::findOrFail($item);
 
-    $this->move($user, $position);
-}
-
-protected function move($user, int $position): void
-{
-    DB::transaction(function () use ($user, $position) {
-        $oldOrder = $user->order;
-        $newOrder = $position;
-
-        if ($oldOrder === $newOrder) {
-            return;
-        }
-
-        // temporarily move out of range 
-        $user->update(['order' => self::MAX_ORDER]);
-
-        $min = min($oldOrder, $newOrder);
-        $max = max($oldOrder, $newOrder);
-
-        $isDraggedDown = $oldOrder < $newOrder;
-
-        $this->baseQuery()
-            ->whereBetween('order', [$min, $max])
-            ->where('id', '!=', $user->id)
-            ->update([
-                'order' => DB::raw('`order` '.($isDraggedDown ? '-1' : '+1')),
-            ]);
-
-        $user->update([
-            'order' => $newOrder,
-        ]);
+        $this->reorderWithinScope(
+            model: $task,
+            newPosition: $position,
+{+            scope: fn ($q) => $q->where('project_id', $task->project_id)+}
+        );
     });
 }
 ```
-
-maybe there is better way? please let me.
-
-### Order Normalization
-
-Over time, deletes or interrupted updates can introduce gaps or inconsistencies.
-Normalization rebuilds the ordering sequence deterministically.
-
-```php
-public function arrange()
-{
-    DB::transaction(function () {
-        $order = 0;
-
-        foreach ($this->baseQuery()->orderBy('order')->get() as $user) {
-            $user->update(['order' => $order++]);
-        }
-    });
-}
-```
-
-This operation is optional but recommended for long lived datasets, you can randomly re-arrange after each re-order operation happens
-
----
 
 ## Stickiness
 
