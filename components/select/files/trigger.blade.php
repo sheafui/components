@@ -50,9 +50,9 @@
         aria-haspopup="listbox"
         x-bind:aria-expanded="__isOpen ? 'true' : 'false'"
         x-bind:aria-controls="$id('rover-options')"
-        {{-- x-bind:aria-activedescendant="$rover.getActiveItemId() || false" --}}
+        x-bind:aria-activedescendant="$rover.getActiveItemId() || false"
         x-bind:aria-multiselectable="__isMultiple || false"
-        aria-label="{{ $triggerLabel ?? $placeholder }}"
+        aria-label="{{ $placeholder }}"
         x-bind:data-open="__isOpen"
         data-slot="select-control"
         @class($classes)

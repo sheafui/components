@@ -18,6 +18,7 @@
     x-on:click.away="handleClickAway($event.target)"
     x-transition:leave-end="opacity-0 scale-95"
     x-show="__isOpen"
+    x-anchor="$refs.trigger"
     x-cloak
 >
     <ul
@@ -47,12 +48,12 @@
         </li>
 
         {{-- Loading state --}}
-        <x-ui.select.loading>
+        <x-ui.combobox.loading>
             @if ($loading instanceof \Illuminate\View\ComponentSlot)
                 {{ $loading }}
             @else
                 <x-ui.icon.loading class="opacity-50" />
             @endif
-        </x-ui.select.loading>
+        </x-ui.combobox.loading>
     </ul>
 </div>

@@ -39,6 +39,7 @@ const selectComponent = ({
 
         init() {
 
+
             if (window.Livewire !== undefined) {
                 window.Livewire.hook('commit', ({ component, succeed }) => {
                     if (component.id === LIVEWIRE_ID) {
@@ -174,7 +175,7 @@ const selectComponent = ({
             // method
             this.$nextTick(() => {
                 for (let i = 0; i < toAdd.length; i++) {
-                    const el = this.$rover.getOptionElByValue(toAdd[i])
+                    const el = this.$rover.getOptionElByValue(String(toAdd[i]))
                     if (el) {
                         el.setAttribute('aria-selected', 'true')
                         el.dataset.selected = 'true'
@@ -182,7 +183,7 @@ const selectComponent = ({
                 }
 
                 for (let i = 0; i < toRemove.length; i++) {
-                    const el = this.$rover.getOptionElByValue(toRemove[i])
+                    const el = this.$rover.getOptionElByValue(String(toRemove[i]))
                     if (el) {
                         el.setAttribute('aria-selected', 'false')
                         delete el.dataset.selected
@@ -194,7 +195,7 @@ const selectComponent = ({
         ensureSelectedMarked() {
             if (isMultiple) {
                 this.__state.map((val) => {
-                    let el = this.$rover.getElementByValue(val)
+                    let el = this.$rover.getElementByValue(String(val))
 
                     if (el === undefined) return;
 
@@ -203,7 +204,7 @@ const selectComponent = ({
                     el.dataset.selected = 'true';
                 })
             } else if (!isMultiple && this.__state) {
-                let el = this.$rover.getElementByValue(this.__state)
+                let el = this.$rover.getElementByValue(String(this.__state))
 
                 if (el === undefined) return;
 
@@ -278,7 +279,7 @@ const selectComponent = ({
                 const getLabel = val => this.$rover.getOptionElByValue(val)?.dataset?.label || '';
 
                 if (!this.__isMultiple) {
-                    bindValueToTrigger(getLabel(this.__state));
+                    bindValueToTrigger(getLabel(String(this.__state)));
                 } else if (!this.__state || this.__state.length === 0) {
                     bindValueToTrigger(placeholder);
                 } else if (this.__state.length === 1) {
