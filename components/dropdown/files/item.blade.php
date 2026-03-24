@@ -18,8 +18,8 @@
     $isDefaultDropdownVariant = !($checkbox || $radio);
 
     $variantClasses = match ($variant) {
-        'soft' => 'hover:bg-neutral-100 focus-within:bg-neutral-100 dark:hover:bg-white/5 dark:focus-within:bg-white/5',
-        'danger' => 'hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-400/20 dark:hover:text-red-400 focus-within:text-red-600 focus-within:bg-red-50 dark:focus-within:bg-red-400/20 dark:focus-within:text-red-400',
+        'soft' => 'text-neutral-800 dark:text-white hover:bg-neutral-100 focus-within:bg-neutral-100 dark:hover:bg-white/5 dark:focus-within:bg-white/5',
+        'danger' => 'text-red-600 hover:bg-red-50 dark:hover:bg-red-400/20 dark:text-red-400 focus-within:text-red-600 focus-within:bg-red-50 dark:focus-within:bg-red-400/20 dark:focus-within:text-red-400',
         default => '',
     };
 
@@ -27,7 +27,7 @@
         'inline-flex shrink-0 mr-2',
         match ($variant) {
             'soft' => '',
-            'danger' => 'group-hover:text-red-500! dark:group-hover:text-red-400! group-focus-within:text-red-500! dark:group-focus-within:text-red-400!',
+            'danger' => 'text-red-500! dark:text-red-400! group-focus-within:text-red-500! dark:group-focus-within:text-red-400!',
             default => '',
         },
     ];
@@ -43,7 +43,6 @@
         'col-span-2' => $isDefaultDropdownVariant,
         'col-span-3' => ! $isDefaultDropdownVariant,
         'w-full px-2 py-1.5 text-sm transition-colors duration-200 text-start',
-        'text-neutral-800 dark:text-white',
         'rounded-[calc(var(--dropdown-radius)-var(--dropdown-padding))]',
         'focus-within:outline-none',
         'data-active:bg-neutral-950/[3%] dark:data-active:bg-white/[3%]',
