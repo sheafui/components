@@ -1500,7 +1500,13 @@ This stores the user's column visibility choices in `localStorage`.
 ---
 
 ### Adding Reordering
-To enable row reordering, mark the table as reorderable.
+
+> **Two approaches:** The guide below uses an in-memory `$positions` array — 
+> no database `order` column required, great for demos and simple lists. 
+> For production use with persistent ordering, see the 
+> [Reorderable trait docs above](#content-ordering) which handles database 
+> shifting, scoping, and transactions for you.
+
 
 ```blade
 <x-ui.table 
@@ -1525,8 +1531,6 @@ Each table row must expose its current order value. This value determines the ro
     @endforelse
 </x-ui.table.rows>
 ```
-
-and let's implement the backend, in my case I going to use static array for orders to minize the complexity, but if you want real database example see the docs above.
 
 ```php
 <?php
@@ -1655,9 +1659,7 @@ class Theorems extends Component
             })
             ->paginate($this->perPage);
 
-        $this->visibleIds = $this->baseQuery()->pluck('id')->map(fn ($id) => (string) $id)->toArray();
-
-        usleep(500 * 1000);
+        $this->visibleIds = $theorems->pluck('id')->map(fn ($id) => (string) $id)->toArray();
 
         return view('livewire.theorems', [
             'theorems' => $theorems,
@@ -1697,9 +1699,13 @@ class Theorems extends Component
         $this->positions = $positions;
     }
 
-    public function deleteSelected()
+   public function deleteSelected()
     {
-        $this->baseQuery()->whereIn('id',$this->selectedIds)->delete()
+        $this->baseQuery()
+            ->whereIn('id', $this->selectedIds)
+            ->delete();
+
+        $this->deselectAll();
     }
 
     protected function applyPositionSorting(Builder $query): Builder
@@ -1729,7 +1735,7 @@ class Theorems extends Component
         return $query->where('name', 'like', '%'.$this->searchQuery.'%')
             ->orWhere('mathematician', 'like', '%'.$this->searchQuery.'%')
             ->orWhere('field', 'like', '%'.$this->searchQuery.'%')
-            ->orWhere('statemen', 'like', '%'.$this->searchQuery.'%');
+            ->orWhere('statement', 'like', '%'.$this->searchQuery.'%');
     }
 }
 
@@ -1871,7 +1877,7 @@ class Theorems extends Component
             </div>
             <!-- Demo Table -->
             <x-ui.table 
-                :paginator="$paginator"  
+                :paginator="$theorems"  
                 pagination:variant="full"
                 wire:loading
                 reorderable
@@ -1923,7 +1929,7 @@ class Theorems extends Component
                 </x-ui.table.header>
 
                 <x-ui.table.rows>
-                    @forelse($paginator as $theorem)
+                    @forelse($theorems as $theorem)
                         <x-ui.table.row 
                             :checkboxId="$theorem->id" 
                             :order="$theorem->id" 
@@ -2224,6 +2230,7 @@ just add the border prop to the container, you may tweack it on the container so
 | `pagination:variant` | string | `'full'` | Pagination style: `full`, `simple`, `compact` |
 | `loadOn` | string | `null` | Comma-separated list of actions to show loading: `pagination`, `search`, `sorting` |
 | `loading` | slot | `null` | Custom loading indicator |
+| `reorderable` | boolean | `false` | make the table reorderable |
 | `footer` | slot | `null` | Content below the table |
 | `wire:loading` | boolean | `false` | Enable Livewire loading states |
 | `wire:target` | string | `null` | Specific Livewire actions to track |
@@ -2267,6 +2274,7 @@ just add the border prop to the container, you may tweack it on the container so
 |------|------|---------|-------------|
 | `key` | string\|null | `null` | Unique key for Livewire tracking |
 | `checkboxId` | string\|int\|null | `null` | ID for checkbox selection |
+| `order` | string\|int\|null | `null` | Current position value used for drag-and-drop reordering. Required when `reorderable` is enabled on the parent table. |
 | `class` | string | `''` | Additional CSS classes |
 
 ### table.cell
