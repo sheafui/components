@@ -277,13 +277,18 @@ You can also customize the completed icon:
 </x-ui.wizard.step>
 ```
 
-Looking at the datatable guide for structure inspiration, here's a clean implementation guide for the wizard — usage-focused, no internals exposed.
-
----
 
 ## Implementation Guide
 
 This guide shows you how to build a fully functional multi-step wizard using Livewire. We'll create a user onboarding flow with account creation, profile setup, and preferences configuration.
+
+@blade
+<x-md.cta                                                            
+    href="/demos/wizard"                                    
+    label="See the complete wizard in action"
+    ctaLabel="Visit Live Demo"
+/>
+@endblade
 
 ### Overview
 
