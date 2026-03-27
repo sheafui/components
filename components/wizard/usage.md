@@ -8,13 +8,26 @@ The **Wizard** component provides a step-by-step interface for multi-step forms 
 
 ## Installation
 
-Use the Sheaf artisan command to install the wizard component:
-
+Use the Sheaf artisan command to install the wizard:
 ```bash
 php artisan sheaf:install wizard
 ```
 
-> Once installed, you can use `<x-ui.wizard />`, `<x-ui.wizard.steps />`, `<x-ui.wizard.step />`, and `<x-ui.wizard.body />` components in any Blade view.
+> Once installed, you can use `<x-ui.wizard />`, `<x-ui.wizard.steps />`, `<x-ui.wizard.step />`, and `<x-ui.wizard.body />` in any Blade view, and the `Wizard`, `Step`, `HasWizard`, and `WizardSynthesizer` classes are available in your application.
+
+Then register the synthesizer in your service provider so Livewire knows how to serialize the `Wizard` object between requests:
+```php
+use Livewire\Livewire;
+use App\Livewire\Synthesizers\WizardSynthesizer;
+
+public function boot(): void
+{
+    Livewire::propertySynthesizer(WizardSynthesizer::class);
+}
+```
+
+> The wizard's backend classes are currently designed for Livewire. Using them outside of Livewire requires handling state serialization yourself — a standalone guide for that is coming soon. For a complete working example, see the [Implementation Guide](#content-implementation-guide) below.
+
 
 ## Basic Usage
 
