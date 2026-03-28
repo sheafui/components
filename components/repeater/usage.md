@@ -4,7 +4,7 @@ name: 'repeater'
 
 ## Introduction
 
-The **Repeater** component provides a dynamic, UUID-based solution for managing collections of form items. Perfect for product variants, contact lists, line items, or any scenario where users need to add, remove, and duplicate related entries. Built natively for Livewire — state lives in a typed `Repeater` property backed by a custom Synthesizer, so it feels like a first-class Livewire citizen.
+The **Repeater** component provides a dynamic, UUID-based solution for managing collections of form items. Perfect for product variants, contact lists, line items, or any scenario where users need to add, remove, and duplicate related entries. Built natively for Livewire, state lives in a typed `Repeater` property backed by a custom Synthesizer, so it feels like a first-class Livewire citizen.
 
 ## Installation
 
@@ -28,7 +28,7 @@ public function boot(): void
 
 ## Basic Structure
 
-The repeater component is a visual wrapper. State lives in your Livewire component as a typed `Repeater` property — `wire:model` bindings route through the synthesizer directly.
+The repeater component is a visual wrapper. State lives in your Livewire component as a typed `Repeater`.
 
 @blade
 <x-demo class="flex justify-center">
@@ -226,8 +226,9 @@ Add per-item actions or metadata using the `footer` slot:
 >
     <!-- item content -->
 
-{+    <x-slot:footer class="mt-4">
-        <x-ui.button size="sm" icon="clock" variant="soft">Set Deadline</x-ui.button>
+{+   <x-slot:footer class="mt-4 pt-2 border-t border-neutral-200 dark:border-white/10">
+        <x-ui.button size="sm" variant="soft" icon="clock">Set Deadline</x-ui.button>
+        <x-ui.button size="sm" variant="soft" icon="tag">Add Tags</x-ui.button>
     </x-slot:footer>+}
 </x-ui.repeater.item>
 ```
@@ -250,7 +251,7 @@ We'll build a repeater that:
 - **Manages product variants** with name, SKU, price, stock, and description
 - **Generates unique SKUs** automatically for each new item and on duplication
 - **Validates all fields** before saving with clean, readable error messages
-- **Adds, removes, and duplicates items** dynamically without page reloads
+- **Adds, removes, and duplicates items** 
 
 ### Step 1: Create Your Livewire Component
 
@@ -445,8 +446,9 @@ Wire `deleteHandler` and `duplicateHandler` on each item by interpolating the UU
 
 **Key points:**
 - `$variants->all()` returns the UUID-keyed array for the `@foreach`
-- `wire:model.live="variants.{{ $uuid }}.field"` binds through the synthesizer's `get`/`set` methods — identical to how `wire:model="address.street"` works with Livewire's built-in object example
+
 - `<x-ui.error :name="'variants.' . $uuid . '.name'" />` scopes each error to the right item — the UUID in the key is what makes that work
+
 - `deleteHandler` and `duplicateHandler` are plain Livewire action strings — the item component renders a button with `wire:click` set to exactly this value
 
 ### How It Works
@@ -513,7 +515,7 @@ The core state container. Instantiated in `mount()` and serialized between reque
 | `add()` | `string` | Append a new blank item using the stored factory, returns its UUID |
 | `delete(string $uuid)` | `void` | Remove an item by UUID |
 | `duplicate(string $uuid)` | `string\|null` | Copy an existing item inline (preserving order), returns the new UUID or `null` if not found |
-| `tap(string $uuid, array $overrides)` | `void` | Merge overrides into an existing item — use after `add()` or `duplicate()` to stamp unique values |
+| `tap(string $uuid, array $overrides)` | `void` | Merge overrides into an existing item, use after `add()` or `duplicate()` to stamp unique values |
 | `all()` | `array` | UUID-keyed items — use in Blade `@foreach` |
 | `values()` | `array` | Flat array without UUID keys — use for saving and persistence |
 | `collection()` | `Collection` | Same as `values()` wrapped in a Laravel Collection |
