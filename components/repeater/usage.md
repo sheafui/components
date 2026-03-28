@@ -4,31 +4,44 @@ name: 'repeater'
 
 ## Introduction
 
-The **Repeater** component provides a dynamic, UUID-based solution for managing collections of form items. Perfect for product variants, contact lists, task items, or any scenario where users need to add, remove, and duplicate related data entries. Built with Livewire (pure blade sorry you need to wait, or you adapt the UI with your backend using js). it handles state management seamlessly.
+The **Repeater** component provides a dynamic, UUID-based solution for managing collections of form items. Perfect for product variants, contact lists, line items, or any scenario where users need to add, remove, and duplicate related entries. Built natively for Livewire — state lives in a typed `Repeater` property backed by a custom Synthesizer, so it feels like a first-class Livewire citizen.
 
 ## Installation
-
-Use the Sheaf artisan command to install the repeater component:
 
 ```bash
 php artisan sheaf:install repeater
 ```
 
-> Once installed, you can use `<x-ui.repeater />` and `<x-ui.repeater.item />` components in any Blade view.
+> Once installed, you can use `<x-ui.repeater />` and `<x-ui.repeater.item />` in any Blade view, and the `Repeater` and `RepeaterSynthesizer` classes are available in your application.
+
+Then register the synthesizer in your service provider so Livewire knows how to serialize the `Repeater` object between requests:
+
+```php
+use Livewire\Livewire;
+use App\Livewire\Synthesizers\RepeaterSynthesizer;
+
+public function boot(): void
+{
+    Livewire::propertySynthesizer(RepeaterSynthesizer::class);
+}
+```
 
 ## Basic Structure
 
-The repeater component is intentionally simple, it's just a visual wrapper. The magic happens in your Livewire component with the `HasRepeater` trait.
+The repeater component is a visual wrapper. State lives in your Livewire component as a typed `Repeater` property — `wire:model` bindings route through the synthesizer directly.
 
 @blade
 <x-demo class="flex justify-center">
     <div class="max-w-2xl w-full">
         <x-ui.text class="mb-4 text-center opacity-70">
-            This is a visual example. isn't functional, See the implementation guide below for a working demo.
+            Visual example only. See the implementation guide below for a working demo.
         </x-ui.text>
-        <!--  -->
-        <x-ui.repeater deletable duplicatable class="[&_button]:pointer-events-none">
-            <x-ui.repeater.item uuid="uuid-123">
+        <x-ui.repeater class="[&_button]:pointer-events-none">
+            <x-ui.repeater.item
+                uuid="uuid-123"
+                deleteHandler="deleteItem('uuid-123')"
+                duplicateHandler="duplicateItem('uuid-123')"
+            >
                 <div class="space-y-4">
                     <x-ui.field>
                         <x-ui.label text="Item Name"/>
@@ -40,8 +53,11 @@ The repeater component is intentionally simple, it's just a visual wrapper. The 
                     </x-ui.field>
                 </div>
             </x-ui.repeater.item>
-            <!--  -->
-            <x-ui.repeater.item uuid="uuid-456">
+            <x-ui.repeater.item
+                uuid="uuid-456"
+                deleteHandler="deleteItem('uuid-456')"
+                duplicateHandler="duplicateItem('uuid-456')"
+            >
                 <div class="space-y-4">
                     <x-ui.field>
                         <x-ui.label text="Item Name"/>
@@ -53,11 +69,8 @@ The repeater component is intentionally simple, it's just a visual wrapper. The 
                     </x-ui.field>
                 </div>
             </x-ui.repeater.item>
-            <!--  -->
             <x-slot:actions>
-                <x-ui.button variant="outline" icon="plus">
-                    Add Item
-                </x-ui.button>
+                <x-ui.button variant="outline" icon="plus">Add Item</x-ui.button>
             </x-slot:actions>
         </x-ui.repeater>
     </div>
@@ -65,60 +78,56 @@ The repeater component is intentionally simple, it's just a visual wrapper. The 
 @endblade
 
 ```blade
-<x-ui.repeater deletable duplicatable>
-    @foreach ($items as $uuid => $item)
-        <x-ui.repeater.item wire:key="item-{{ $uuid }}" :$uuid>
-            <div class="space-y-4">
-                <x-ui.field>
-                    <x-ui.label text="Item Name"/>
-                    <x-ui.input wire:model="items.{{ $uuid }}.name" />
-                </x-ui.field>
-                <!-- more ... -->
-            </div>
+<x-ui.repeater>
+    @foreach ($variants->all() as $uuid => $item)
+        <x-ui.repeater.item
+            wire:key="item-{{ $uuid }}"
+            deleteHandler="deleteVariant('{{ $uuid }}')"
+            duplicateHandler="duplicateVariant('{{ $uuid }}')"
+        >
+            <x-ui.field>
+                <x-ui.label text="Item Name"/>
+                <x-ui.input wire:model.live="variants.{{ $uuid }}.name" />
+            </x-ui.field>
         </x-ui.repeater.item>
     @endforeach
 
     <x-slot:actions>
-        <x-ui.button wire:click="addItem" icon="plus">
-            Add Item
-        </x-ui.button>
+        <x-ui.button wire:click="addVariant" icon="plus">Add Item</x-ui.button>
     </x-slot:actions>
 </x-ui.repeater>
 ```
 
-
 ## Repeater Actions
 
-Control which action buttons appear on each item:
+Action buttons are opt-in per item — pass `deleteHandler` and/or `duplicateHandler` directly on `<x-ui.repeater.item>`. Omit either prop and that button simply won't render. There's no toggle on the wrapper.
 
 @blade
 <x-demo class="flex flex-col gap-6 [&_button]:pointer-events-none">
     <div class="max-w-2xl w-full mx-auto">
-        <x-ui.text class="mb-4 font-medium">With Delete Only</x-ui.text>
-        <x-ui.repeater deletable>
-            <x-ui.repeater.item uuid="uuid-1">
+        <x-ui.text class="mb-4 font-medium">Delete only</x-ui.text>
+        <x-ui.repeater>
+            <x-ui.repeater.item uuid="uuid-1" deleteHandler="deleteItem('uuid-1')">
                 <x-ui.field>
                     <x-ui.input placeholder="Item with delete..." />
                 </x-ui.field>
             </x-ui.repeater.item>
         </x-ui.repeater>
     </div>
-    <!--  -->
     <div class="max-w-2xl w-full mx-auto">
-        <x-ui.text class="mb-4 font-medium">With Duplicate Only</x-ui.text>
-        <x-ui.repeater duplicatable>
-            <x-ui.repeater.item uuid="uuid-2">
+        <x-ui.text class="mb-4 font-medium">Duplicate only</x-ui.text>
+        <x-ui.repeater>
+            <x-ui.repeater.item uuid="uuid-2" duplicateHandler="duplicateItem('uuid-2')">
                 <x-ui.field>
                     <x-ui.input placeholder="Item with duplicate..." />
                 </x-ui.field>
             </x-ui.repeater.item>
         </x-ui.repeater>
     </div>
-    <!--  -->
     <div class="max-w-2xl w-full mx-auto">
-        <x-ui.text class="mb-4 font-medium">With Both Actions</x-ui.text>
-        <x-ui.repeater deletable duplicatable>
-            <x-ui.repeater.item uuid="uuid-3">
+        <x-ui.text class="mb-4 font-medium">Both actions</x-ui.text>
+        <x-ui.repeater>
+            <x-ui.repeater.item uuid="uuid-3" deleteHandler="deleteItem('uuid-3')" duplicateHandler="duplicateItem('uuid-3')">
                 <x-ui.field>
                     <x-ui.input placeholder="Item with both actions..." />
                 </x-ui.field>
@@ -130,46 +139,43 @@ Control which action buttons appear on each item:
 
 ```blade
 <!-- Delete only -->
-<x-ui.repeater deletable>
-    <!-- items -->
-</x-ui.repeater>
+<x-ui.repeater.item deleteHandler="deleteItem('{{ $uuid }}')">...</x-ui.repeater.item>
 
 <!-- Duplicate only -->
-<x-ui.repeater duplicatable>
-    <!-- items -->
-</x-ui.repeater>
+<x-ui.repeater.item duplicateHandler="duplicateItem('{{ $uuid }}')">...</x-ui.repeater.item>
 
-<!-- Both actions -->
-<x-ui.repeater deletable duplicatable>
-    <!-- items -->
-</x-ui.repeater>
+<!-- Both -->
+<x-ui.repeater.item
+    deleteHandler="deleteItem('{{ $uuid }}')"
+    duplicateHandler="duplicateItem('{{ $uuid }}')"
+>...</x-ui.repeater.item>
 ```
 
 ## Repeater Header
 
-Add a header section for titles, instructions, or summary information:
+Add a header section for titles or instructions:
 
 @blade
 <x-demo class="flex justify-center [&_button]:pointer-events-none">
     <div class="max-w-2xl w-full">
-        <x-ui.repeater deletable duplicatable>
+        <x-ui.repeater>
             <x-slot:header class="pb-4 mb-4">
                 <x-ui.heading>Product Variants</x-ui.heading>
                 <x-ui.text class="opacity-70 mt-1">
                     Add different sizes, colors, or configurations of your product
                 </x-ui.text>
             </x-slot:header>
-            <!--  -->
-            <x-ui.repeater.item uuid="uuid-789">
+            <x-ui.repeater.item
+                uuid="uuid-789"
+                deleteHandler="deleteVariant('uuid-789')"
+                duplicateHandler="duplicateVariant('uuid-789')"
+            >
                 <x-ui.field>
                     <x-ui.input placeholder="Variant name..." />
                 </x-ui.field>
             </x-ui.repeater.item>
-            <!--  -->
             <x-slot:actions>
-                <x-ui.button variant="outline" icon="plus">
-                    Add Variant
-                </x-ui.button>
+                <x-ui.button variant="outline" icon="plus">Add Variant</x-ui.button>
             </x-slot:actions>
         </x-ui.repeater>
     </div>
@@ -180,43 +186,33 @@ Add a header section for titles, instructions, or summary information:
 <x-ui.repeater>
 {+    <x-slot:header class="pb-4">
         <x-ui.heading>Product Variants</x-ui.heading>
-        <x-ui.text class="opacity-70">
-            Add different configurations
-        </x-ui.text>
+        <x-ui.text class="opacity-70">Add different configurations</x-ui.text>
     </x-slot:header>+}
-    
+
     <!-- items -->
 </x-ui.repeater>
 ```
 
-## Repeater Item Actions
+## Item Footer
 
-Add custom actions to individual items using the `actions` slot:
+Add per-item actions or metadata using the `footer` slot:
 
 @blade
 <x-demo class="flex justify-center [&_button]:pointer-events-none">
     <div class="max-w-2xl w-full">
-        <x-ui.repeater deletable>
-            <x-ui.repeater.item uuid="uuid-abc">
+        <x-ui.repeater>
+            <x-ui.repeater.item uuid="uuid-abc" deleteHandler="deleteItem('uuid-abc')">
                 <x-ui.field>
                     <x-ui.label text="Task"/>
                     <x-ui.input placeholder="Task description..." />
                 </x-ui.field>
-                <!--  -->
                 <x-slot:footer class="mt-4 pt-2 border-t border-neutral-200 dark:border-white/10">
-                    <x-ui.button size="sm" variant="soft" icon="clock">
-                        Set Deadline
-                    </x-ui.button>
-                    <x-ui.button size="sm" variant="soft" icon="tag">
-                        Add Tags
-                    </x-ui.button>
+                    <x-ui.button size="sm" variant="soft" icon="clock">Set Deadline</x-ui.button>
+                    <x-ui.button size="sm" variant="soft" icon="tag">Add Tags</x-ui.button>
                 </x-slot:footer>
             </x-ui.repeater.item>
-            <!--  -->
             <x-slot:actions>
-                <x-ui.button variant="outline" icon="plus">
-                    Add Task
-                </x-ui.button>
+                <x-ui.button variant="outline" icon="plus">Add Task</x-ui.button>
             </x-slot:actions>
         </x-ui.repeater>
     </div>
@@ -224,249 +220,267 @@ Add custom actions to individual items using the `actions` slot:
 @endblade
 
 ```blade
-<x-ui.repeater.item :$uuid>
+<x-ui.repeater.item
+    deleteHandler="deleteItem('{{ $uuid }}')"
+    duplicateHandler="duplicateItem('{{ $uuid }}')"
+>
     <!-- item content -->
-    
+
 {+    <x-slot:footer class="mt-4">
-        <x-ui.button size="sm" icon="clock" variant="soft">
-            Set Deadline
-        </x-ui.button>
-        <!-- ... -->
+        <x-ui.button size="sm" icon="clock" variant="soft">Set Deadline</x-ui.button>
     </x-slot:footer>+}
 </x-ui.repeater.item>
 ```
 
 ## Implementation Guide
 
-This guide shows you how to build a fully functional repeater for managing product variants with validation, duplicate prevention, and database persistence.
+This guide shows you how to build a fully functional repeater for managing product variants with validation and persistence.
 
 @blade
-<x-md.cta                                                            
-    href="/demos/repeater"                                    
+<x-md.cta
+    href="/demos/repeater"
     label="See the repeater in action with full functionality"
     ctaLabel="Visit Live Demo"
 />
 @endblade
 
-### Example Overview
+### Overview
 
-I'll show an example of building a repeater that:
+We'll build a repeater that:
 - **Manages product variants** with name, SKU, price, stock, and description
-- **Generates unique SKUs** automatically
-- **Validates data** before saving
-- **Handles existing data** for editing scenarios
-- **Prevents duplicates** and maintains data integrity
+- **Generates unique SKUs** automatically for each new item and on duplication
+- **Validates all fields** before saving with clean, readable error messages
+- **Adds, removes, and duplicates items** dynamically without page reloads
 
-### Step 2: Create Your Livewire Component
+### Step 1: Create Your Livewire Component
 
-Create a component that uses `app\Livewire\Concerns\HasRepeater` the trait to manage product variants:
-<!-- 
-**app/Livewire/ProductVariants.php:**
+Declare a typed `Repeater` property and initialize it in `mount()` using `Repeater::mount()`. The factory callable is called fresh per item — so if your structure includes generated values like SKUs, each item gets its own on creation. The synthesizer persists the resolved factory alongside items, so `add()` always has it available after hydration.
+
 ```php
 <?php
 
 namespace App\Livewire;
 
-use App\Models\Product;
+use App\View\Components\Repeater;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Livewire\Component;
-use App\Livewire\Concerns\HasRepeater;
 
 class ProductVariants extends Component
 {
-    use HasRepeater;
+    public Repeater $variants;
 
-    public ?Product $product = null;
-
-    public function mount(?Product $product = null): void
+    public function mount(): void
     {
-        $this->product = $product;
-
-        if ($product?->variants->isNotEmpty()) {
-            // Load existing variants - map each variant to a UUID key
-            $this->items = collect($product->variants)->mapWithKeys(function ($variant) {
-                return [
-                    $this->generateUuid() => $variant->toArray(),
-                ];
-            })->toArray();
-        } else {
-            // Start with one empty variant
-            $this->mountRepeater(initialCount: 1);
-        }
+        $this->variants = Repeater::mount(
+            count: 2,
+            factory: fn() => $this->variantsStructure(),
+        );
     }
 
-    /**
-     * Define the structure of each variant
-     */
-    protected function itemStructure(): array
+    protected function variantsStructure(): array
     {
         return [
-            'id' => null, // For tracking existing records
-            'name' => '',
-            'sku' => $this->generateSKU(), // Will be generated on add
-            'price' => 0,
-            'stock' => 0,
+            'name'        => '',
+            'sku'         => $this->generateSKU(),
+            'price'       => 0,
+            'stock'       => 0,
             'description' => '',
         ];
     }
 
-    /**
-     * Validate and save all variants
-     */
+    public function addVariant(): void
+    {
+        $uuid = $this->variants->add();
+        $this->variants->tap($uuid, ['sku' => $this->generateSKU()]);
+    }
+
+    public function deleteVariant(string $uuid): void
+    {
+        $this->variants->delete($uuid);
+    }
+
+    public function duplicateVariant(string $uuid): void
+    {
+        $newUuid = $this->variants->duplicate($uuid);
+        $this->variants->tap($newUuid, ['sku' => $this->generateSKU()]);
+    }
+
     public function save(): void
     {
-        $this->validate([
-            'items.*.name' => 'required|string|max:255',
-            'items.*.sku' => 'required|string|max:100',
-            'items.*.price' => 'required|numeric|min:0',
-            'items.*.stock' => 'required|integer|min:0',
-            'items.*.description' => 'nullable|string|max:1000',
-        ]);
+        $this->validate(
+            rules: [
+                'variants.*.name'        => 'required|string|max:255',
+                'variants.*.sku'         => 'required|string',
+                'variants.*.price'       => 'required|numeric|min:0',
+                'variants.*.stock'       => 'required|integer|min:0',
+                'variants.*.description' => 'required|min:10',
+            ],
+            attributes: [
+                'variants.*.name'        => 'name',
+                'variants.*.sku'         => 'sku',
+                'variants.*.price'       => 'price',
+                'variants.*.stock'       => 'stock',
+                'variants.*.description' => 'description',
+            ]
+        );
 
-        $itemsData = $this->getItemsData();
-
-        // now you have an array of arrays containning the data store it your way ...
-        
-        $this->redirect(route('products.show', $this->product));
+        $data = $this->variants->values(); // flat array, ready for Eloquent
     }
 
-    /**
-     * Generate unique SKU
-     */
-    private function generateSKU(): string
-    {
-        return 'SKU-' . strtoupper(Str::random(8));
-    }
-
-    public function render()
+    public function render(): View
     {
         return view('livewire.product-variants');
+    }
+
+    private function generateSKU(): string
+    {
+        return 'SKU-' . mb_strtoupper(Str::random(8));
     }
 }
 ```
 
-### Step 3: Create the View
+**Key points:**
+- `Repeater::mount()` only runs on the first request — on subsequent requests the synthesizer restores state from JSON and `mount()` is never called again
+- The `factory` callable is invoked fresh per item at mount time, so each item gets its own generated values (like unique SKUs) from the start
+- `addVariant()` calls `tap()` after `add()` to stamp a fresh SKU on the new item — since the stored factory is a resolved snapshot, generated values like SKUs would otherwise repeat
+- `duplicateVariant()` does the same: duplicate preserves the source item's data exactly, then `tap()` gives the copy a new unique SKU
+- The `attributes` map in `validate()` strips the `variants.uuid.field` path down to just `field` in error messages — without it, validation errors read like database column names
+- `$this->variants->values()` returns a flat array without UUID keys, ready for validation and persistence
 
-Create the Blade template with the repeater component:
+### Step 2: Create the View
 
-**resources/views/livewire/product-variants.blade.php:**
+Wire `deleteHandler` and `duplicateHandler` on each item by interpolating the UUID into the method call string. Use `<x-ui.error>` with the `:name` prop to display field-level validation errors scoped to each UUID.
+
 ```blade
 <div>
-    <x-ui.repeater deletable duplicatable>
-        <x-slot:header class="border-b pb-4">
+    <x-ui.repeater>
+        <x-slot:header class="pb-4">
             <x-ui.heading>Product Variants</x-ui.heading>
             <x-ui.text class="opacity-70 mt-1">
-                Add different sizes, colors, or configurations for {{ $product->name }}
+                Add different sizes, colors, or configurations
             </x-ui.text>
         </x-slot:header>
 
-        @foreach ($items as $uuid => $item)
+        @foreach ($variants->all() as $uuid => $item)
             <x-ui.repeater.item
                 wire:key="item-{{ $uuid }}"
-                :$uuid
+                deleteHandler="deleteVariant('{{ $uuid }}')"
+                duplicateHandler="duplicateVariant('{{ $uuid }}')"
             >
                 <div class="space-y-4">
-                    {{-- Main Fields Grid --}}
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
                         <x-ui.field required>
                             <x-ui.label text="Variant Name"/>
-                            <x-ui.input 
-                                wire:model.blur="items.{{ $uuid }}.name"
+                            <x-ui.input
+                                wire:model.live="variants.{{ $uuid }}.name"
                                 placeholder="e.g., Red Small"
                             />
-                            @error("items.{$uuid}.name")
-                                <x-ui.error>{{ $message }}</x-ui.error>
-                            @enderror
+                            <x-ui.error :name="'variants.' . $uuid . '.name'" />
                         </x-ui.field>
 
                         <x-ui.field required>
                             <x-ui.label text="SKU"/>
-                            <x-ui.input 
-                                wire:model.blur="items.{{ $uuid }}.sku"
+                            <x-ui.input
+                                wire:model.live="variants.{{ $uuid }}.sku"
                                 placeholder="SKU-XXXXXXXX"
                                 readonly
                             />
-                            @error("items.{$uuid}.sku")
-                                <x-ui.error>{{ $message }}</x-ui.error>
-                            @enderror
-                            <x-ui.description>Auto-generated unique code</x-ui.description>
+                            <x-ui.error :name="'variants.' . $uuid . '.sku'" />
                         </x-ui.field>
 
                         <x-ui.field required>
                             <x-ui.label text="Price"/>
-                            <x-ui.input 
-                                wire:model.blur="items.{{ $uuid }}.price"
+                            <x-ui.input
+                                wire:model.live="variants.{{ $uuid }}.price"
                                 type="number"
                                 step="0.01"
                                 placeholder="0.00"
                             />
-                            @error("items.{$uuid}.price")
-                                <x-ui.error>{{ $message }}</x-ui.error>
-                            @enderror
+                            <x-ui.error :name="'variants.' . $uuid . '.price'" />
                         </x-ui.field>
 
                         <x-ui.field required>
                             <x-ui.label text="Stock"/>
-                            <x-ui.input 
-                                wire:model.blur="items.{{ $uuid }}.stock"
+                            <x-ui.input
+                                wire:model.live="variants.{{ $uuid }}.stock"
                                 type="number"
                                 placeholder="0"
                             />
-                            @error("items.{$uuid}.stock")
-                                <x-ui.error>{{ $message }}</x-ui.error>
-                            @enderror
+                            <x-ui.error :name="'variants.' . $uuid . '.stock'" />
                         </x-ui.field>
                     </div>
 
-                    {{-- Description --}}
-                    <x-ui.field>
+                    <x-ui.field required>
                         <x-ui.label text="Description"/>
-                        <x-ui.textarea 
-                            wire:model.blur="items.{{ $uuid }}.description"
-                            placeholder="Describe this product variant..."
-                            rows="3"
+                        <x-ui.textarea
+                            wire:model.live="variants.{{ $uuid }}.description"
+                            placeholder="Describe this product variant"
                         />
-                        @error("items.{$uuid}.description")
-                            <x-ui.error>{{ $message }}</x-ui.error>
-                        @enderror
+                        <x-ui.error :name="'variants.' . $uuid . '.description'" />
                     </x-ui.field>
                 </div>
             </x-ui.repeater.item>
         @endforeach
 
         <x-slot:actions>
-            <x-ui.button 
-                wire:click="addItem"
+            <x-ui.button
                 variant="outline"
+                class="rounded-box"
                 icon="plus"
-                wire:loading.attr="disabled"
+                wire:click="addVariant"
             >
-                Add Variant
+                Add product variant
             </x-ui.button>
         </x-slot:actions>
     </x-ui.repeater>
 
-    {{-- Save Button --}}
-    <div class="mt-6 flex justify-end gap-3">
-        <x-ui.button 
-            wire:click="$dispatch('cancel')"
-            variant="ghost"
-        >
-            Cancel
-        </x-ui.button>
-        
-        <x-ui.button 
-            wire:click="save"
-            variant="primary"
-            wire:loading.attr="disabled"
-        >
-            <span wire:loading.remove wire:target="save">Save Variants</span>
-            <span wire:loading wire:target="save">Saving...</span>
+    <div class="mt-6 flex justify-end">
+        <x-ui.button wire:click="save" variant="primary" class="rounded-box" size="lg">
+            Save
         </x-ui.button>
     </div>
 </div>
 ```
- -->
+
+**Key points:**
+- `$variants->all()` returns the UUID-keyed array for the `@foreach`
+- `wire:model.live="variants.{{ $uuid }}.field"` binds through the synthesizer's `get`/`set` methods — identical to how `wire:model="address.street"` works with Livewire's built-in object example
+- `<x-ui.error :name="'variants.' . $uuid . '.name'" />` scopes each error to the right item — the UUID in the key is what makes that work
+- `deleteHandler` and `duplicateHandler` are plain Livewire action strings — the item component renders a button with `wire:click` set to exactly this value
+
+### How It Works
+
+**Mount vs hydration:** `Repeater::mount()` runs once inside your component's `mount()`. From that point on, the synthesizer takes over — on every subsequent request it calls `Repeater::from($state)` to restore the full instance from the JSON snapshot, and `mount()` is never called again.
+
+**Factory persistence:** The resolved factory array is stored as a `public` property on `Repeater`, so the synthesizer includes it in the dehydrated state automatically. This means `add()` always has the blank-item template available without any extra wiring or `boot()` hook. For values that need to be unique per item (like SKUs), generate them after `add()` using `tap()`.
+
+**`wire:model` binding:** `variants.{uuid}.name` is resolved by `RepeaterSynthesizer::get()` and `set()`, which delegate to `Repeater::getItem()` and `Repeater::setItem()`. This is identical to how Livewire's own synthesizer examples handle dot-notation property access.
+
+**Validation:** `$this->validate(['variants.*.name' => '...'])` works because Livewire expands the synthesizer state for validation. The `*` wildcard matches every UUID key in the items array. The `attributes` map keeps error messages human-readable by stripping the UUID path.
+
+## Multiple Repeaters
+
+Because `Repeater` is a typed property rather than a shared trait, you can have as many repeaters as you need in one component — each is independently serialized:
+
+```php
+public Repeater $variants;
+public Repeater $images;
+
+public function mount(): void
+{
+    $this->variants = Repeater::mount(count: 1, factory: fn() => $this->variantsStructure());
+    $this->images   = Repeater::mount(count: 1, factory: ['url' => '', 'alt' => '']);
+}
+
+public function addVariant(): void { $this->variants->add(); }
+public function deleteVariant(string $uuid): void { $this->variants->delete($uuid); }
+
+public function addImage(): void { $this->images->add(); }
+public function deleteImage(string $uuid): void { $this->images->delete($uuid); }
+```
+
+Each property gets its own synthesizer snapshot — they don't interfere with each other.
 
 ## Component Props
 
@@ -474,16 +488,50 @@ Create the Blade template with the repeater component:
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `deletable` | boolean | `false` | Show delete button on each item |
-| `duplicatable` | boolean | `false` | Show duplicate button on each item |
 | `header` | slot | `null` | Optional header section for title/description |
-| `actions` | slot | `null` | Actions slot for "Add Item" button or other controls |
+| `actions` | slot | `null` | Actions slot for the "Add Item" button or other controls |
 
 ### ui.repeater.item
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `uuid` | string | required | Unique identifier for the item (from your `$items` array) |
-| `deletable` | boolean | inherited | Override parent's deletable setting |
-| `duplicatable` | boolean | inherited | Override parent's duplicatable setting |
-| `actions` | slot | `null` | Optional per-item actions (buttons, links, etc.) |
+| `uuid` | string | required | Unique identifier used to scope the item's DOM node via `wire:key` |
+| `deleteHandler` | string | `null` | Livewire action string called when the delete button is clicked, e.g. `"deleteVariant('{{ $uuid }}')"` |
+| `duplicateHandler` | string | `null` | Livewire action string called when the duplicate button is clicked |
+| `footer` | slot | `null` | Optional per-item footer for extra actions or metadata |
+
+## Component API
+
+### `Repeater`
+
+The core state container. Instantiated in `mount()` and serialized between requests by `RepeaterSynthesizer`.
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `Repeater::mount(int $count, array\|callable $factory)` | `Repeater` | Create a fresh repeater with `$count` blank items shaped by `$factory`. Pass a callable to get a fresh invocation per item. |
+| `Repeater::from(array $state)` | `Repeater` | Restore from synthesizer state — used internally, not called directly |
+| `add()` | `string` | Append a new blank item using the stored factory, returns its UUID |
+| `delete(string $uuid)` | `void` | Remove an item by UUID |
+| `duplicate(string $uuid)` | `string\|null` | Copy an existing item inline (preserving order), returns the new UUID or `null` if not found |
+| `tap(string $uuid, array $overrides)` | `void` | Merge overrides into an existing item — use after `add()` or `duplicate()` to stamp unique values |
+| `all()` | `array` | UUID-keyed items — use in Blade `@foreach` |
+| `values()` | `array` | Flat array without UUID keys — use for saving and persistence |
+| `collection()` | `Collection` | Same as `values()` wrapped in a Laravel Collection |
+| `count()` | `int` | Number of items currently in the repeater |
+| `getItem(string $uuid)` | `mixed` | Read an item by UUID — called by the synthesizer for `wire:model` |
+| `setItem(string $uuid, mixed $value)` | `void` | Merge values into an item by UUID — called by the synthesizer for `wire:model` |
+| `getState()` | `array` | Serializable state — used internally by the synthesizer |
+
+### `RepeaterSynthesizer`
+
+Handles Livewire's dehydration/hydration cycle for `Repeater` properties. No configuration needed beyond the one-time service provider registration.
+
+```php
+// AppServiceProvider::boot()
+use App\Livewire\Synthesizers\RepeaterSynthesizer;
+use Livewire\Livewire;
+
+Livewire::propertySynthesizer(RepeaterSynthesizer::class);
+```
+
+> After registration, any Livewire component property typed as `Repeater` is automatically serialized between requests. The synthesizer also handles `wire:model` binding by routing `get` and `set` calls through `Repeater::getItem()` and `Repeater::setItem()` — you never interact with it directly.
