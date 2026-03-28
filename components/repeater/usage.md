@@ -451,16 +451,6 @@ Wire `deleteHandler` and `duplicateHandler` on each item by interpolating the UU
 
 - `deleteHandler` and `duplicateHandler` are plain Livewire action strings — the item component renders a button with `wire:click` set to exactly this value
 
-### How It Works
-
-**Mount vs hydration:** `Repeater::mount()` runs once inside your component's `mount()`. From that point on, the synthesizer takes over — on every subsequent request it calls `Repeater::from($state)` to restore the full instance from the JSON snapshot, and `mount()` is never called again.
-
-**Factory persistence:** The resolved factory array is stored as a `public` property on `Repeater`, so the synthesizer includes it in the dehydrated state automatically. This means `add()` always has the blank-item template available without any extra wiring or `boot()` hook. For values that need to be unique per item (like SKUs), generate them after `add()` using `tap()`.
-
-**`wire:model` binding:** `variants.{uuid}.name` is resolved by `RepeaterSynthesizer::get()` and `set()`, which delegate to `Repeater::getItem()` and `Repeater::setItem()`. This is identical to how Livewire's own synthesizer examples handle dot-notation property access.
-
-**Validation:** `$this->validate(['variants.*.name' => '...'])` works because Livewire expands the synthesizer state for validation. The `*` wildcard matches every UUID key in the items array. The `attributes` map keeps error messages human-readable by stripping the UUID path.
-
 ## Multiple Repeaters
 
 Because `Repeater` is a typed property rather than a shared trait, you can have as many repeaters as you need in one component — each is independently serialized:
@@ -522,7 +512,6 @@ The core state container. Instantiated in `mount()` and serialized between reque
 | `count()` | `int` | Number of items currently in the repeater |
 | `getItem(string $uuid)` | `mixed` | Read an item by UUID — called by the synthesizer for `wire:model` |
 | `setItem(string $uuid, mixed $value)` | `void` | Merge values into an item by UUID — called by the synthesizer for `wire:model` |
-| `getState()` | `array` | Serializable state — used internally by the synthesizer |
 
 ### `RepeaterSynthesizer`
 
