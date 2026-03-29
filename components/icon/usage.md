@@ -1,5 +1,6 @@
 ---
 name: icon
+new: [BladeKit Icons (Optional)]
 ---
 
 ## Introduction
