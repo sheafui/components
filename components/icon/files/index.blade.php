@@ -5,31 +5,37 @@
 ])
 
 @php
-    // Detect icon set
-    $isPhosphorSet = str($name)->startsWith(['ps:', 'phosphor:']);
-    $isHeroiconsSet = ! $isPhosphorSet;
+    $name = str($name);
 
-    // Normalize icon name safely
-    $iconName = $isPhosphorSet
-        ? str($name)->after(':')
-        : $name;
-
-
-    // Resolve component name
-    $componentName = match (true) {
-        $isPhosphorSet => match ($variant) {
-            'thin', 'light', 'fill', 'regular', 'duotone', 'bold' => "phosphor.icons::{$variant}.{$iconName}",
-            default => "phosphor.icons::regular.{$iconName}",
-        },
-        $isHeroiconsSet => match ($variant) {
-            'solid', 'outline' => "heroicons::{$variant}.{$iconName}",
-            'mini', 'micro' => "heroicons::{$variant}.solid.{$iconName}",
-            default => "heroicons::outline.{$iconName}",
-        },
+    $set = match (true) {
+        $name->startsWith(['ps:', 'phosphor:']) => 'phosphor',
+        $name->startsWith(['bk:', 'bladekit:']) => 'bladekit',
+        default => 'heroicons',
     };
 
-    /* PHOSPHOR ICONS AREN'T STYLED WE size-6 AS A FALLBACK */
-    if ($isPhosphorSet && ! str($attributes->get('class'))->contains(['size-', 'w-', 'h-'])) {
+    $icon = $set !== 'heroicons'
+        ? $name->after(':')->toString()
+        : $name->toString();
+
+    $component = match ($set) {
+        'phosphor' => "phosphor.icons::" . match ($variant) {
+            'thin', 'light', 'fill', 'regular', 'duotone', 'bold' => "{$variant}.{$icon}",
+            default => "regular.{$icon}",
+        },
+
+        'heroicons' => match ($variant) {
+            'solid', 'outline' => "heroicons::{$variant}.{$icon}",
+            'mini', 'micro' => "heroicons::{$variant}.solid.{$icon}",
+            default => "heroicons::outline.{$icon}",
+        },
+
+        'bladekit' => $icon,
+    };
+
+    $hasSize = str($attributes->get('class'))
+        ->contains(['size-', 'w-', 'h-']);
+
+    if (in_array($set, ['phosphor', 'bladekit']) && !$hasSize) {
         $attributes = $attributes->class('size-6');
     }
 @endphp
@@ -38,8 +44,12 @@
     <button {{ $attributes->class('cursor-pointer') }} type="button">
 @endif
 
-<x-dynamic-component :component="$componentName" {{ $attributes->class(['[:where(&)]:text-neutral-700 [:where(&)]:dark:text-neutral-300']) }}  data-slot="icon" />
+<x-dynamic-component
+    :component="$component"
+    {{ $attributes->class(['text-neutral-700 dark:text-neutral-300']) }}
+    data-slot="icon"
+/>
 
 @if ($asButton)
     </button>
-@endif               
+@endif
