@@ -51,7 +51,8 @@ Each variant offers different sizes and styles:
     <x-ui.icon name="academic-cap" variant="micro" class="text-white"/>
 </x-demo>
 @endblade
-```html
+
+```blade
 <!-- 24px, outline -->
 <x-ui.icon name="academic-cap" class="text-white"/>
 <!-- 24px, solid -->
@@ -77,7 +78,7 @@ To use Phosphor icons, prefix the name with `ps:` or `phosphor:`.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- thin variant -->
 <x-ui.icon name="ps:align-top" variant="thin" class="text-white"/>
 <!-- light variant -->
@@ -115,7 +116,8 @@ To use a BladeKit icon, prefix the name with `bk:` or `bladekit:`:
     <x-ui.icon name="bk:fas-jet-fighter" />
 </x-demo>
 @endblade
-```html
+
+```blade
 <x-ui.icon name="bk:fas-fighter-jet" />
 <x-ui.icon name="bk:fas-jet-fighter" />
 ```
@@ -130,7 +132,8 @@ To use a BladeKit icon, prefix the name with `bk:` or `bladekit:`:
     <x-ui.icon name="cpu-chip" variant="solid" class="size-12"/>
 </x-demo>
 @endblade
-```html
+
+```blade
 <x-ui.icon name="academic-cap" class="size-12"/>
 <x-ui.icon name="academic-cap" variant="solid" class="size-12"/>
 ```
@@ -150,7 +153,8 @@ If you're using **Phosphor** or **BladeKit** icons and no size is defined, the c
     <x-ui.icon name="cpu-chip" variant="solid" class="fill-red-600 size-12"/>
 </x-demo>
 @endblade
-```html
+
+```blade
 <x-ui.icon name="cpu-chip" class="text-purple-500"/>
 <x-ui.icon name="cpu-chip" variant="solid" class="size-12"/>
 <x-ui.icon name="cpu-chip" variant="solid" class="fill-red-600 size-12"/>
