@@ -317,6 +317,8 @@ You can target slots directly using attribute selectors:
     color: yellowgreen
 }
 ```
+the `~=` is there to check if `data-special` value contain the targeted string
+
 @blade
 <x-demo class="flex justify-center">
     <x-ui.time-picker
@@ -327,10 +329,10 @@ You can target slots directly using attribute selectors:
 </x-demo>
 @endblade
 
-the `~=` is there to check if `data-special` value contain the targeted string
+
 
 > this pattern is better than simple tag management gives you a ton flexibility
- 
+
 ## Advanced Examples
 
 ### Appointment Booking
@@ -443,6 +445,8 @@ public function getBookedSlotsProperty(): string
 | `invalid` | boolean | `false` | Applies error styling to the trigger. |
 | `size` | string | `'default'` | Size variant. Options: `default`, `sm`, `xs`. |
 | `label` | string | `null` | ARIA label forwarded to the options list. |
+| `special` | array | `[]`    | Map of custom slot tags. Format: `['key' => 'H:i,H:i-H:i']`. Adds `data-special` attribute to matching slots. |
+
 
 | Attribute | Description |
 | --------- | ----------- |
@@ -452,3 +456,4 @@ public function getBookedSlotsProperty(): string
 | `data-open` | Present on the trigger control when the panel is open. |
 | `data-selected` | Present on a slot `<li>` and its checkbox span when selected. |
 | `data-disabled` | Present on a slot `<li>` when unavailable. |
+| `data-special` | Present on a slot `<li>` when special tags are passed. |
