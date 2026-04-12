@@ -262,7 +262,6 @@ The picker comes in Two sizes. The default aligns with the standard `input` heig
 ```blade
 <x-ui.time-picker size="default" wire:model="time" />
 <x-ui.time-picker size="sm"      wire:model="time" />
-<x-ui.time-picker size="xs"      wire:model="time" />
 ```
 
 ## Clearable
