@@ -195,19 +195,41 @@ By default, calendar months have variable heights (4–6 rows depending on the n
 <x-ui.calendar :fixed-weeks="true" wire:model="date" />
 ```
 
-## Selectable Year and Months
+## Selectable Months and Years
 
-By default, calendar months have variable heights (4–6 rows depending on the number of weeks). Set `fixed-weeks` to lock all months to a consistent height (always 6 rows), which prevents layout shift when navigating.
+Enable dropdown selectors for quick month and year navigation with `selectable-months` and `selectable-years`. These provide an alternative to clicking through months with navigation buttons, especially useful for calendars spanning multiple years or when users need to jump to a specific date quickly.
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.calendar selectable-months selectable-years  min-year="-10" max-years="+10" />
+    <x-ui.calendar selectable-months selectable-years :years-range="[-10, 10]" />
 </x-demo>
 @endblade
 
 ```blade
-<x-ui.calendar :fixed-weeks="true" wire:model="date" />
+{{-- Show both month and year selectors --}}
+<x-ui.calendar 
+    selectable-months 
+    selectable-years 
+    :years-range="[-10, 10]"
+    wire:model="date" 
+/>
+
+{{-- Only year selector --}}
+<x-ui.calendar 
+    selectable-years 
+    :years-range="[2020, 2030]"
+    wire:model="date" 
+/>
 ```
+
+### Years Range Configuration
+
+The `years-range` prop accepts an array with two values `[start, end]`:
+- **Relative offsets**: Values with absolute value ≤ 100 are treated as offsets from the current year. For example, `[-10, 10]` shows years from 10 years ago to 10 years in the future.
+- **Absolute years**: Larger values (e.g., `2020`) are treated as absolute year numbers. For example, `[2020, 2030]` shows years 2020 through 2030.
+- **Mixed usage**: You can mix both approaches, e.g., `[2000, 2050]` or `[-5, 2030]`.
+
+When multiple months are displayed, the month and year selectors appear only in the first month's header to avoid duplication.
 
 ## Multi-Month Display
 
@@ -455,9 +477,12 @@ For dashboards and reports where layout stability is critical:
 | `allow-navigation` | boolean | `true` | Show previous/next month navigation buttons. |
 | `highlight-blank-days` | boolean | `true` | Show days from adjacent months in the grid. |
 | `with-today` | boolean | `false` | Show a "go to today" button in the header. |
-| `selectable` | boolean | `false` | Replace month label with a month/year picker dropdown. |
+| `selectable-months` | boolean | `false` | Show month selector dropdown in the calendar header. |
+| `selectable-years` | boolean | `false` | Show year selector dropdown in the calendar header. |
+| `years-range` | array | `[-10, 10]` | Range of selectable years as `[start, end]`. Values ≤ 100 are relative offsets from current year; larger values are absolute years. |
 | `read-only` | boolean | `false` | Disable all interaction (display-only). |
 | `disabled` | boolean | `false` | Disable the entire component. |
+| `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
 | `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
 
 ## Data Attributes
