@@ -230,6 +230,32 @@ The `years-range` prop accepts an array with two values `[start, end]`:
 
 When multiple months are displayed, the month and year selectors appear only in the first month's header to avoid duplication.
 
+## Open To Date
+
+By default, when no date is selected, the calendar opens to the current month. Use `open-to` to set a specific date the calendar should open to instead.
+
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.calendar open-to="2028-09-01" />
+</x-demo>
+@endblade
+
+```blade
+{{-- Open to a future month when no date is selected --}}
+<x-ui.calendar open-to="2028-09-01" wire:model="date" />
+```
+
+If the user already has a selected date, `open-to` is ignored — the calendar will still scroll to the selected date. Add the `force-open-to` flag to make the calendar always open to the `open-to` date regardless of selection:
+
+```blade
+{{-- Always open to this date, even if a date is already selected --}}
+<x-ui.calendar open-to="2026-09-01" force-open-to wire:model="date" />
+```
+
+
+
+
+
 ## Multi-Month Display
 
 Show multiple months side-by-side for easier range selection or date browsing. Set `number-of-months` to the desired count.
@@ -483,6 +509,8 @@ For dashboards and reports where layout stability is critical:
 | `disabled` | boolean | `false` | Disable the entire component. |
 | `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
 | `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
+| `open-to` | string | `null` | Date (`YYYY-MM-DD`) the calendar opens to when there is no selected date. Ignored if a date is already selected. |
+| `force-open-to` | boolean | `false` | When present, forces the calendar to always open to the `open-to` date, even if a date is already selected. Requires `open-to`. |
 
 ## Data Attributes
 
