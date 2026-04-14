@@ -195,6 +195,20 @@ By default, calendar months have variable heights (4–6 rows depending on the n
 <x-ui.calendar :fixed-weeks="true" wire:model="date" />
 ```
 
+## Selectable Year and Months
+
+By default, calendar months have variable heights (4–6 rows depending on the number of weeks). Set `fixed-weeks` to lock all months to a consistent height (always 6 rows), which prevents layout shift when navigating.
+
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.calendar selectable-months selectable-years  min-year="-10" max-years="+10" />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.calendar :fixed-weeks="true" wire:model="date" />
+```
+
 ## Multi-Month Display
 
 Show multiple months side-by-side for easier range selection or date browsing. Set `number-of-months` to the desired count.
@@ -463,3 +477,4 @@ For dashboards and reports where layout stability is critical:
 | `data-first-in-row` | Present on the first cell of each week row. |
 | `data-last-in-row` | Present on the last cell of each week row. |
 | `data-highlight-blank-days` | Present on blank day cells (inherited from parent config). |
+
