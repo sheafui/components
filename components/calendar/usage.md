@@ -227,7 +227,6 @@ Enable dropdown selectors for quick month and year navigation with `selectable-m
 The `years-range` prop accepts an array with two values `[start, end]`:
 - **Relative offsets**: Values with absolute value ≤ 100 are treated as offsets from the current year. For example, `[-10, 10]` shows years from 10 years ago to 10 years in the future.
 - **Absolute years**: Larger values (e.g., `2020`) are treated as absolute year numbers. For example, `[2020, 2030]` shows years 2020 through 2030.
-- **Mixed usage**: You can mix both approaches, e.g., `[2000, 2050]` or `[-5, 2030]`.
 
 When multiple months are displayed, the month and year selectors appear only in the first month's header to avoid duplication.
 
