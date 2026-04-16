@@ -289,7 +289,7 @@ Display ISO 8601 week numbers in a dedicated column on the left side of the cale
 {{-- Show week numbers in a single month --}}
 <x-ui.calendar weeks-number wire:model="date" />
 
-### How week numbers are calculated
+```
 
 The calendar follows the **ISO 8601** standard:
 - Weeks start on **Monday** (regardless of your `start-day` setting – the week number column always uses ISO weeks).
@@ -298,7 +298,6 @@ The calendar follows the **ISO 8601** standard:
 
 > **Note:** Because the week number is taken from the **first day of each calendar row** (which is Sunday if your `start-day` is 0), you may see week 53 in January for rows that start in the previous year.
 
-```
 ## Navigation
 
 By default, the calendar displays navigation buttons (previous/next month). Disable them with `allow-navigation="false"`.
