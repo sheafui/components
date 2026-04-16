@@ -472,7 +472,7 @@ Provide tooltip text for each category using `special-tooltips`. The tooltip app
     :special-days="[...]"
     :special-disabled="['blocked']"
     :special-tooltips="[
-        'blocked' => 'Blocked day',
+        'blocked' => 'Blocked day – unavailable',
         'holiday' => 'Public holiday',
         'birthday' => 'Birthday celebration 🎂',
     ]"
