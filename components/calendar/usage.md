@@ -268,7 +268,7 @@ By default, calendar months have variable heights (4–6 rows depending on the n
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.calendar fixed-Weeks :number-of-months=2 />
+    <x-ui.calendar fixed-weeks :number-of-months="2" />
 </x-demo>
 @endblade
 
