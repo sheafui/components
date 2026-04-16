@@ -275,6 +275,30 @@ By default, calendar months have variable heights (4–6 rows depending on the n
 ```blade
 <x-ui.calendar :fixed-weeks="true" wire:model="date" />
 ```
+## Week Numbers
+
+Display ISO 8601 week numbers in a dedicated column on the left side of the calendar. This is especially useful for business reports, payroll, project planning, and any application that relies on week‑based scheduling.
+
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.calendar weeks-number  />
+</x-demo>
+@endblade
+
+```blade
+{{-- Show week numbers in a single month --}}
+<x-ui.calendar weeks-number wire:model="date" />
+
+### How week numbers are calculated
+
+The calendar follows the **ISO 8601** standard:
+- Weeks start on **Monday** (regardless of your `start-day` setting – the week number column always uses ISO weeks).
+- Week 1 of any year is the week that contains the first **Thursday** of that year.
+- Weeks are numbered from 1 to 52 or 53.
+
+> **Note:** Because the week number is taken from the **first day of each calendar row** (which is Sunday if your `start-day` is 0), you may see week 53 in January for rows that start in the previous year.
+
+```
 ## Navigation
 
 By default, the calendar displays navigation buttons (previous/next month). Disable them with `allow-navigation="false"`.
