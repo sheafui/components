@@ -369,8 +369,15 @@ By default, days from adjacent months (pre/post blanks) that fill out the calend
 
 Prevent all interaction by disabling the component entirely. Calendar remains visible for display purposes.
 
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.calendar read-only />
+</x-demo>
+@endblade
+
+
 ```blade
-<x-ui.calendar :read-only="true" :disabled="true" wire:model="date" />
+<x-ui.calendar :read-only="true"  wire:model="date" />
 ```
 
 ## Today Button
@@ -651,7 +658,6 @@ For dashboards and reports where layout stability is critical:
 | `selectable-years` | boolean | `false` | Show year selector dropdown in the calendar header. |
 | `years-range` | array | `[-10, 10]` | Range of selectable years as `[start, end]`. Values ≤ 100 are relative offsets from current year; larger values are absolute years. |
 | `read-only` | boolean | `false` | Disable all interaction (display‑only). |
-| `disabled` | boolean | `false` | Disable the entire component (alias for `read-only`). |
 | `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
 | `open-to` | string | `null` | Date (`YYYY-MM-DD`) the calendar opens to when no date is selected. Ignored if a date is already selected. |
 | `force-open-to` | boolean | `false` | When `true`, forces the calendar to always open to the `open-to` date, even if a date is selected. Requires `open-to`. |
