@@ -181,19 +181,7 @@ In `range` mode, enforce minimum and maximum range lengths with `min-range` and 
 
 When `min-range` is set and you've selected the start date, all dates closer than `min-range` days are disabled until you reach the minimum distance.
 
-## Fixed Week Heights
 
-By default, calendar months have variable heights (4–6 rows depending on the number of weeks). Set `fixed-weeks` to lock all rendered months to a consistent week number, which prevents layout shift when navigating.
-
-@blade
-<x-demo class="flex justify-center">
-    <x-ui.calendar fixed-Weeks :number-of-months=2 />
-</x-demo>
-@endblade
-
-```blade
-<x-ui.calendar :fixed-weeks="true" wire:model="date" />
-```
 
 ## Selectable Months and Years
 
@@ -274,6 +262,19 @@ Show multiple months side-by-side for easier range selection or date browsing. S
 <x-ui.calendar :number-of-months="3" mode="multiple" wire:model="dates" />
 ```
 
+## Fixed Week Heights
+
+By default, calendar months have variable heights (4–6 rows depending on the number of weeks). Set `fixed-weeks` to lock all rendered months to a consistent week number, which prevents layout shift when navigating.
+
+@blade
+<x-demo class="flex justify-center">
+    <x-ui.calendar fixed-Weeks :number-of-months=2 />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.calendar :fixed-weeks="true" wire:model="date" />
+```
 ## Navigation
 
 By default, the calendar displays navigation buttons (previous/next month). Disable them with `allow-navigation="false"`.
