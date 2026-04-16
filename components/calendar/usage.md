@@ -281,13 +281,13 @@ Display ISO 8601 week numbers in a dedicated column on the left side of the cale
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.calendar weeks-number  />
+    <x-ui.calendar week-numbers  />
 </x-demo>
 @endblade
 
 ```blade
 {{-- Show week numbers in a single month --}}
-<x-ui.calendar weeks-number wire:model="date" />
+<x-ui.calendar week-numbers wire:model="date" />
 
 ```
 
@@ -655,6 +655,7 @@ For dashboards and reports where layout stability is critical:
 | `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
 | `open-to` | string | `null` | Date (`YYYY-MM-DD`) the calendar opens to when no date is selected. Ignored if a date is already selected. |
 | `force-open-to` | boolean | `false` | When `true`, forces the calendar to always open to the `open-to` date, even if a date is selected. Requires `open-to`. |
+| `week-numbers` | boolean | `false` | Show ISO week numbers in a separate column. |
 
 ## Data Attributes
 
@@ -674,4 +675,5 @@ For dashboards and reports where layout stability is critical:
 | `data-last-in-row` | Present on the last cell of each week row. |
 | `data-highlight-blank-days` | Present on blank day cells (inherited from parent config). |
 | `data-special` | Present on cells that have at least one special category. Value is a space‑separated list of category keys (e.g., `"holiday birthday"`). |
-| `has-tooltip` | Present on cells that have a tooltip (from `special-tooltips`). Useful for CSS selectors like `[has-tooltip]:hover [data-special-tooltip]`. |
+| `data-has-tooltip` | Present on cells that have a tooltip (from `special-tooltips`). Useful for CSS selectors like `[data-has-tooltip]:hover [data-special-tooltip]`. |
+| `data-slot="calendar-week-num-cell"` | Applied to each week number cell. |
