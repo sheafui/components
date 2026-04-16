@@ -363,6 +363,124 @@ Show a "Go to today" button in the top-right corner of the calendar with `with-t
 <x-ui.calendar :with-today="true" wire:model="date" />
 ```
 
+## Special Days
+
+Mark specific dates with custom categories (e.g., `holiday`, `birthday`, `blocked`). Style them with Tailwind, optionally disable selection for certain categories, and add tooltips.
+
+### Static Special Dates with Color
+
+Pass a `special-days` associative array. Each date gets a `data-special` attribute with space‑separated category names. Use Tailwind’s arbitrary variant `[&_[data-special~=...]]` to style.
+
+@blade
+<x-demo class="flex justify-center">
+    <div class="[&_[data-special~=holiday]]:text-yellow-600 [&_[data-special~=birthday]]:text-pink-500 [&_[data-special~=blocked]]:text-red-500">
+        <x-ui.calendar 
+            mode="multiple"
+            open-to="2026-04-01"
+            :special-days="[
+                'holiday'   => ['2026-04-20', '2026-04-21'],
+                'birthday'  => ['2026-04-15'],
+                'blocked'   => ['2026-04-25', '2026-04-27'],
+            ]"
+        />
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<div class="
+            <!-- get holidays yellow colors -->
+            [&_[data-special~=holiday]]:text-yellow-600 
+
+            <!-- get birthday pink colors -->
+            [&_[data-special~=birthday]]:text-pink-500 
+            
+            <!-- get blocked red colors -->
+            [&_[data-special~=blocked]]:text-red-500">
+    <x-ui.calendar 
+        :special-days="[
+            'holiday'   => ['2026-04-20', '2026-04-21'],
+            'birthday'  => ['2026-04-15'],
+            'blocked'   => ['2026-04-25', '2026-04-27'],
+        ]"
+    />
+</div>
+```
+
+
+### Disable Specific Categories
+
+Prevent selection of certain special days by adding `special-disabled` with the category keys.
+
+@blade
+<x-demo class="flex justify-center">
+    <div class="[&_[data-special~=holiday]]:text-yellow-600 
+                [&_[data-special~=birthday]]:text-pink-500 
+                [&_[data-special~=blocked]]:text-red-500">
+        <x-ui.calendar 
+            mode="multiple"
+            :special-days="[
+                'holiday'   => ['2026-04-20', '2026-04-21'],
+                'birthday'  => ['2026-04-15'],
+                'blocked'   => ['2026-04-25', '2026-04-27'],
+            ]"
+            :special-disabled="['blocked']"
+            fixed-weeks
+        />
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.calendar 
+    :special-days="[...]"
+    :special-disabled="['blocked']"
+/>
+```
+Now days with the `blocked` category are non‑selectable (disabled), while holidays and birthdays remain selectable.
+
+
+### Add Tooltips
+
+Provide tooltip text for each category using `special-tooltips`. The tooltip appears on hover.
+
+@blade
+<x-demo class="flex justify-center">
+    <div class="[&_[data-special~=holiday]]:text-yellow-600 
+                [&_[data-special~=birthday]]:text-pink-500 
+                [&_[data-special~=blocked]]:text-red-500">
+        <x-ui.calendar 
+            mode="multiple"
+            :special-days="[
+                'holiday'   => ['2026-04-20', '2026-04-21'],
+                'birthday'  => ['2026-04-15'],
+                'blocked'   => ['2026-04-25', '2026-04-27'],
+            ]"
+            :special-disabled="['blocked']"
+            :special-tooltips="[
+                'blocked' => 'Blocked day – unavailable',
+                'holiday' => 'Public holiday',
+                'birthday' => 'Birthday celebration 🎂',
+            ]"
+        />
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.calendar 
+    :special-days="[...]"
+    :special-disabled="['blocked']"
+    :special-tooltips="[
+        'blocked' => 'Blocked day',
+        'holiday' => 'Public holiday',
+        'birthday' => 'Birthday celebration 🎂',
+    ]"
+/>
+```
+
+**Tooltip precedence:** If a day belongs to multiple categories, the tooltip from the **first matching key** in `special-tooltips` is shown.
+
 ## Advanced Examples
 
 ### Appointment Booking
