@@ -183,11 +183,11 @@ When `min-range` is set and you've selected the start date, all dates closer tha
 
 ## Fixed Week Heights
 
-By default, calendar months have variable heights (4–6 rows depending on the number of weeks). Set `fixed-weeks` to lock all months to a consistent height (always 6 rows), which prevents layout shift when navigating.
+By default, calendar months have variable heights (4–6 rows depending on the number of weeks). Set `fixed-weeks` to lock all rendered months to a consistent week number, which prevents layout shift when navigating.
 
 @blade
 <x-demo class="flex justify-center">
-    <x-ui.calendar :fixed-weeks="true" />
+    <x-ui.calendar fixed-Weeks :number-of-months=2 />
 </x-demo>
 @endblade
 
