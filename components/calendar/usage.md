@@ -613,22 +613,24 @@ For dashboards and reports where layout stability is critical:
 | `min-range` | integer | `null` | Minimum range length in days (range mode only). |
 | `max-range` | integer | `null` | Maximum range length in days (range mode only). |
 | `unavailable-dates` | array\|string | `[]` | Array or comma-separated list of unavailable dates as `YYYY-MM-DD`. |
-| `locale` | string | `'auto'` | BCP-47 locale for weekday names and first day of week. `auto` uses `navigator.language`. |
-| `start-day` | integer | `'auto'` | First day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday). `auto` respects locale. |
-| `number-of-months` | integer | `1` | Number of months to display side-by-side. |
+| `special-days` | array | `[]` | Associative array of category keys → arrays of ISO date strings. Adds `data-special` attribute to each day. |
+| `special-disabled` | array | `[]` | List of category keys that should be non‑selectable (disabled). |
+| `special-tooltips` | array | `[]` | Associative array of category keys → tooltip text. Tooltip appears on hover. |
+| `locale` | string | `'auto'` | BCP‑47 locale for weekday names and first day of week. `auto` uses `navigator.language`. |
+| `start-day` | integer\|string | `'auto'` | First day of the week (0 = Sunday, 1 = Monday, …, 6 = Saturday). `auto` respects locale. |
+| `number-of-months` | integer | `1` | Number of months to display side‑by‑side. |
 | `fixed-weeks` | boolean | `false` | Lock all months to 6 rows for consistent layout height. |
 | `allow-navigation` | boolean | `true` | Show previous/next month navigation buttons. |
 | `highlight-blank-days` | boolean | `true` | Show days from adjacent months in the grid. |
-| `with-today` | boolean | `false` | Show a "go to today" button in the header. |
+| `with-today` | boolean | `false` | Show a “go to today” button in the header. |
 | `selectable-months` | boolean | `false` | Show month selector dropdown in the calendar header. |
 | `selectable-years` | boolean | `false` | Show year selector dropdown in the calendar header. |
 | `years-range` | array | `[-10, 10]` | Range of selectable years as `[start, end]`. Values ≤ 100 are relative offsets from current year; larger values are absolute years. |
-| `read-only` | boolean | `false` | Disable all interaction (display-only). |
-| `disabled` | boolean | `false` | Disable the entire component. |
+| `read-only` | boolean | `false` | Disable all interaction (display‑only). |
+| `disabled` | boolean | `false` | Disable the entire component (alias for `read-only`). |
 | `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
-| `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
-| `open-to` | string | `null` | Date (`YYYY-MM-DD`) the calendar opens to when there is no selected date. Ignored if a date is already selected. |
-| `force-open-to` | boolean | `false` | When present, forces the calendar to always open to the `open-to` date, even if a date is already selected. Requires `open-to`. |
+| `open-to` | string | `null` | Date (`YYYY-MM-DD`) the calendar opens to when no date is selected. Ignored if a date is already selected. |
+| `force-open-to` | boolean | `false` | When `true`, forces the calendar to always open to the `open-to` date, even if a date is selected. Requires `open-to`. |
 
 ## Data Attributes
 
@@ -647,4 +649,5 @@ For dashboards and reports where layout stability is critical:
 | `data-first-in-row` | Present on the first cell of each week row. |
 | `data-last-in-row` | Present on the last cell of each week row. |
 | `data-highlight-blank-days` | Present on blank day cells (inherited from parent config). |
-
+| `data-special` | Present on cells that have at least one special category. Value is a space‑separated list of category keys (e.g., `"holiday birthday"`). |
+| `has-tooltip` | Present on cells that have a tooltip (from `special-tooltips`). Useful for CSS selectors like `[has-tooltip]:hover [data-special-tooltip]`. |
