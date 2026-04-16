@@ -26,7 +26,7 @@ import './components/calendar/index.js';
 ## Usage
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar />
 </x-demo>
 @endblade
@@ -64,7 +64,7 @@ The calendar supports three distinct selection modes, each with a different valu
 Users select exactly one date. The bound value is an ISO date string `YYYY-MM-DD`.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar mode="single" />
 </x-demo>
 @endblade
@@ -80,7 +80,7 @@ Users select exactly one date. The bound value is an ISO date string `YYYY-MM-DD
 Users select multiple dates. The panel stays open after each selection — the user closes it manually via click-away or navigation. The bound value is a comma-separated string of ISO date strings.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar mode="multiple" />
 </x-demo>
 @endblade
@@ -107,7 +107,7 @@ public function getSelectedDatesArrayProperty(): array
 Users select a start and end date for a date range. Click once to set the start, click again to set the end. The bound value is a comma-separated string of two ISO date strings `[start,end]`.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar mode="range" />
 </x-demo>
 @endblade
@@ -125,7 +125,7 @@ The calendar shows a visual highlight across the selected range. After selecting
 Restrict the selectable date range with `min` and `max`. Both accept ISO date strings `YYYY-MM-DD`. Dates outside this range are disabled and non-selectable.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar min="2026-04-01" max="2026-04-30" />
 </x-demo>
 @endblade
@@ -139,7 +139,7 @@ Restrict the selectable date range with `min` and `max`. Both accept ISO date st
 Mark specific dates as unavailable (greyed out, non-selectable) using a comma-separated array of ISO date strings. Unlike `min`/`max`, unavailable dates are visible but disabled.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar :unavailable-dates="['2026-04-15', '2026-04-20', '2026-04-25']" />
 </x-demo>
 @endblade
@@ -164,7 +164,7 @@ public function getBlockedDatesProperty(): array
 In `range` mode, enforce minimum and maximum range lengths with `min-range` and `max-range` (both in days). Dates that would violate the constraints are disabled while selecting the end date.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar mode="range" :min-range="3" :max-range="14" />
 </x-demo>
 @endblade
@@ -188,7 +188,7 @@ When `min-range` is set and you've selected the start date, all dates closer tha
 Enable dropdown selectors for quick month and year navigation with `selectable-months` and `selectable-years`. These provide an alternative to clicking through months with navigation buttons, especially useful for calendars spanning multiple years or when users need to jump to a specific date quickly.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar selectable-months selectable-years :years-range="[-10, 10]" />
 </x-demo>
 @endblade
@@ -223,7 +223,7 @@ When multiple months are displayed, the month and year selectors appear only in 
 By default, when no date is selected, the calendar opens to the current month. Use `open-to` to set a specific date the calendar should open to instead.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar open-to="2028-09-01" />
 </x-demo>
 @endblade
@@ -249,7 +249,7 @@ If the user already has a selected date, `open-to` is ignored — the calendar w
 Show multiple months side-by-side for easier range selection or date browsing. Set `number-of-months` to the desired count.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar :number-of-months="2" mode="range" />
 </x-demo>
 @endblade
@@ -267,7 +267,7 @@ Show multiple months side-by-side for easier range selection or date browsing. S
 By default, calendar months have variable heights (4–6 rows depending on the number of weeks). Set `fixed-weeks` to lock all rendered months to a consistent week number, which prevents layout shift when navigating.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar fixed-weeks :number-of-months="2" />
 </x-demo>
 @endblade
@@ -280,7 +280,7 @@ By default, calendar months have variable heights (4–6 rows depending on the n
 Display ISO 8601 week numbers in a dedicated column on the left side of the calendar. This is especially useful for business reports, payroll, project planning, and any application that relies on week‑based scheduling.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar week-numbers  />
 </x-demo>
 @endblade
@@ -312,7 +312,7 @@ By default, the calendar displays navigation buttons (previous/next month). Disa
 By default the calendar uses the browser locale (`navigator.language`). Override it with any valid BCP-47 locale string. Locale affects both the weekday names and the first day of the week.
 
 @blade
-<x-demo class="flex gap-4 justify-center">
+<x-demo lazy class="flex gap-4 justify-center">
     <x-ui.calendar locale="en-US" />
     <x-ui.calendar locale="fr-FR" />
     <x-ui.calendar locale="ja-JP" />
@@ -341,7 +341,7 @@ Override the locale-determined first day of the week with `start-day` (0 = Sunda
 The calendar comes in multiple sizes to fit different UI contexts.
 
 @blade
-<x-demo class="flex flex-col gap-6 items-center">
+<x-demo lazy class="flex flex-col gap-6 items-center">
     <x-ui.calendar size="xs" />
     <x-ui.calendar size="sm" />
     <x-ui.calendar size="md" />
@@ -370,7 +370,7 @@ By default, days from adjacent months (pre/post blanks) that fill out the calend
 Prevent all interaction by disabling the component entirely. Calendar remains visible for display purposes.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar read-only />
 </x-demo>
 @endblade
@@ -385,7 +385,7 @@ Prevent all interaction by disabling the component entirely. Calendar remains vi
 Show a "Go to today" button in the top-right corner of the calendar with `with-today`.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.calendar :with-today="true" />
 </x-demo>
 @endblade
@@ -403,7 +403,7 @@ Mark specific dates with custom categories (e.g., `holiday`, `birthday`, `blocke
 Pass a `special-days` associative array. Each date gets a `data-special` attribute with space‑separated category names. Use Tailwind’s arbitrary variant `[&_[data-special~=...]]` to style.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <div class="[&_[data-special~=holiday]]:text-yellow-600 [&_[data-special~=birthday]]:text-pink-500 [&_[data-special~=blocked]]:text-red-500">
         <x-ui.calendar 
             mode="multiple"
@@ -444,7 +444,7 @@ Pass a `special-days` associative array. Each date gets a `data-special` attribu
 Prevent selection of certain special days by adding `special-disabled` with the category keys.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <div class="[&_[data-special~=holiday]]:text-yellow-600 
                 [&_[data-special~=birthday]]:text-pink-500 
                 [&_[data-special~=blocked]]:text-red-500">
@@ -476,7 +476,7 @@ Now days with the `blocked` category are non‑selectable (disabled), while holi
 Provide tooltip text for each category using `special-tooltips`. The tooltip appears on hover.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <div class="[&_[data-special~=holiday]]:text-yellow-600 
                 [&_[data-special~=birthday]]:text-pink-500 
                 [&_[data-special~=blocked]]:text-red-500">
