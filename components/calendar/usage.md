@@ -338,16 +338,7 @@ Override the locale-determined first day of the week with `start-day` (0 = Sunda
 
 ## Size
 
-The calendar comes in multiple sizes to fit different UI contexts.
-
-@blade
-<x-demo lazy class="flex flex-col gap-6 items-center">
-    <x-ui.calendar size="xs" />
-    <x-ui.calendar size="sm" />
-    <x-ui.calendar size="md" />
-    <x-ui.calendar size="lg" />
-</x-demo>
-@endblade
+The calendar comes in multiple sizes to fit different UI contexts (`'xs'`,`'sm'`,`'md'`,`'lg'`,`'xl'`,`'2xl'`).
 
 ```blade
 <x-ui.calendar size="xs" wire:model="date" />
