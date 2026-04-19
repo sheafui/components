@@ -126,12 +126,12 @@ Restrict the selectable date range with `min` and `max`. Both accept ISO date st
 
 @blade
 <x-demo lazy class="flex justify-center">
-    <x-ui.calendar min="2026-04-01" max="2026-04-30" />
+    <x-ui.calendar min="2026-04-05" open-to="2026-04-01"  max="2026-04-25" />
 </x-demo>
 @endblade
 
 ```blade
-<x-ui.calendar min="2026-04-01" max="2026-04-30" wire:model="date" />
+<x-ui.calendar min="2026-04-05" max="2026-04-25" wire:model="date" />
 ```
 
 ## Unavailable Dates
@@ -503,6 +503,59 @@ Provide tooltip text for each category using `special-tooltips`. The tooltip app
 
 **Tooltip precedence:** If a day belongs to multiple categories, the tooltip from the **first matching key** in `special-tooltips` is shown.
 
+
+## With Inputs
+Add date input fields above the calendar for direct keyboard entry with `top-inputs`. Inputs support full keyboard navigation — arrow keys increment/decrement each segment, and typing auto-advances between segments.
+
+
+### Single Mode
+
+In single mode, one input field is displayed. The value stays in sync with the calendar — clicking a date updates the input, and typing in the input updates the calendar.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.calendar top-inputs mode="single" />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.calendar top-inputs mode="single" wire:model="date" />
+```
+
+### Range Mode
+
+In range mode, two inputs are displayed — one for the start date and one for the end date. Each input is independently editable and stays in sync with the calendar selection.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.calendar top-inputs mode="range" :number-of-months="2"  />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.calendar top-inputs mode="range" :number-of-months="2" wire:model="dateRange" />
+```
+
+> **Note:** `top-inputs` is not supported in `multiple` mode. 
+> Multiple date selection is inherently click-based
+
+### Custom Separator
+
+By default, date segments are separated by `-` (`yyyy-mm-dd`). Use the `separator` prop to change the display separator in the inputs.
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.calendar top-inputs separator="/" />
+</x-demo>
+@endblade
+
+```blade
+{{-- Display as yyyy/mm/dd --}}
+<x-ui.calendar top-inputs separator="/" wire:model="date" />
+```
+
+> The separator only affects the **display format** in the inputs. The value bound to `wire:model` or `x-model` is always ISO `YYYY-MM-DD` regardless of separator.
+
 ## Advanced Examples
 
 ### Appointment Booking
@@ -653,6 +706,8 @@ For dashboards and reports where layout stability is critical:
 | `open-to` | string | `null` | Date (`YYYY-MM-DD`) the calendar opens to when no date is selected. Ignored if a date is already selected. |
 | `force-open-to` | boolean | `false` | When `true`, forces the calendar to always open to the `open-to` date, even if a date is selected. Requires `open-to`. |
 | `week-numbers` | boolean | `false` | Show ISO week numbers in a separate column. |
+| `top-inputs` | boolean | `false` | Show date input field(s) above the calendar for direct keyboard entry. In `range` mode, two inputs are shown (start and end). |
+| `separator` | string | `'-'` | Segment separator used in the input display. Common values: `'-'`, `'/'`, `'.'`. Does not affect the bound value format. |
 
 ## Data Attributes
 
