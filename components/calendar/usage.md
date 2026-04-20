@@ -412,14 +412,6 @@ The calendar comes in multiple sizes to fit different UI contexts (`'xs'`,`'sm'`
 <x-ui.calendar size="lg" wire:model="date" />
 ```
 
-## Highlighting Blank Days
-
-By default, days from adjacent months (pre/post blanks) that fill out the calendar grid are visible but unstyled. Set `highlight-blank-days="false"` to hide them entirely.
-
-```blade
-{{-- Hide adjacent month days --}}
-<x-ui.calendar :highlight-blank-days="false" wire:model="date" />
-```
 
 ## Read-Only
 
@@ -740,16 +732,17 @@ For dashboards and reports where layout stability is critical:
 />
 ```
 
-## The DateRange Synthesizer
+##  The `DateRange` Synthesizer
 
-When using `mode="range"` with Livewire, we recomend using the calendar, binds to a `DateRange` object instead of a raw `['start'=>'...', 'end'=>'...']`. This powerful object extends Laravel's `CarbonPeriod` and provides a rich API for working with date ranges.
+When using `mode="range"` with Livewire, we recommend binding the calendar to a `DateRange` object instead of a raw `['start'=>'...', 'end'=>'...']`. This powerful object extends Laravel's `CarbonPeriod` and provides a rich API for working with date ranges.
 
-### Usage 
+#### Installation
 
-bind the synthesizer so livewire can't recognize it, in you server provider `boot` method
+First, register the synthesizer in your service provider:
+
 ```php
+use App\Livewire\Synthesizers\DateRangeSynthesizer;
 use Livewire\Livewire;
-use use App\Livewire\Synthesizers\DateRangeSynthesizer;
 
 // ...
 public function boot(): void
@@ -758,67 +751,81 @@ public function boot(): void
 }
 ```
 
-### Creating a DateRange
+#### Basic Usage
 
-In your Livewire component:
+In your Livewire component, type-hint the property:
 
 ```php
 use App\View\Components\DateRange;
-use App\Enums\DateRangePreset;
 
-public DateRange $vacation;
-
-public function mount()
+class Dashboard extends Component
 {
-    // Initialize as empty range
-    $this->vacation = new DateRange();
-    
-    // Or initialize with specific dates
-    $this->vacation = new DateRange('2026-04-15', '2026-04-25');
-    
-    // Or initialize with specific dates
-    $this->vacation = new DateRange(now()->subDays(1), now()->addDays(4));   
+    public DateRange $range;
+
+    public function mount()
+    {
+        // Initialize as empty range
+        $this->range = new DateRange();
+        
+        // Or initialize with specific dates
+        $this->range = new DateRange('2026-04-15', '2026-04-25');
+        
+        // Or using Carbon instances
+        $this->range = new DateRange(now()->subDays(1), now()->addDays(4));
+    }
 }
 ```
 
-### Methods
+Then bind it to your calendar view:
 
-- getting start and end dates
-
-```php
-// Returns ISO date string (YYYY-MM-DD) or null
-$start = $this->vacation->getStart(); // "2026-04-15"
-$end = $this->vacation->getEnd();     // "2026-04-25"
-
-// Check if range has bounds
-if ($this->vacation->hasStart()) { /* ... */ }
-if ($this->vacation->hasEnd()) { /* ... */ }
+```blade
+<flux:calendar mode="range" wire:model.live="range" />
 ```
 
-- iterating over dates
+#### Core Methods
+
+| Method | Description |
+| :--- | :--- |
+| `getStart(): ?string` | Returns the start date as a Y-m-d string, or `null` if not set. |
+| `getEnd(): ?string` | Returns the end date as a Y-m-d string, or `null` if not set. |
+| `hasStart(): bool` | Checks if the start date is set. |
+| `hasEnd(): bool` | Checks if the end date is set. |
+| `getPreset(): DateRangePreset` | Returns the preset used to create this range (e.g., `DateRangePreset::ThisWeek`). |
+
+#### Advanced Use Cases
+
+Because `DateRange` extends `CarbonPeriod`, you can leverage its full power.
+
+##### Iterating Over the Range
 
 ```php
-// Get all dates in the range as Carbon instances
-foreach ($this->vacation as $day) {
-    echo $date->format('Y-m-d');
+foreach ($this->range as $date) {
+    echo $date->format('Y-m-d'); // Each $date is a Carbon instance
 }
-
-// Get start and end as Carbon objects (inherited from CarbonPeriod)
-$start = $this->vacation->getStartDate();  // Carbon instance
-$end = $this->vacation->getEndDate();      // Carbon instance
-```
-- you can use with eloquents
-
-```
-Component::whereBetween('updated_at', $this->range)->get();
 ```
 
-- validation example
+##### Filtering the Range
+
+Use `addFilter()` to include or exclude specific days. For example, to get all weekdays within a range:
+
+```php
+$weekdays = $this->range->addFilter('isWeekday')->toArray();
+```
+
+##### Using with Eloquent
+
+The `DateRange` object works directly with `whereBetween`:
+
+```php
+use App\Models\Booking;
+
+$bookings = Booking::whereBetween('date', $this->range)->get();
+```
+
+##### Validating the Range
 
 ```php
 use Illuminate\Validation\Validator;
-
-public DateRange $vacation;
 
 public function rules(): array
 {
@@ -828,6 +835,7 @@ public function rules(): array
     ];
 }
 ```
+
 
 ## Component Props
 
@@ -850,7 +858,6 @@ public function rules(): array
 | `number-of-months` | integer | `1` | Number of months to display side‑by‑side. |
 | `fixed-weeks` | boolean | `false` | Lock all months to 6 rows for consistent layout height. |
 | `allow-navigation` | boolean | `true` | Show previous/next month navigation buttons. |
-| `highlight-blank-days` | boolean | `true` | Show days from adjacent months in the grid. |
 | `with-today` | boolean | `false` | Show a “go to today” button in the header. |
 | `selectable-months` | boolean | `false` | Show month selector dropdown in the calendar header. |
 | `selectable-years` | boolean | `false` | Show year selector dropdown in the calendar header. |
@@ -879,9 +886,40 @@ public function rules(): array
 | `data-hover-end` | Present on the hovered cell while selecting range end. |
 | `data-first-in-row` | Present on the first cell of each week row. |
 | `data-last-in-row` | Present on the last cell of each week row. |
-| `data-highlight-blank-days` | Present on blank day cells (inherited from parent config). |
 | `data-special` | Present on cells that have at least one special category. Value is a space‑separated list of category keys (e.g., `"holiday birthday"`). |
 | `data-has-tooltip` | Present on cells that have a tooltip (from `special-tooltips`). Useful for CSS selectors like `[data-has-tooltip]:hover [data-special-tooltip]`. |
 | `data-slot="calendar-week-num-cell"` | Applied to each week number cell. |
 
 ## DateRange
+
+| Method | Description |
+| :--- | :--- |
+| **Instance Methods** | |
+| `getStart(): ?string` | Returns the start date as a `Y-m-d` string, or `null` if not set. |
+| `getEnd(): ?string` | Returns the end date as a `Y-m-d` string, or `null` if not set. |
+| `hasStart(): bool` | Checks if the start date is set. |
+| `hasEnd(): bool` | Checks if the end date is set. |
+| `getPreset(): DateRangePreset` | Returns the preset used to create this range (e.g., `DateRangePreset::ThisWeek`). |
+| `preset(DateRangePreset $preset): void` | Manually sets the preset for the range. |
+| **Static Factory Methods** | |
+| `setStart($start): static` | Creates a new `DateRange` with only the start date set (end is `null`). |
+| `setEnd($end): static` | Creates a new `DateRange` with only the end date set (start is `null`). |
+| `fromPreset(DateRangePreset $preset): static` | Creates a `DateRange` from a preset enum value. |
+| `today(): static` | Creates a range for today only. |
+| `yesterday(): static` | Creates a range for yesterday only. |
+| `thisWeek(): static` | Creates a range for the current week (Monday–Sunday, respecting locale). |
+| `lastWeek(): static` | Creates a range for the previous week. |
+| `last7Days(): static` | Creates a range for the last 7 days (including today). |
+| `thisMonth(): static` | Creates a range for the current month. |
+| `lastMonth(): static` | Creates a range for the previous month. |
+| `thisQuarter(): static` | Creates a range for the current quarter. |
+| `lastQuarter(): static` | Creates a range for the previous quarter. |
+| `thisYear(): static` | Creates a range for the current year. |
+| `lastYear(): static` | Creates a range for the previous year. |
+| `last14Days(): static` | Creates a range for the last 14 days. |
+| `last30Days(): static` | Creates a range for the last 30 days. |
+| `last3Months(): static` | Creates a range for the last 3 months. |
+| `last6Months(): static` | Creates a range for the last 6 months. |
+| `yearToDate(): static` | Creates a range from January 1st of the current year to today. |
+
+> **Note:** `DateRange` extends `CarbonPeriod`, so it also inherits all methods from `CarbonPeriod` (e.g., `getStartDate()`, `getEndDate()`, `addFilter()`, `toArray()`, etc.). For a complete list of those, refer to the official [CarbonPeriod documentation](https://carbon.nesbot.com/guide/specialized-use/carbon-period.html). The table above only lists methods that are **exclusive to your `DateRange` class**.
