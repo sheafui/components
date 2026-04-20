@@ -740,18 +740,23 @@ For dashboards and reports where layout stability is critical:
 />
 ```
 
-## The DateRange Object
+## The DateRange Synthesizer
 
-When using `mode="range"` with Livewire, the calendar binds to a `DateRange` object instead of a raw string. This powerful object extends Laravel's `CarbonPeriod` and provides a rich API for working with date ranges.
+When using `mode="range"` with Livewire, we recomend using the calendar, binds to a `DateRange` object instead of a raw `['start'=>'...', 'end'=>'...']`. This powerful object extends Laravel's `CarbonPeriod` and provides a rich API for working with date ranges.
 
-### Why Use DateRange?
+### Usage 
 
-The `DateRange` object abstracts away string parsing and provides:
-- **Type safety**: No string parsing errors; dates are always `Carbon` instances internally
-- **Preset support**: Built-in presets like "Last 7 days", "This month", etc.
-- **Rich iteration**: Iterate over every date in the range or get formatted date arrays
-- **Query methods**: `hasStart()`, `hasEnd()`, check if specific dates are in range
-- **Automatic serialization**: Livewire's `DateRangeSynthesizer` handles hydration/dehydration seamlessly
+bind the synthesizer so livewire can't recognize it, in you server provider `boot` method
+```php
+use Livewire\Livewire;
+use use App\Livewire\Synthesizers\DateRangeSynthesizer;
+
+// ...
+public function boot(): void
+{
+    Livewire::propertySynthesizer(DateRangeSynthesizer::class);
+}
+```
 
 ### Creating a DateRange
 
@@ -771,14 +776,14 @@ public function mount()
     // Or initialize with specific dates
     $this->vacation = new DateRange('2026-04-15', '2026-04-25');
     
-    // Or use a preset
-    $this->vacation = DateRange::fromPreset(DateRangePreset::Last7Days);
+    // Or initialize with specific dates
+    $this->vacation = new DateRange(now()->subDays(1), now()->addDays(4));   
 }
 ```
 
-### Methods & Properties
+### Methods
 
-#### Getting Start and End Dates
+- getting start and end dates
 
 ```php
 // Returns ISO date string (YYYY-MM-DD) or null
@@ -790,23 +795,11 @@ if ($this->vacation->hasStart()) { /* ... */ }
 if ($this->vacation->hasEnd()) { /* ... */ }
 ```
 
-#### Working with Presets
-
-```php
-use App\Enums\DateRangePreset;
-
-// Set or update preset
-$this->vacation = DateRange::fromPreset(DateRangePreset::ThisMonth);
-
-// Get current preset
-$preset = $this->vacation->getPreset(); // DateRangePreset::Custom, ThisMonth, etc.
-```
-
-#### Iterating Over Dates
+- iterating over dates
 
 ```php
 // Get all dates in the range as Carbon instances
-foreach ($this->vacation as $date) {
+foreach ($this->vacation as $day) {
     echo $date->format('Y-m-d');
 }
 
@@ -814,63 +807,17 @@ foreach ($this->vacation as $date) {
 $start = $this->vacation->getStartDate();  // Carbon instance
 $end = $this->vacation->getEndDate();      // Carbon instance
 ```
+- you can use with eloquents
 
-#### Practical Example: Calculate Vacation Days
-
-```php
-public function calculateVacationCost()
-{
-    if (!$this->vacation->hasStart() || !$this->vacation->hasEnd()) {
-        return 0; // Incomplete range
-    }
-    
-    // Count working days (exclude weekends)
-    $workingDays = 0;
-    foreach ($this->vacation as $date) {
-        if ($date->isWeekday()) {
-            $workingDays++;
-        }
-    }
-    
-    // Calculate cost
-    return $workingDays * 150; // $150 per day
-}
+```
+Component::whereBetween('updated_at', $this->range)->get();
 ```
 
-#### Manual Setting
-
-```php
-// Set only start date
-$this->vacation = DateRange::setStart('2026-04-15');
-
-// Set only end date
-$this->vacation = DateRange::setEnd('2026-04-25');
-
-// Create a new range with updated range
-$this->vacation = new DateRange('2026-04-15', '2026-04-25');
-```
-
-### Frontend Integration
-
-The calendar handles all frontend-to-backend binding automatically. When the user selects a range:
-
-```blade
-<!-- This single line handles everything -->
-<x-ui.calendar mode="range" wire:model="vacation" />
-```
-
-The value sync is transparent:
-1. User clicks two dates in the calendar
-2. Calendar emits `{ start: "2026-04-15", end: "2026-04-25" }`
-3. `DateRangeSynthesizer` hydrates it into a `DateRange` object
-4. Your Livewire property updates with the full object (not just strings)
-
-### Validation Example
+- validation example
 
 ```php
 use Illuminate\Validation\Validator;
 
-#[Validate('required')]
 public DateRange $vacation;
 
 public function rules(): array
@@ -936,3 +883,5 @@ public function rules(): array
 | `data-special` | Present on cells that have at least one special category. Value is a space‑separated list of category keys (e.g., `"holiday birthday"`). |
 | `data-has-tooltip` | Present on cells that have a tooltip (from `special-tooltips`). Useful for CSS selectors like `[data-has-tooltip]:hover [data-special-tooltip]`. |
 | `data-slot="calendar-week-num-cell"` | Applied to each week number cell. |
+
+## DateRange
