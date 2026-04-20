@@ -49,8 +49,23 @@ For real-time syncing:
 
 Outside of Livewire, bind with `x-model`:
 
+#### Single Mode
 ```blade
-<div x-data="{ date: '' }">
+<div x-data="{ date: null }">
+    <x-ui.calendar x-model="date" />
+</div>
+```
+
+#### Multiple Mode
+```blade
+<div x-data="{ date: [] }">
+    <x-ui.calendar x-model="date" />
+</div>
+```
+
+#### Range Mode
+```blade
+<div x-data="{ date: { start: null, end: null}}">
     <x-ui.calendar x-model="date" />
 </div>
 ```
