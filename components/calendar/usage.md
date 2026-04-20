@@ -33,17 +33,64 @@ import './components/calendar/index.js';
 
 ### Bind to Livewire
 
-Use `wire:model` to bind the selected date to a Livewire property. The value format depends on the selection mode (see [Selection Modes](#selection-modes)):
+Use `wire:model` to bind the selected date(s) to a Livewire property. The value format and type depends on the selection mode.
+
+#### Single Mode
+
+In single mode, the property holds an ISO date string (`YYYY-MM-DD`):
+
+```php
+// Livewire component
+public ?string $date = null;
+```
 
 ```blade
-<x-ui.calendar wire:model="date" />
+<x-ui.calendar mode="single" wire:model="date" />
 ```
 
 For real-time syncing:
 
 ```blade
-<x-ui.calendar wire:model.live="date" />
+<x-ui.calendar mode="single" wire:model.live="date" />
 ```
+
+#### Multiple Mode
+
+In multiple mode, the property holds an array of ISO date strings:
+
+```php
+// Livewire component
+public array $dates = [];
+
+// Or as a comma-separated string
+public string $dates = '';
+```
+
+```blade
+<x-ui.calendar mode="multiple" wire:model="dates" />
+```
+
+#### Range Mode
+
+In range mode, use the `DateRange` object. Livewire automatically hydrates/dehydrates it via the `DateRangeSynthesizer`:
+
+```php
+// Livewire component
+use App\View\Components\DateRange;
+
+public DateRange $dateRange;
+
+public function mount()
+{
+    $this->dateRange = new DateRange();
+}
+```
+
+```blade
+<x-ui.calendar mode="range" wire:model="dateRange" />
+```
+
+The `DateRange` object provides convenient methods and presets. See [The DateRange Object](#the-daterange-object) for details.
 
 ### Using with Alpine
 
@@ -53,20 +100,23 @@ Outside of Livewire, bind with `x-model`:
 ```blade
 <div x-data="{ date: null }">
     <x-ui.calendar x-model="date" />
+    <p x-text="date"></p>
 </div>
 ```
 
 #### Multiple Mode
 ```blade
-<div x-data="{ date: [] }">
-    <x-ui.calendar x-model="date" />
+<div x-data="{ dates: [] }">
+    <x-ui.calendar mode="multiple" x-model="dates" />
+    <p x-text="dates.join(', ')"></p>
 </div>
 ```
 
 #### Range Mode
 ```blade
-<div x-data="{ date: { start: null, end: null}}">
-    <x-ui.calendar x-model="date" />
+<div x-data="{ dateRange: { start: null, end: null } }">
+    <x-ui.calendar mode="range" x-model="dateRange" />
+    <p x-text="`From: ${dateRange.start} To: ${dateRange.end}`"></p>
 </div>
 ```
 
@@ -688,6 +738,148 @@ For dashboards and reports where layout stability is critical:
     size="sm"
     wire:model="selectedDates"
 />
+```
+
+## The DateRange Object
+
+When using `mode="range"` with Livewire, the calendar binds to a `DateRange` object instead of a raw string. This powerful object extends Laravel's `CarbonPeriod` and provides a rich API for working with date ranges.
+
+### Why Use DateRange?
+
+The `DateRange` object abstracts away string parsing and provides:
+- **Type safety**: No string parsing errors; dates are always `Carbon` instances internally
+- **Preset support**: Built-in presets like "Last 7 days", "This month", etc.
+- **Rich iteration**: Iterate over every date in the range or get formatted date arrays
+- **Query methods**: `hasStart()`, `hasEnd()`, check if specific dates are in range
+- **Automatic serialization**: Livewire's `DateRangeSynthesizer` handles hydration/dehydration seamlessly
+
+### Creating a DateRange
+
+In your Livewire component:
+
+```php
+use App\View\Components\DateRange;
+use App\Enums\DateRangePreset;
+
+public DateRange $vacation;
+
+public function mount()
+{
+    // Initialize as empty range
+    $this->vacation = new DateRange();
+    
+    // Or initialize with specific dates
+    $this->vacation = new DateRange('2026-04-15', '2026-04-25');
+    
+    // Or use a preset
+    $this->vacation = DateRange::fromPreset(DateRangePreset::Last7Days);
+}
+```
+
+### Methods & Properties
+
+#### Getting Start and End Dates
+
+```php
+// Returns ISO date string (YYYY-MM-DD) or null
+$start = $this->vacation->getStart(); // "2026-04-15"
+$end = $this->vacation->getEnd();     // "2026-04-25"
+
+// Check if range has bounds
+if ($this->vacation->hasStart()) { /* ... */ }
+if ($this->vacation->hasEnd()) { /* ... */ }
+```
+
+#### Working with Presets
+
+```php
+use App\Enums\DateRangePreset;
+
+// Set or update preset
+$this->vacation = DateRange::fromPreset(DateRangePreset::ThisMonth);
+
+// Get current preset
+$preset = $this->vacation->getPreset(); // DateRangePreset::Custom, ThisMonth, etc.
+```
+
+#### Iterating Over Dates
+
+```php
+// Get all dates in the range as Carbon instances
+foreach ($this->vacation as $date) {
+    echo $date->format('Y-m-d');
+}
+
+// Get start and end as Carbon objects (inherited from CarbonPeriod)
+$start = $this->vacation->getStartDate();  // Carbon instance
+$end = $this->vacation->getEndDate();      // Carbon instance
+```
+
+#### Practical Example: Calculate Vacation Days
+
+```php
+public function calculateVacationCost()
+{
+    if (!$this->vacation->hasStart() || !$this->vacation->hasEnd()) {
+        return 0; // Incomplete range
+    }
+    
+    // Count working days (exclude weekends)
+    $workingDays = 0;
+    foreach ($this->vacation as $date) {
+        if ($date->isWeekday()) {
+            $workingDays++;
+        }
+    }
+    
+    // Calculate cost
+    return $workingDays * 150; // $150 per day
+}
+```
+
+#### Manual Setting
+
+```php
+// Set only start date
+$this->vacation = DateRange::setStart('2026-04-15');
+
+// Set only end date
+$this->vacation = DateRange::setEnd('2026-04-25');
+
+// Create a new range with updated range
+$this->vacation = new DateRange('2026-04-15', '2026-04-25');
+```
+
+### Frontend Integration
+
+The calendar handles all frontend-to-backend binding automatically. When the user selects a range:
+
+```blade
+<!-- This single line handles everything -->
+<x-ui.calendar mode="range" wire:model="vacation" />
+```
+
+The value sync is transparent:
+1. User clicks two dates in the calendar
+2. Calendar emits `{ start: "2026-04-15", end: "2026-04-25" }`
+3. `DateRangeSynthesizer` hydrates it into a `DateRange` object
+4. Your Livewire property updates with the full object (not just strings)
+
+### Validation Example
+
+```php
+use Illuminate\Validation\Validator;
+
+#[Validate('required')]
+public DateRange $vacation;
+
+public function rules(): array
+{
+    return [
+        'vacation.start' => 'required|date_format:Y-m-d',
+        'vacation.end' => 'required|date_format:Y-m-d|after:vacation.start',
+    ];
+}
 ```
 
 ## Component Props
