@@ -784,13 +784,37 @@ Then bind it to your calendar view:
 
 #### Core Methods
 
-| Method | Description |
-| :--- | :--- |
-| `getStart(): ?string` | Returns the start date as a Y-m-d string, or `null` if not set. |
-| `getEnd(): ?string` | Returns the end date as a Y-m-d string, or `null` if not set. |
-| `hasStart(): bool` | Checks if the start date is set. |
-| `hasEnd(): bool` | Checks if the end date is set. |
-| `getPreset(): DateRangePreset` | Returns the preset used to create this range (e.g., `DateRangePreset::ThisWeek`). |
+```php
+// Get the start date as a Y-m-d string (or null if not set)
+$start = $this->vacation->getStart(); // e.g., "2026-04-15"
+
+// Get the end date as a Y-m-d string (or null if not set)
+$end = $this->vacation->getEnd();     // e.g., "2026-04-25"
+
+// Check if the range has a start date
+if ($this->vacation->hasStart()) {
+    // Start is set
+}
+
+// Check if the range has an end date
+if ($this->vacation->hasEnd()) {
+    // End is set
+}
+
+// Get the preset used to create this range (e.g., DateRangePreset::ThisWeek)
+$preset = $this->vacation->getPreset();
+
+// Manually set the preset (e.g., after modifying dates)
+$this->vacation->preset(DateRangePreset::Custom);
+
+// Create a new range with only a start date
+$partial = DateRange::setStart('2026-04-15'); // end will be null
+
+// Create a new range with only an end date
+$partial = DateRange::setEnd('2026-04-25');   // start will be null
+
+```
+
 
 #### Advanced Use Cases
 
