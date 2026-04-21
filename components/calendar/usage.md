@@ -269,29 +269,29 @@ If the user already has a selected date, `open-to` is ignored — the calendar w
 
 ## Multi-Month Display
 
-Show multiple months side-by-side for easier range selection or date browsing. Set `number-of-months` to the desired count.
+Show multiple months side-by-side for easier range selection or date browsing. Set `months` to the desired count.
 
 @blade
 <x-demo lazy class="flex justify-center">
-    <x-ui.calendar :number-of-months="2" mode="range" />
+    <x-ui.calendar :months="2" mode="range" />
 </x-demo>
 @endblade
 
 ```blade
 {{-- Show 2 months side-by-side (great for range mode) --}}
-<x-ui.calendar :number-of-months="2" mode="range" wire:model="dateRange" />
+<x-ui.calendar :months="2" mode="range" wire:model="dateRange" />
 
 {{-- Show 3 months --}}
-<x-ui.calendar :number-of-months="3" mode="multiple" wire:model="dates" />
+<x-ui.calendar :months="3" mode="multiple" wire:model="dates" />
 ```
 
 ## Fixed Week Heights
 
-By default, calendar months have variable heights (4–6 rows depending on the number of weeks). Set `fixed-weeks` to lock all rendered months to a consistent week number, which prevents layout shift when navigating.
+By default, calendar months have different weeks number(4–6 rows). Set `fixed-weeks` to lock all rendered months to a consistent week number (take the number of week from the month with height weeks number).
 
 @blade
 <x-demo lazy class="flex justify-center">
-    <x-ui.calendar fixed-weeks :number-of-months="2" />
+    <x-ui.calendar fixed-weeks :months="2" />
 </x-demo>
 @endblade
 
@@ -311,7 +311,6 @@ Display ISO 8601 week numbers in a dedicated column on the left side of the cale
 ```blade
 {{-- Show week numbers in a single month --}}
 <x-ui.calendar week-numbers wire:model="date" />
-
 ```
 
 The calendar follows the **ISO 8601** standard:
@@ -325,6 +324,12 @@ The calendar follows the **ISO 8601** standard:
 
 By default, the calendar displays navigation buttons (previous/next month). Disable them with `allow-navigation="false"`.
 
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.calendar :allow-navigation="false" />
+</x-demo>
+@endblade
+
 ```blade
 {{-- Hide navigation buttons --}}
 <x-ui.calendar :allow-navigation="false" wire:model="date" />
@@ -336,16 +341,14 @@ By default the calendar uses the browser locale (`navigator.language`). Override
 
 @blade
 <x-demo lazy class="flex gap-4 justify-center">
-    <x-ui.calendar locale="en-US" />
-    <x-ui.calendar locale="fr-FR" />
-    <x-ui.calendar locale="ja-JP" />
+    <x-ui.calendar locale="ar-Ma" mode="range" />
+    <x-ui.calendar locale="fr-Ma" mode="range" />
 </x-demo>
 @endblade
 
 ```blade
-<x-ui.calendar locale="en-US" wire:model="date" />
-<x-ui.calendar locale="fr-FR" wire:model="date" />
-<x-ui.calendar locale="de-DE" wire:model="date" />
+<x-ui.calendar locale="ar-Ma" wire:model="date" />
+<x-ui.calendar locale="fr-Ma" wire:model="date" />
 ```
 
 > Locale automatically determines the first day of the week (e.g., Sunday in US, Monday in Europe) via the [Intl API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/getWeekInfo).
@@ -433,7 +436,9 @@ Pass a `special-days` associative array. Each date gets a `data-special` attribu
             [&_[data-special~=birthday]]:text-pink-500 
             
             <!-- get blocked red colors -->
-            [&_[data-special~=blocked]]:text-red-500">
+            [&_[data-special~=blocked]]:text-red-500
+        "
+>
     <x-ui.calendar 
         :special-days="[
             'holiday'   => ['2026-04-20', '2026-04-21'],
@@ -543,12 +548,12 @@ In range mode, two inputs are displayed — one for the start date and one for t
 
 @blade
 <x-demo lazy class="flex justify-center">
-    <x-ui.calendar top-inputs mode="range" :number-of-months="2"  />
+    <x-ui.calendar top-inputs mode="range" :months="2"  />
 </x-demo>
 @endblade
 
 ```blade
-<x-ui.calendar top-inputs mode="range" :number-of-months="2" wire:model="dateRange" />
+<x-ui.calendar top-inputs mode="range" :months="2" wire:model="dateRange" />
 ```
 
 > **Note:** `top-inputs` is not supported in `multiple` mode. 
@@ -604,9 +609,6 @@ class Dashboard extends Component
 
     public function mount()
     {
-        // Initialize as empty range
-        $this->range = new DateRange();
-        
         // Or initialize with specific dates
         $this->range = new DateRange('2026-04-15', '2026-04-25');
         
@@ -719,7 +721,7 @@ public function rules(): array
 | `special-tooltips` | array | `[]` | Associative array of category keys → tooltip text. Tooltip appears on hover. |
 | `locale` | string | `'auto'` | BCP‑47 locale for weekday names and first day of week. `auto` uses `navigator.language`. |
 | `start-day` | integer\|string | `'auto'` | First day of the week (0 = Sunday, 1 = Monday, …, 6 = Saturday). `auto` respects locale. |
-| `number-of-months` | integer | `1` | Number of months to display side‑by‑side. |
+| `months` | integer | `1` | Number of months to display side‑by‑side. |
 | `fixed-weeks` | boolean | `false` | Lock all months to 6 rows for consistent layout height. |
 | `allow-navigation` | boolean | `true` | Show previous/next month navigation buttons. |
 | `with-today` | boolean | `false` | Show a “go to today” button in the header. |
