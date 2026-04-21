@@ -413,19 +413,19 @@ The calendar comes in multiple sizes to fit different UI contexts (`'xs'`,`'sm'`
 ```
 
 
-## Read-Only
+## Readonly
 
 Prevent all interaction by disabling the component entirely. Calendar remains visible for display purposes.
 
 @blade
 <x-demo lazy class="flex justify-center">
-    <x-ui.calendar read-only />
+    <x-ui.calendar readonly />
 </x-demo>
 @endblade
 
 
 ```blade
-<x-ui.calendar :read-only="true"  wire:model="date" />
+<x-ui.calendar readonly wire:model="date" />
 ```
 
 ## Today Button
@@ -886,7 +886,7 @@ public function rules(): array
 | `selectable-months` | boolean | `false` | Show month selector dropdown in the calendar header. |
 | `selectable-years` | boolean | `false` | Show year selector dropdown in the calendar header. |
 | `years-range` | array | `[-10, 10]` | Range of selectable years as `[start, end]`. Values ≤ 100 are relative offsets from current year; larger values are absolute years. |
-| `read-only` | boolean | `false` | Disable all interaction (display‑only). |
+| `readonly` | boolean | `false` | Disable all interaction (display‑only). |
 | `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
 | `open-to` | string | `null` | Date (`YYYY-MM-DD`) the calendar opens to when no date is selected. Ignored if a date is already selected. |
 | `force-open-to` | boolean | `false` | When `true`, forces the calendar to always open to the `open-to` date, even if a date is selected. Requires `open-to`. |
