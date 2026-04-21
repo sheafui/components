@@ -98,10 +98,6 @@ Outside Livewire, bind with `x-model`:
 </div>
 ```
 
-This version:
-- Reduces the six subsections to a compact, scannable format.
-- For Livewire range, shows the simple array first (quick start) and then mentions `DateRange` as the recommended advanced option (with a link to the detailed section later in the doc).
-- Keeps Alpine examples minimal but complete.
 ## Selection Modes
 
 The calendar supports three distinct selection modes, each with a different value format.
