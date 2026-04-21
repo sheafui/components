@@ -83,7 +83,7 @@ Outside Livewire, bind with `x-model`:
 </div>
 
 <!-- bind durrent's day date -->
-<div x-data="{ date: date: new Date().toISOString() }"> 
+<div x-data="{ date: new Date().toISOString() }"> 
     <x-ui.calendar x-model="date" />
 </div>
 
