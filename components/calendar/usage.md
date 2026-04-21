@@ -33,93 +33,75 @@ import './components/calendar/index.js';
 
 ### Bind to Livewire
 
-Use `wire:model` to bind the selected date(s) to a Livewire property. The value format and type depends on the selection mode.
+Use `wire:model` to sync the calendar with a Livewire property. The format depends on the mode.
 
 #### Single Mode
-
-In single mode, the property holds an ISO date string (`YYYY-MM-DD`):
-
 ```php
-// Livewire component
 public ?string $date = null;
 ```
-
 ```blade
-<x-ui.calendar mode="single" wire:model="date" />
-```
-
-For real-time syncing:
-
-```blade
-<x-ui.calendar mode="single" wire:model.live="date" />
+<x-ui.calendar mode="single" wire:model="date" />                 {{-- lazy sync --}}
 ```
 
 #### Multiple Mode
-
-In multiple mode, the property holds an array of ISO date strings:
-
 ```php
-// Livewire component
 public array $dates = [];
-
-// Or as a comma-separated string
-public string $dates = '';
 ```
-
 ```blade
 <x-ui.calendar mode="multiple" wire:model="dates" />
 ```
 
 #### Range Mode
 
-In range mode, use the `DateRange` object. Livewire automatically hydrates/dehydrates it via the `DateRangeSynthesizer`:
+**A) Simple associative array** (start + end as ISO strings):
+```php
+public array $range = ['start' => null, 'end' => null];
+```
+```blade
+<x-ui.calendar mode="range" wire:model="range" />
+```
+
+**B) `DateRange` object** (recommended – provides presets, date methods, and seamless hydration).  
+See [The DateRange Synth](#content-the-daterange-synthesizer) for full details.
 
 ```php
-// Livewire component
 use App\View\Components\DateRange;
-
-public DateRange $dateRange;
-
-public function mount()
-{
-    $this->dateRange = new DateRange();
-}
+public DateRange $range;
+```
+```blade
+<x-ui.calendar mode="range" wire:model="range" />
 ```
 
+### Using with Alpine 
+
+Outside Livewire, bind with `x-model`:
+
 ```blade
-<x-ui.calendar mode="range" wire:model="dateRange" />
-```
-
-The `DateRange` object provides convenient methods and presets. See [The DateRange Object](#the-daterange-object) for details.
-
-### Using with Alpine
-
-Outside of Livewire, bind with `x-model`:
-
-#### Single Mode
-```blade
+<!-- Single -->
 <div x-data="{ date: null }">
     <x-ui.calendar x-model="date" />
-    <p x-text="date"></p>
 </div>
-```
 
-#### Multiple Mode
-```blade
+<!-- bind durrent's day date -->
+<div x-data="{ date: date: new Date().toISOString() }"> 
+    <x-ui.calendar x-model="date" />
+</div>
+
+<!-- Multiple -->
 <div x-data="{ dates: [] }">
     <x-ui.calendar mode="multiple" x-model="dates" />
-    <p x-text="dates.join(', ')"></p>
+</div>
+
+<!-- Range (simple object) -->
+<div x-data="{ range: { start: null, end: null } }">
+    <x-ui.calendar mode="range" x-model="range" />
 </div>
 ```
 
-#### Range Mode
-```blade
-<div x-data="{ dateRange: { start: null, end: null } }">
-    <x-ui.calendar mode="range" x-model="dateRange" />
-    <p x-text="`From: ${dateRange.start} To: ${dateRange.end}`"></p>
-</div>
-```
-
+This version:
+- Reduces the six subsections to a compact, scannable format.
+- For Livewire range, shows the simple array first (quick start) and then mentions `DateRange` as the recommended advanced option (with a link to the detailed section later in the doc).
+- Keeps Alpine examples minimal but complete.
 ## Selection Modes
 
 The calendar supports three distinct selection modes, each with a different value format.
@@ -613,124 +595,6 @@ By default, date segments are separated by `-` (`yyyy-mm-dd`). Use the `separato
 
 > The separator only affects the **display format** in the inputs. The value bound to `wire:model` or `x-model` is always ISO `YYYY-MM-DD` regardless of separator.
 
-## Advanced Examples
-
-### Appointment Booking
-
-Typical booking scenario: future dates only, exclude weekends and holidays.
-
-```blade
-<x-ui.calendar
-    mode="single"
-    :min="now()->addDay()->format('Y-m-d')"
-    :unavailable-dates="$blockedDates"
-    wire:model="appointmentDate"
-    locale="auto"
-/>
-```
-
-**Livewire backend:**
-
-```php
-public function getBlockedDatesProperty(): array
-{
-    return Holiday::whereBetween('date', [
-        now(),
-        now()->addMonths(3)
-    ])
-    ->pluck('date')
-    ->map(fn($date) => $date->format('Y-m-d'))
-    ->toArray();
-}
-```
-
-### Date Range Booking with Constraints
-
-Let users book a 3-14 day vacation starting next week:
-
-```blade
-<x-ui.calendar
-    mode="range"
-    :min="now()->addWeek()->format('Y-m-d')"
-    :min-range="3"
-    :max-range="14"
-    :number-of-months="2"
-    wire:model="vacationDates"
-/>
-```
-
-### Multi-date Event Selection
-
-Allow selecting multiple meeting dates across months:
-
-```blade
-<x-ui.calendar
-    mode="multiple"
-    :min="now()->format('Y-m-d')"
-    :number-of-months="3"
-    :unavailable-dates="$companyHolidays"
-    wire:model="meetingDates"
-/>
-```
-
-**Livewire backend:**
-
-```php
-public array $meetingDates = [];
-
-public function getCompanyHolidaysProperty(): array
-{
-    return companyHolidays()->format('Y-m-d');
-}
-
-#[On('datePicked')]
-public function saveMeetingDates()
-{
-    $dates = array_filter(explode(',', $this->meetingDates));
-    $this->meeting->dates()->sync($dates);
-}
-```
-
-### Calendar with Comparison (2 ranges)
-
-Display two calendars side-by-side for comparing date ranges (e.g., year-over-year):
-
-```blade
-<div class="grid grid-cols-2 gap-6">
-    <div>
-        <label class="block text-sm font-semibold mb-2">Period 1</label>
-        <x-ui.calendar 
-            mode="range"
-            :min="now()->subYear()->format('Y-m-d')"
-            :max="now()->subYear()->endOfYear()->format('Y-m-d')"
-            wire:model="period1"
-        />
-    </div>
-    <div>
-        <label class="block text-sm font-semibold mb-2">Period 2</label>
-        <x-ui.calendar 
-            mode="range"
-            :min="now()->format('Y-m-d')"
-            :max="now()->endOfYear()->format('Y-m-d')"
-            wire:model="period2"
-        />
-    </div>
-</div>
-```
-
-### Fixed Layout Calendar (No Shift)
-
-For dashboards and reports where layout stability is critical:
-
-```blade
-<x-ui.calendar
-    mode="multiple"
-    :fixed-weeks="true"
-    :highlight-blank-days="true"
-    size="sm"
-    wire:model="selectedDates"
-/>
-```
 
 ##  The `DateRange` Synthesizer
 
