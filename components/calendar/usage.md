@@ -4,7 +4,7 @@ name: calendar
 
 ## Introduction
 
-The `Calendar` component is a **zero dependencies**, **fully-featured**, **accessible** date picker with support for single, multiple, and range selection modes. It integrates seamlessly with Livewire via `wire:model` and Alpine via `x-model`, with built-in constraints for min/max dates, unavailable dates, and range length validation.
+The `Calendar` component is a **zero dependencies**, **fully-featured**, **accessible** calendar with support for single, multiple, and range selection modes. It integrates seamlessly with Livewire via `wire:model` and Alpine via `x-model`, with built-in constraints for min/max dates, unavailable dates, and range length validation and much much more.
 
 ## Installation
 
@@ -23,6 +23,19 @@ import './components/calendar/index.js';
 
 > Once installed, you can use the `<x-ui.calendar />` component in any Blade view.
 
+If you're using range mode with livewire, we recomend to register the synthesizer in your service provider so Livewire knows how to serialize the `DateRange` object between requests:
+
+```php
+use App\Livewire\Synthesizers\DateRangeSynthesizer;
+use Livewire\Livewire;
+
+// ...
+public function boot(): void
+{
+    Livewire::propertySynthesizer(DateRangeSynthesizer::class);
+}
+```
+
 ## Usage
 
 @blade
@@ -40,7 +53,7 @@ Use `wire:model` to sync the calendar with a Livewire property. The format depen
 public ?string $date = null;
 ```
 ```blade
-<x-ui.calendar mode="single" wire:model="date" />                 {{-- lazy sync --}}
+<x-ui.calendar mode="single" wire:model="date" />             
 ```
 
 #### Multiple Mode
@@ -67,6 +80,12 @@ See [The DateRange Synth](#content-the-daterange-synthesizer) for full details.
 ```php
 use App\View\Components\DateRange;
 public DateRange $range;
+
+// ....
+public function mount(){
+    $this->range = new DateRange(start: now(), end: now()->addDays(2));
+}
+
 ```
 ```blade
 <x-ui.calendar mode="range" wire:model="range" />
@@ -116,11 +135,7 @@ Users select exactly one date. The bound value is an ISO date string `YYYY-MM-DD
 <x-ui.calendar mode="single" wire:model="date" />
 ```
 
-**Example value:** `"2026-04-15"`
-
 ### Multiple Selection
-
-Users select multiple dates. The panel stays open after each selection — the user closes it manually via click-away or navigation. The bound value is a comma-separated string of ISO date strings.
 
 @blade
 <x-demo lazy class="flex justify-center">
@@ -132,22 +147,7 @@ Users select multiple dates. The panel stays open after each selection — the u
 <x-ui.calendar mode="multiple" wire:model="dates" />
 ```
 
-**Example value:** `"2026-04-15,2026-04-20,2026-05-01"`
-
-**Livewire backend:**
-
-```php
-public string $dates = '';
-
-public function getSelectedDatesArrayProperty(): array
-{
-    return array_filter(explode(',', $this->dates));
-}
-```
-
 ### Range Selection
-
-Users select a start and end date for a date range. Click once to set the start, click again to set the end. The bound value is a comma-separated string of two ISO date strings `[start,end]`.
 
 @blade
 <x-demo lazy class="flex justify-center">
@@ -158,11 +158,6 @@ Users select a start and end date for a date range. Click once to set the start,
 ```blade
 <x-ui.calendar mode="range" wire:model="dateRange" />
 ```
-
-**Example value:** `"2026-04-15,2026-04-25"`
-
-The calendar shows a visual highlight across the selected range. After selecting the start date, hovering shows a preview of the range as you move across dates.
-
 ## Min / Max Dates
 
 Restrict the selectable date range with `min` and `max`. Both accept ISO date strings `YYYY-MM-DD`. Dates outside this range are disabled and non-selectable.
