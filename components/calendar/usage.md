@@ -164,7 +164,7 @@ Restrict the selectable date range with `min` and `max`. Both accept ISO date st
 
 @blade
 <x-demo lazy class="flex justify-center">
-    <x-ui.calendar min="2026-04-05" open-to="2026-04-01"  max="2026-04-25" />
+    <x-ui.calendar open-to="2026-04-01" min="2026-04-05" max="2026-04-25" />
 </x-demo>
 @endblade
 
@@ -178,7 +178,7 @@ Mark specific dates as unavailable (greyed out, non-selectable) using a comma-se
 
 @blade
 <x-demo lazy class="flex justify-center">
-    <x-ui.calendar :unavailable-dates="['2026-04-15', '2026-04-20', '2026-04-25']" />
+    <x-ui.calendar open-to="2026-04-01" :unavailable-dates="['2026-04-15', '2026-04-20', '2026-04-25']" />
 </x-demo>
 @endblade
 
@@ -202,13 +202,10 @@ In `range` mode, enforce minimum and maximum range lengths with `min-range` and 
     mode="range" 
     :min-range="3" 
     :max-range="14"
-    wire:model="dateRange" 
 />
 ```
 
-When `min-range` is set and you've selected the start date, all dates closer than `min-range` days are disabled until you reach the minimum distance.
-
-
+When `min-range` is set and you've selected the start date, all dates closer than `min-range` days are disabled until you reach the minimum distance and same for `max-range`.
 
 ## Selectable Months and Years
 
@@ -216,7 +213,7 @@ Enable dropdown selectors for quick month and year navigation with `selectable-m
 
 @blade
 <x-demo lazy class="flex justify-center">
-    <x-ui.calendar selectable-months selectable-years :years-range="[-10, 10]" />
+    <x-ui.calendar selectable-months selectable-years />
 </x-demo>
 @endblade
 
@@ -225,7 +222,6 @@ Enable dropdown selectors for quick month and year navigation with `selectable-m
 <x-ui.calendar 
     selectable-months 
     selectable-years 
-    :years-range="[-10, 10]"
     wire:model="date" 
 />
 
