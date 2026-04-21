@@ -186,17 +186,6 @@ Mark specific dates as unavailable (greyed out, non-selectable) using a comma-se
 <x-ui.calendar :unavailable-dates="$blockedDates" wire:model="date" />
 ```
 
-**Livewire backend:**
-
-```php
-public function getBlockedDatesProperty(): array
-{
-    return Holiday::pluck('date')
-        ->map(fn($date) => $date->format('Y-m-d'))
-        ->toArray();
-}
-```
-
 ## Range Constraints
 
 In `range` mode, enforce minimum and maximum range lengths with `min-range` and `max-range` (both in days). Dates that would violate the constraints are disabled while selecting the end date.
