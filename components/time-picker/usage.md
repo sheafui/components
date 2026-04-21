@@ -28,7 +28,7 @@ import './components/time-picker/index.js';
 ## Usage
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker  placeholder="Select a time" clearable />
 </x-demo>
 @endblade
@@ -72,7 +72,7 @@ The default trigger is a styled button showing the selected time and an optional
 Attach the picker to a segmented `HH:MM` input for direct keyboard entry. Arrow keys increment/decrement each segment, and the dropdown opens for quick selection.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker trigger="input"  />
 </x-demo>
 @endblade
@@ -87,7 +87,7 @@ Attach the picker to a segmented `HH:MM` input for direct keyboard entry. Arrow 
 
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker trigger="input" :open-panel="false"  />
 </x-demo>
 @endblade
@@ -101,7 +101,7 @@ Attach the picker to a segmented `HH:MM` input for direct keyboard entry. Arrow 
 The pills trigger renders each selected time as a removable pill inside the trigger. Best used with `multiple`.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker trigger="pills" multiple clearable  />
 </x-demo>
 @endblade
@@ -115,7 +115,7 @@ The pills trigger renders each selected time as a removable pill inside the trig
 Allow users to select more than one time slot. The panel stays open after each selection — the user closes it manually via click-away or the trigger button. The bound value is a comma-separated string of `H:i` values.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker multiple clearable  />
 </x-demo>
 @endblade
@@ -131,7 +131,7 @@ Allow users to select more than one time slot. The panel stays open after each s
 In multiple mode, use `variant="checkbox"` to replace the check icon with a mini checkbox for each option:
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker multiple variant="checkbox" clearable  />
 </x-demo>
 @endblade
@@ -145,7 +145,7 @@ In multiple mode, use `variant="checkbox"` to replace the check icon with a mini
 By default the picker respects the browser's locale to determine 12 or 24-hour display. Override it explicitly with `format`:
 
 @blade
-<x-demo class="flex gap-4 justify-center">
+<x-demo lazy class="flex gap-4 justify-center">
     <x-ui.time-picker format="12-hour" placeholder="12-hour"  />
     <x-ui.time-picker format="24-hour" placeholder="24-hour"  />
 </x-demo>
@@ -164,7 +164,7 @@ By default the picker respects the browser's locale to determine 12 or 24-hour d
 Control the number of minutes between each displayed slot. Default is `30`.
 
 @blade
-<x-demo class="flex gap-4 justify-center">
+<x-demo lazy class="flex gap-4 justify-center">
     <x-ui.time-picker :interval="15" placeholder="Every 15 min" />
     <x-ui.time-picker :interval="60" placeholder="Every hour"  />
 </x-demo>
@@ -183,7 +183,7 @@ Control the number of minutes between each displayed slot. Default is `30`.
 Restrict the selectable range with `min` and `max`. Both accept a `H:i` string or the `"now"` shorthand.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker min="09:00" max="17:00" placeholder="Business hours"  />
 </x-demo>
 @endblade
@@ -207,7 +207,7 @@ Using `"now"` as a boundary:
 Disable specific times or ranges using a comma-separated string. Ranges use a `-` separator between two `H:i` values. Unavailable slots are still visible but greyed out and non-selectable.
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker unavailable="12:00,12:30,14:00-15:30" placeholder="Some times blocked"  />
 </x-demo>
 @endblade
@@ -222,7 +222,7 @@ Disable specific times or ranges using a comma-separated string. Ranges use a `-
 Set the scroll position when the dropdown opens. Useful for jumping to a relevant time period without restricting the full range. Falls back to: selected time → nearest time to now.
 
 @blade
-<x-demo class="flex gap-4 justify-center">
+<x-demo lazy class="flex gap-4 justify-center">
     <x-ui.time-picker open-to="10:00"  />
 </x-demo>
 @endblade
@@ -235,7 +235,7 @@ Set the scroll position when the dropdown opens. Useful for jumping to a relevan
 By default the picker uses the browser locale (`navigator.language`). Override it with any valid BCP-47 locale string:
 
 @blade
-<x-demo class="flex gap-4 justify-center">
+<x-demo lazy class="flex gap-4 justify-center">
     <x-ui.time-picker locale="ja-JP" placeholder="ja-JP"  />
     <x-ui.time-picker locale="fr" placeholder="fr"  />
 </x-demo>
@@ -253,7 +253,7 @@ By default the picker uses the browser locale (`navigator.language`). Override i
 The picker comes in Two sizes. The default aligns with the standard `input` height for easy side-by-side use in forms.
 
 @blade
-<x-demo class="flex flex-col gap-3 items-center">
+<x-demo lazy class="flex flex-col gap-3 items-center">
     <x-ui.time-picker size="default" placeholder="Default"  />
     <x-ui.time-picker size="sm"      placeholder="Small"    />
 </x-demo>
@@ -277,7 +277,7 @@ Show a clear button when a value is selected. In `trigger="pills"` mode this cle
 ### Invalid
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker :invalid="true" placeholder="Required field"  />
 </x-demo>
 @endblade
@@ -289,7 +289,7 @@ Show a clear button when a value is selected. In `trigger="pills"` mode this cle
 ### Disabled
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker disabled placeholder="Not available"  />
 </x-demo>
 @endblade
@@ -324,7 +324,7 @@ You can target slots directly using attribute selectors:
 the `~=` is there to check if `data-special` value contain the targeted string
 
 @blade
-<x-demo class="flex justify-center">
+<x-demo lazy class="flex justify-center">
     <x-ui.time-picker
         :special="['blocked' => '14:00,15:00']"
         min="12:00"
