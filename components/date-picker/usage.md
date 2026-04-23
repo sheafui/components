@@ -211,17 +211,17 @@ Change the separator between start and end date in range display:
 
 @blade
 <x-demo lazy class="flex gap-4 justify-center">
-    <x-ui.date-picker mode="range" separator="→" />
-    <x-ui.date-picker mode="range" separator="-" />
-    <x-ui.date-picker mode="range" separator="to" />
+    <x-ui.date-picker mode="range" range-separator="→" />
+    <x-ui.date-picker mode="range" range-separator="-" />
+    <x-ui.date-picker mode="range" range-separator="to" />
 </x-demo>
 @endblade
 
 ```blade
 {{-- Different separators --}}
-<x-ui.date-picker mode="range" separator="→" />    {{-- Arrow (default) --}}
-<x-ui.date-picker mode="range" separator="-" />    {{-- Dash --}}
-<x-ui.date-picker mode="range" separator="to" />   {{-- Text --}}
+<x-ui.date-picker mode="range" range-separator="→" />    {{-- Arrow (default) --}}
+<x-ui.date-picker mode="range" range-separator="-" />    {{-- Dash --}}
+<x-ui.date-picker mode="range" range-separator="to" />   {{-- Text --}}
 ```
 ## Presets
 
