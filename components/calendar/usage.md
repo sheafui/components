@@ -789,5 +789,14 @@ public function rules(): array
 | `last3Months(): static` | Creates a range for the last 3 months. |
 | `last6Months(): static` | Creates a range for the last 6 months. |
 | `yearToDate(): static` | Creates a range from January 1st of the current year to today. |
+| `lastWeekToDate(): static` | Creates a range from the start of last week (Monday) to today. |
+| `lastMonthToDate(): static` | Creates a range from the first of last month to today. |
+| `lastQuarterToDate(): static` | Creates a range from the start of last quarter to today. |
+| `next7Days(): static` | Creates a range from today through the next 7 days. |
+| `next30Days(): static` | Creates a range from today through the next 30 days. |
+| `nextMonth(): static` | Creates a range for the next full calendar month. |
+| `nextQuarter(): static` | Creates a range for the next full quarter. |
+| `nextYear(): static` | Creates a range for the next full calendar year. |
+| `all(): static` | Creates a range with no start date and today as the end (unbounded history). |
 
 > **Note:** `DateRange` extends `CarbonPeriod`, so it also inherits all methods from `CarbonPeriod` (e.g., `getStartDate()`, `getEndDate()`, `addFilter()`, `toArray()`, etc.). For a complete list of those, refer to the official [CarbonPeriod documentation](https://carbon.nesbot.com/guide/specialized-use/carbon-period.html). The table above only lists methods that are **exclusive to your `DateRange` class**.
