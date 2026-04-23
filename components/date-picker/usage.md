@@ -32,79 +32,99 @@ import the css (if you haven't did it for the calendar component before):
 
 > Once installed, you can use the `<x-ui.date-picker />` component in any Blade view.
 
-## Quick Start
+if you're using range mode with livewire, we recomend to register the synthesizer in your service provider so Livewire knows how to serialize the `DateRange` object between requests:
 
-### Single Date Selection
+```php
+use App\Livewire\Synthesizers\DateRangeSynthesizer;
+use Livewire\Livewire;
 
+// ...
+public function boot(): void
+{
+    Livewire::propertySynthesizer(DateRangeSynthesizer::class);
+}
+```
+
+## Usage
 @blade
 <x-demo lazy class="flex justify-center">
-    <x-ui.date-picker mode="single" />
+    <x-ui.date-picker />
 </x-demo>
 @endblade
 
+### Bind to Livewire
+
+Use `wire:model` to sync the calendar with a Livewire property. The format depends on the mode.
+
+#### Single Mode
+```php
+public ?string $date = null;
+```
 ```blade
-<x-ui.date-picker mode="single" wire:model="selectedDate" />
+<x-ui.date-picker mode="single" wire:model="date" />             
 ```
 
-### Date Range Selection (with Presets)
-
-@blade
-<x-demo lazy class="flex justify-center">
-    <x-ui.date-picker 
-        mode="range" 
-        :presets="['today', 'this_week', 'this_month', 'last_month']"
-    />
-</x-demo>
-@endblade
-
+#### Multiple Mode
+```php
+public array $dates = [];
+```
 ```blade
-<x-ui.date-picker 
-    mode="range"
-    :presets="['today', 'this_week', 'this_month', 'last_month', 'this_year', 'last_year']"
-    wire:model="dateRange"
-/>
+<x-ui.date-picker mode="multiple" wire:model="dates" />
 ```
 
-### Multiple Date Selection
+#### Range Mode
 
-@blade
-<x-demo lazy class="flex justify-center">
-    <x-ui.date-picker mode="multiple" />
-</x-demo>
-@endblade
-
+**A) Simple associative array** (start + end as ISO strings):
+```php
+public array $range = ['start' => null, 'end' => null];
+```
 ```blade
-<x-ui.date-picker mode="multiple" wire:model="selectedDates" />
+<x-ui.date-picker mode="range" wire:model="range" />
 ```
 
-## Dialog Positioning
+**B) `DateRange` object** (recommended – provides presets, date methods, and seamless hydration).  
+See [The DateRange Synth](#content-the-daterange-synthesizer) for full details.
 
-Control where the date picker dialog appears relative to the trigger button using the `position` and `offset` props.
+```php
+use App\View\Components\DateRange;
+public DateRange $range;
 
-@blade
-<x-demo lazy class="flex gap-4 justify-center">
-    <x-ui.date-picker position="bottom-start" />
-    <x-ui.date-picker position="bottom-end" />
-    <x-ui.date-picker position="top-start" />
-</x-demo>
-@endblade
+// ....
+public function mount(){
+    $this->range = new DateRange(start: now(), end: now()->addDays(2));
+}
 
+```
 ```blade
-{{-- Bottom-left (default) --}}
-<x-ui.date-picker position="bottom-start" offset="3" />
-
-{{-- Bottom-right --}}
-<x-ui.date-picker position="bottom-end" offset="3" />
-
-{{-- Top-left --}}
-<x-ui.date-picker position="top-start" offset="3" />
-
-{{-- Top-right --}}
-<x-ui.date-picker position="top-end" offset="3" />
+<x-ui.date-picker mode="range" wire:model="range" />
 ```
 
-Available positions: `top-start`, `top`, `top-end`, `bottom-start`, `bottom`, `bottom-end`, `left-start`, `left`, `left-end`, `right-start`, `right`, `right-end`.
+### Using with Alpine 
 
+Outside Livewire, bind with `x-model`:
+
+```blade
+<!-- Single -->
+<div x-data="{ date: null }">
+    <x-ui.date-picker x-model="date" />
+</div>
+
+<!-- bind durrent's day date -->
+<div x-data="{ date: new Date().toISOString() }"> 
+    <x-ui.date-picker x-model="date" />
+</div>
+
+<!-- Multiple -->
+<div x-data="{ dates: [] }">
+    <x-ui.date-picker mode="multiple" x-model="dates" />
+</div>
+
+<!-- Range (simple object) -->
+<div x-data="{ range: { start: null, end: null } }">
+    <x-ui.date-picker mode="range" x-model="range" />
+</div>
+```
+## Trigger
 ## Presets
 
 Date picker includes powerful preset buttons for quick selection of common date ranges. Presets are context-aware and generate the appropriate date range based on today's date.
@@ -181,35 +201,7 @@ Pass a comma-separated string or array to show only specific presets:
 
 > **Tip:** When a preset is selected in single mode, the date picker automatically closes. In range mode, it stays open so you can continue refining the selection.
 
-## Custom Trigger
 
-Replace the default button with a custom trigger element using the `trigger` slot.
-
-```blade
-{{-- Custom trigger with your own styling --}}
-<x-ui.date-picker mode="range">
-    <x-slot:trigger>
-        <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-            Pick a date
-        </button>
-    </x-slot:trigger>
-</x-ui.date-picker>
-
-{{-- Or use an input field as the trigger --}}
-<x-ui.date-picker mode="single">
-    <x-slot:trigger>
-        <x-ui.input placeholder="Select a date" />
-    </x-slot:trigger>
-</x-ui.date-picker>
-```
-
-Or pass `trigger` prop directly:
-
-```blade
-<x-ui.date-picker 
-    :trigger="..."
-/>
-```
 
 ## Smart Date Formatting
 
@@ -247,68 +239,6 @@ Change the separator between start and end date in range display:
 <x-ui.date-picker mode="range" separator="→" />    {{-- Arrow (default) --}}
 <x-ui.date-picker mode="range" separator="-" />    {{-- Dash --}}
 <x-ui.date-picker mode="range" separator="to" />   {{-- Text --}}
-```
-
-## Data Binding
-
-### Bind to Livewire
-
-```php
-// In your Livewire component
-public ?string $startDate = null;
-public ?string $endDate = null;
-public array $dateRange = ['start' => null, 'end' => null];
-```
-
-```blade
-{{-- Single mode --}}
-<x-ui.date-picker mode="single" wire:model="startDate" />
-
-{{-- Range mode --}}
-<x-ui.date-picker mode="range" wire:model="dateRange" />
-
-{{-- Multiple mode --}}
-<x-ui.date-picker mode="multiple" wire:model="selectedDates" />
-```
-
-### Bind to Alpine
-
-```blade
-<div x-data="{ selectedDate: null }">
-    <x-ui.date-picker mode="single" x-model="selectedDate" />
-</div>
-
-<div x-data="{ range: { start: null, end: null } }">
-    <x-ui.date-picker mode="range" x-model="range" />
-</div>
-```
-
-## Selection Modes
-
-Date picker supports the same three selection modes as the calendar, with identical value formats.
-
-### Single Selection
-
-Exactly one date is selected. Value is an ISO date string `YYYY-MM-DD`.
-
-```blade
-<x-ui.date-picker mode="single" wire:model="date" />
-```
-
-### Multiple Selection
-
-Multiple dates can be selected. Value is an array of ISO date strings.
-
-```blade
-<x-ui.date-picker mode="multiple" wire:model="dates" />
-```
-
-### Range Selection
-
-A start and end date are selected. Value is an object with `start` and `end` keys.
-
-```blade
-<x-ui.date-picker mode="range" wire:model="range" />
 ```
 
 ## Constraints & Validation
@@ -595,15 +525,32 @@ Show helpful text on hover for special day categories.
 />
 ```
 
-## Keyboard Navigation
+Control where the date picker dialog appears relative to the trigger button using the `position` and `offset` props.
 
-Both the date picker dialog and calendar support full keyboard navigation:
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker position="bottom-start" />
+    <x-ui.date-picker position="bottom-end" />
+    <x-ui.date-picker position="top-start" />
+</x-demo>
+@endblade
 
-- **Tab** - Move focus between controls
-- **Enter / Space** - Select the focused date
-- **Escape** - Close the date picker dialog
-- **Arrow Keys** - Navigate between dates in the calendar
-- **Home / End** - Jump to first/last date in selected range
+```blade
+{{-- Bottom-left (default) --}}
+<x-ui.date-picker position="bottom-start" offset="3" />
+
+{{-- Bottom-right --}}
+<x-ui.date-picker position="bottom-end" offset="3" />
+
+{{-- Top-left --}}
+<x-ui.date-picker position="top-start" offset="3" />
+
+{{-- Top-right --}}
+<x-ui.date-picker position="top-end" offset="3" />
+```
+
+Available positions: `top-start`, `top`, `top-end`, `bottom-start`, `bottom`, `bottom-end`, `left-start`, `left`, `left-end`, `right-start`, `right`, `right-end`.
+
 
 ## Component Props
 

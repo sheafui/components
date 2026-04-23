@@ -21,6 +21,13 @@ Then import the script in your JS entry point:
 import './components/calendar/index.js';
 ```
 
+import the css:
+
+```css
+/* app.css */
+@import './components/calendar/cell.css';
+```
+
 > Once installed, you can use the `<x-ui.calendar />` component in any Blade view.
 
 If you're using range mode with livewire, we recomend to register the synthesizer in your service provider so Livewire knows how to serialize the `DateRange` object between requests:
