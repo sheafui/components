@@ -125,6 +125,104 @@ Outside Livewire, bind with `x-model`:
 </div>
 ```
 ## Trigger
+
+The date picker supports two trigger types: a default button and bindable text inputs for direct keyboard entry.
+
+### Button (default)
+
+The default trigger is a styled button that displays the selected date and opens the calendar on click.
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker mode="range" />
+</x-demo>
+@endblade
+
+### Input
+
+Bind a masked text input directly to the date picker for keyboard-first date entry. Inputs are context-aware arrow keys increment/decrement each segment, typing auto-advances between segments, and the calendar stays in sync all built from absolute scratch (see `calendar/masker.js` file).
+
+> Supported in `single` and `range` modes only.
+
+#### Single Mode
+
+Pass `<x-ui.date-picker.input />` into the `trigger` slot:
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker>
+        <x-slot:trigger>
+            <x-ui.date-picker.input/>
+        </x-slot>
+    </x-ui.date-picker>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker>
+    <x-slot:trigger>
+        <x-ui.date-picker.input />
+    </x-slot>
+</x-ui.date-picker>
+```
+
+#### Range Mode
+
+In range mode, use the dedicated start and end input components. Each input is independently editable and stays in sync with the calendar selection.
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker mode="range" :months="2">
+        <x-slot:trigger class="flex gap-2">
+            <x-ui.field>
+                <x-ui.label>Start</x-ui.label>
+                <x-ui.date-picker.input.start />
+            </x-ui.field>
+            <x-ui.field>
+                <x-ui.label>End</x-ui.label>
+                <x-ui.date-picker.input.end />
+            </x-ui.field>
+        </x-slot>
+    </x-ui.date-picker>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker mode="range" :months="2">
+    <x-slot:trigger class="flex gap-2">
+        <x-ui.field>
+            <x-ui.label>Start</x-ui.label>
+            <x-ui.date-picker.input.start />
+        </x-ui.field>
+        <x-ui.field>
+            <x-ui.label>End</x-ui.label>
+            <x-ui.date-picker.input.end />
+        </x-ui.field>
+    </x-slot>
+</x-ui.date-picker>
+```
+
+### Pillbox
+you can use the pillbox *only* in multiple mode
+
+### Customize Range Separator
+
+Change the separator between start and end date in range display:
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker mode="range" separator="→" />
+    <x-ui.date-picker mode="range" separator="-" />
+    <x-ui.date-picker mode="range" separator="to" />
+</x-demo>
+@endblade
+
+```blade
+{{-- Different separators --}}
+<x-ui.date-picker mode="range" separator="→" />    {{-- Arrow (default) --}}
+<x-ui.date-picker mode="range" separator="-" />    {{-- Dash --}}
+<x-ui.date-picker mode="range" separator="to" />   {{-- Text --}}
+```
 ## Presets
 
 Date picker includes powerful preset buttons for quick selection of common date ranges. Presets are context-aware and generate the appropriate date range based on today's date.
@@ -202,16 +300,6 @@ Pass a comma-separated string or array to show only specific presets:
 > **Tip:** When a preset is selected in single mode, the date picker automatically closes. In range mode, it stays open so you can continue refining the selection.
 
 
-
-## Smart Date Formatting
-
-The date picker automatically formats selected dates in human-readable format:
-
-- **Today** - Shows "Today"
-- **Tomorrow** - Shows "Tomorrow"
-- **Yesterday** - Shows "Yesterday"
-- **Other dates** - Shows formatted date like "Apr 15, 2026"
-
 ### Range Formatting
 
 When a date range is selected, the display format adapts to show both dates efficiently:
@@ -222,24 +310,7 @@ Same year only:     Apr 12 → Jun 5, 2026
 Different years:    Apr 12, 2026 → Jan 5, 2027
 ```
 
-### Customize Range Separator
 
-Change the separator between start and end date in range display:
-
-@blade
-<x-demo lazy class="flex gap-4 justify-center">
-    <x-ui.date-picker mode="range" separator="→" />
-    <x-ui.date-picker mode="range" separator="-" />
-    <x-ui.date-picker mode="range" separator="to" />
-</x-demo>
-@endblade
-
-```blade
-{{-- Different separators --}}
-<x-ui.date-picker mode="range" separator="→" />    {{-- Arrow (default) --}}
-<x-ui.date-picker mode="range" separator="-" />    {{-- Dash --}}
-<x-ui.date-picker mode="range" separator="to" />   {{-- Text --}}
-```
 
 ## Constraints & Validation
 
