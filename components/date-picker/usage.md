@@ -138,6 +138,18 @@ The default trigger is a styled button that displays the selected date and opens
 </x-demo>
 @endblade
 
+### Customize Range Separator
+
+Change the separator between start and end date in range display:
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker mode="range" range-separator="→" />
+    <x-ui.date-picker mode="range" range-separator="-" />
+    <x-ui.date-picker mode="range" range-separator="to" />
+</x-demo>
+@endblade
+
 ### Input
 
 Bind a masked text input directly to the date picker for keyboard-first date entry. Inputs are context-aware arrow keys increment/decrement each segment, typing auto-advances between segments, and the calendar stays in sync all built from absolute scratch (see `calendar/masker.js` file).
@@ -205,17 +217,7 @@ In range mode, use the dedicated start and end input components. Each input is i
 ### Pillbox
 you can use the pillbox *only* in multiple mode
 
-### Customize Range Separator
 
-Change the separator between start and end date in range display:
-
-@blade
-<x-demo lazy class="flex gap-4 justify-center">
-    <x-ui.date-picker mode="range" range-separator="→" />
-    <x-ui.date-picker mode="range" range-separator="-" />
-    <x-ui.date-picker mode="range" range-separator="to" />
-</x-demo>
-@endblade
 
 ```blade
 {{-- Different separators --}}
