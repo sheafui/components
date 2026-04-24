@@ -217,6 +217,11 @@ In range mode, use the dedicated start and end input components. Each input is i
 ### Pillbox
 you can use the pillbox *only* in multiple mode
 
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker mode="multiple" variant="pillbox"/>
+</x-demo>
+@endblade
 
 
 ```blade
@@ -312,11 +317,7 @@ Same year only:     Apr 12 → Jun 5, 2026
 Different years:    Apr 12, 2026 → Jan 5, 2027
 ```
 
-
-
-## Constraints & Validation
-
-### Min & Max Dates
+## Min & Max Dates
 
 Restrict the selectable date range by setting `min` and `max`. Dates outside this range are disabled and cannot be selected.
 
@@ -334,7 +335,7 @@ Restrict the selectable date range by setting `min` and `max`. Dates outside thi
 />
 ```
 
-### Unavailable Dates
+## Unavailable Dates
 
 Mark specific dates as unavailable (visible but disabled) using a comma-separated array of ISO date strings.
 
@@ -348,7 +349,7 @@ Mark specific dates as unavailable (visible but disabled) using a comma-separate
 <x-ui.date-picker :unavailable-dates="$blockedDates" wire:model="date" />
 ```
 
-### Range Constraints
+## Range Constraints
 
 In `range` mode, enforce minimum and maximum range lengths with `min-range` and `max-range` (both in days).
 
@@ -368,9 +369,7 @@ In `range` mode, enforce minimum and maximum range lengths with `min-range` and 
 />
 ```
 
-## Months & Navigation
-
-### Display Multiple Months
+## Display Multiple Months
 
 Show multiple months side-by-side for easier date browsing.
 
@@ -388,7 +387,7 @@ Show multiple months side-by-side for easier date browsing.
 <x-ui.date-picker :months="3" wire:model="date" />
 ```
 
-### Open To Date
+## Open To Date
 
 Set the initial month the date picker opens to using `open-to`.
 
@@ -400,7 +399,7 @@ Set the initial month the date picker opens to using `open-to`.
 <x-ui.date-picker open-to="2028-09-01" force-open-to wire:model="date" />
 ```
 
-### Navigation Controls
+## Navigation Controls
 
 Disable month navigation buttons if needed.
 
@@ -408,7 +407,7 @@ Disable month navigation buttons if needed.
 <x-ui.date-picker :allow-navigation="false" />
 ```
 
-### Selectable Months & Years
+## Selectable Months & Years
 
 Enable dropdown selectors for quick jumps to specific months and years.
 
@@ -422,9 +421,8 @@ Enable dropdown selectors for quick jumps to specific months and years.
 <x-ui.date-picker selectable-months selectable-years wire:model="date" />
 ```
 
-## Appearance & UX
 
-### Size Variants
+## Size Variants
 
 Choose from multiple sizes to fit different UI contexts.
 
@@ -437,7 +435,7 @@ Choose from multiple sizes to fit different UI contexts.
 <x-ui.date-picker size="2xl" />
 ```
 
-### Today Button
+## Today Button
 
 Show a button to jump to today's date.
 
@@ -451,7 +449,7 @@ Show a button to jump to today's date.
 <x-ui.date-picker :with-today="true" wire:model="date" />
 ```
 
-### Week Numbers
+## Week Numbers
 
 Display ISO 8601 week numbers for project planning and reporting.
 
@@ -465,7 +463,7 @@ Display ISO 8601 week numbers for project planning and reporting.
 <x-ui.date-picker week-numbers wire:model="date" />
 ```
 
-### Fixed Week Heights
+## Fixed Week Heights
 
 Lock all months to a consistent layout height (6 rows) for stable layouts.
 
@@ -473,7 +471,7 @@ Lock all months to a consistent layout height (6 rows) for stable layouts.
 <x-ui.date-picker :fixed-weeks="true" :months="2" wire:model="date" />
 ```
 
-### Readonly
+## Readonly
 
 Display the date picker without allowing interaction.
 
@@ -497,6 +495,7 @@ Override the browser's default locale to control weekday names and the first day
 ```blade
 <x-ui.date-picker locale="ar-Ma" wire:model="date" />
 <x-ui.date-picker locale="fr-Ma" wire:model="date" />
+<x-ui.date-picker :locale="app()->getLocale()" wire:model="date" />
 ```
 
 ### Custom Week Start
@@ -598,6 +597,42 @@ Show helpful text on hover for special day categories.
 />
 ```
 
+
+### Special Days Scenario
+
+Use special days for a booking system where customers can see available, booked, and featured dates:
+
+```blade
+@php
+your php
+$bookedDates = app(BookingRepository::class)->getBookedDates();
+$featuredDates = app(PropertyRepository::class)->getFeaturedDates();
+
+// Today onwards to 1 year from now
+$minDate = now()->format('Y-m-d');
+$maxDate = now()->addYear()->format('Y-m-d');
+@endphp
+
+<div class="[&_[data-special~=booked]]:line-through [&_[data-special~=booked]]:opacity-50 [&_[data-special~=featured]]:font-bold [&_[data-special~=featured]]:text-amber-600">
+    <x-ui.date-picker 
+        mode="range"
+        :min-range="2"
+        :max-range="14"
+        :min="$minDate"
+        :max="$maxDate"
+        :special-days="[
+            'booked' => $bookedDates,
+            'featured' => $featuredDates,
+        ]"
+        :special-disabled="['booked']"
+        :special-tooltips="[
+            'booked' => 'Already reserved',
+            'featured' => 'Special rate available!',
+        ]"
+        wire:model="stay"
+    />
+</div>
+```
 Control where the date picker dialog appears relative to the trigger button using the `position` and `offset` props.
 
 @blade
@@ -663,126 +698,6 @@ Available positions: `top-start`, `top`, `top-end`, `bottom-start`, `bottom`, `b
 | `week-numbers` | boolean | `false` | Show ISO week numbers in a separate column. |
 | `top-inputs` | boolean | `false` | Show date input field(s) above the calendar for direct keyboard entry. Note: typically handled by presets and formatting in date picker. |
 
-## Advanced Usage
-
-### Combining Presets with Constraints
-
-Use presets with date constraints to create a restricted date picker:
-
-```blade
-{{-- Allow selection only within the current year with preset options --}}
-<x-ui.date-picker 
-    mode="range"
-    open-to="2026-01-01"
-    min="2026-01-01"
-    max="2026-12-31"
-    :presets="['this_month', 'last_month', 'this_quarter']"
-    wire:model="range"
-/>
-```
-
-### Complex Special Days Scenario
-
-Use special days for a booking system where customers can see available, booked, and featured dates:
-
-```blade
-@php
-$bookedDates = app(BookingRepository::class)->getBookedDates();
-$featuredDates = app(PropertyRepository::class)->getFeaturedDates();
-
-// Today onwards to 1 year from now
-$minDate = now()->format('Y-m-d');
-$maxDate = now()->addYear()->format('Y-m-d');
-@endphp
-
-<div class="[&_[data-special~=booked]]:line-through [&_[data-special~=booked]]:opacity-50 [&_[data-special~=featured]]:font-bold [&_[data-special~=featured]]:text-amber-600">
-    <x-ui.date-picker 
-        mode="range"
-        :min-range="2"
-        :max-range="14"
-        :min="$minDate"
-        :max="$maxDate"
-        :special-days="[
-            'booked' => $bookedDates,
-            'featured' => $featuredDates,
-        ]"
-        :special-disabled="['booked']"
-        :special-tooltips="[
-            'booked' => 'Already reserved',
-            'featured' => 'Special rate available!',
-        ]"
-        wire:model="stay"
-    />
-</div>
-```
-
-### Mobile-Responsive Date Picker
-
-The date picker is responsive by default, but you can optimize it for mobile:
-
-```blade
-{{-- Single month on mobile, multiple on desktop --}}
-<x-ui.date-picker 
-    mode="range"
-    :months="request()->is('api/*') ? 1 : 2"
-    size="sm"
-    position="bottom-center"
-    :presets="['today', 'this_week', 'this_month', 'last_month']"
-/>
-```
-
-## Common Patterns
-
-### Analytics Date Range Picker
-
-```php
-// In your Livewire component
-public DateRange $reportRange;
-
-public function mount()
-{
-    $this->reportRange = new DateRange(
-        start: now()->subDays(30)->format('Y-m-d'),
-        end: now()->format('Y-m-d')
-    );
-}
-```
-
-```blade
-<x-ui.date-picker 
-    mode="range"
-    :presets="['last_7_days', 'last_30_days', 'last_90_days', 'year_to_date']"
-    wire:model="reportRange"
-/>
-```
-
-### Vacation Request Picker
-
-```blade
-<x-ui.date-picker 
-    mode="range"
-    :min-range="1"
-    :unavailable-dates="$companyHolidays"
-    :special-days="['holiday' => $publicHolidays]"
-    :special-disabled="['holiday']"
-    wire:model="vacationDates"
-/>
-```
-
-### Appointment Scheduler
-
-```blade
-{{-- Show first available date, hide weekends, disable booked dates --}}
-<x-ui.date-picker 
-    mode="single"
-    open-to="$nextAvailableDate"
-    :unavailable-dates="$bookedSlots"
-    :special-days="['weekend' => $weekendDates]"
-    :special-disabled="['weekend']"
-    size="sm"
-    wire:model="appointmentDate"
-/>
-```
 
 ## Data Attributes
 
@@ -799,48 +714,3 @@ The date picker dialog and underlying calendar both expose data attributes for a
 | `data-hover-preview` | Date button | Present on dates in the range preview (before finalized). |
 | `data-special` | Date button | Present on special days. Value is space-separated category keys. |
 | `data-selected` | Preset button | Present on the active preset. |
-
-## Accessibility
-
-The date picker inherits all calendar accessibility features:
-
-- **ARIA Labels** - All controls have appropriate `aria-label`, `aria-selected`, and `aria-disabled` attributes
-- **Keyboard Navigation** - Full keyboard support with arrow keys, Enter, Space, Tab, and Escape
-- **Screen Readers** - Current month/year announced via live region
-- **Focus Management** - Focus trapped in dialog, returned to trigger on close
-- **Semantic HTML** - Proper heading levels, button roles, and grid semantics
-
-## Performance
-
-The date picker uses efficient rendering techniques:
-
-- **Memoized selection cache** - Avoids rebuilding lookups on every access
-- **Efficient re-rendering** - Only the affected months re-render on navigation
-- **Static utilities** - Keeps Alpine proxy issues at a minimum
-- **Lazy initialization** - Preset sidebar height dynamically matches calendar
-
-For datasets with hundreds of special dates, consider batching them into categories rather than rendering individual dates.
-
-## Troubleshooting
-
-### Date picker not responding to `wire:model`
-
-Ensure you're using the correct binding format:
-- Single mode: `$selectedDate` should be `?string`
-- Range mode: `$range` should be `array` with `['start' => null, 'end' => null]`
-- Multiple mode: `$dates` should be `array`
-
-### Presets not appearing
-
-Check that:
-1. You passed valid preset keys to the `presets` prop
-2. The preset keys are spelled correctly (lowercase with underscores)
-3. You're not in multiple mode (presets are for single and range only)
-
-### Dialog positioned incorrectly
-
-Use the `position` and `offset` props to adjust. If still misaligned, check that the trigger element isn't inside a positioned ancestor with `overflow: hidden`.
-
-## Examples in Real Applications
-
-See the SheafUI component library documentation for integration examples with Livewire forms, Alpine components, and standalone HTML.
