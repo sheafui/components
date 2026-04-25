@@ -214,12 +214,12 @@ In range mode, use the dedicated start and end input components. Each input is i
 </x-ui.date-picker>
 ```
 
-### Pillbox
-you can use the pillbox *only* in multiple mode
+### Pillbox variant
+you can use the pills *only* in multiple mode
 
 @blade
 <x-demo lazy class="flex gap-4 justify-center">
-    <x-ui.date-picker mode="multiple" class="w-70" variant="pillbox" clearable/>
+    <x-ui.date-picker mode="multiple" class="w-70" variant="pills" clearable/>
 </x-demo>
 @endblade
 
@@ -291,25 +291,6 @@ Pass a comma-separated string or array to show only specific presets:
     mode="range"
     presets="today,this_week,this_month,last_month"
 />
-```
-
-### Presets in Different Modes
-
-- **Single mode** - Presets select a single date (e.g., "today", "yesterday")
-- **Range mode** - Presets select a full date range (e.g., "this_month" → start to end of month)
-- **Multiple mode** - Not typically used with presets (multiple selection is inherently click-based)
-
-> **Tip:** When a preset is selected in single mode, the date picker automatically closes. In range mode, it stays open so you can continue refining the selection.
-
-
-### Range Formatting
-
-When a date range is selected, the display format adapts to show both dates efficiently:
-
-```
-Same month & year:  Apr 12 → 25, 2026
-Same year only:     Apr 12 → Jun 5, 2026
-Different years:    Apr 12, 2026 → Jan 5, 2027
 ```
 
 ## Min & Max Dates
@@ -633,6 +614,15 @@ $maxDate = now()->addYear()->format('Y-m-d');
         wire:model="stay"
     />
 </div>
+```
+## Date Picker In Form
+
+use other form component like `label` and `field`... to build forms in pair with `date-picker`... 
+```blade
+<x-ui.field>
+    <x-ui.label>Pick a date</x-ui.label>
+    <x-ui.date-picker wire:model="multiple" clearable />
+</x-ui.field>
 ```
 
 ## Panel Position
