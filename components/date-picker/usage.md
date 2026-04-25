@@ -219,7 +219,7 @@ you can use the pillbox *only* in multiple mode
 
 @blade
 <x-demo lazy class="flex gap-4 justify-center">
-    <x-ui.date-picker mode="multiple" variant="pillbox"/>
+    <x-ui.date-picker mode="multiple" class="w-70" variant="pillbox" clearable/>
 </x-demo>
 @endblade
 
@@ -386,6 +386,12 @@ Show multiple months side-by-side for easier date browsing.
 
 Set the initial month the date picker opens to using `open-to`.
 
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker open-to="2028-09-01" />
+</x-demo>
+@endblade
+
 ```blade
 {{-- Open to September 2028 when no date is selected --}}
 <x-ui.date-picker open-to="2028-09-01" wire:model="date" />
@@ -482,14 +488,13 @@ Override the browser's default locale to control weekday names and the first day
 
 @blade
 <x-demo lazy class="flex gap-4 justify-center">
-    <x-ui.date-picker locale="ar-Ma" mode="range" />
     <x-ui.date-picker locale="fr-Ma" mode="range" />
 </x-demo>
 @endblade
 
 ```blade
-<x-ui.date-picker locale="ar-Ma" wire:model="date" />
 <x-ui.date-picker locale="fr-Ma" wire:model="date" />
+<!-- backend driven -->
 <x-ui.date-picker :locale="app()->getLocale()" wire:model="date" />
 ```
 
@@ -570,6 +575,7 @@ Show helpful text on hover for special day categories.
                 'holiday'   => ['2026-04-20'],
                 'blocked'   => ['2026-04-25'],
             ]"
+            open-to="2026-04-01"
             :special-disabled="['blocked']"
             :special-tooltips="[
                 'blocked' => 'Already booked',
@@ -628,15 +634,9 @@ $maxDate = now()->addYear()->format('Y-m-d');
     />
 </div>
 ```
-Control where the date picker dialog appears relative to the trigger button using the `position` and `offset` props.
 
-@blade
-<x-demo lazy class="flex gap-4 justify-center">
-    <x-ui.date-picker position="bottom-start" />
-    <x-ui.date-picker position="bottom-end" />
-    <x-ui.date-picker position="top-start" />
-</x-demo>
-@endblade
+## Panel Position
+Control where the date picker dialog appears relative to the trigger button using the `position` and `offset` props.
 
 ```blade
 {{-- Bottom-left (default) --}}
