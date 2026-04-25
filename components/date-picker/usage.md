@@ -152,6 +152,12 @@ Change the separator between start and end date in range display:
 
 ### Input
 
+```blade
+<x-ui.date-picker mode="range" range-separator="to"/> <!-- default -->
+<x-ui.date-picker mode="range" range-separator="→"/>
+<x-ui.date-picker mode="range" range-separator="-"/>
+```
+
 Bind a masked text input directly to the date picker for keyboard-first date entry. Inputs are context-aware arrow keys increment/decrement each segment, typing auto-advances between segments, and the calendar stays in sync all built from absolute scratch (see `calendar/masker.js` file).
 
 > Supported in `single` and `range` modes only.
@@ -703,14 +709,20 @@ Available positions: `top-start`, `top`, `top-end`, `bottom-start`, `bottom`, `b
 
 The date picker dialog and underlying calendar both expose data attributes for advanced CSS customization:
 
-| Attribute | Applied To | Description |
-| --------- | ---------- | ----------- |
-| `data-slot="calendar-cell"` | Date button | Present on each selectable day. |
-| `data-selected` | Date button | Present when the date is selected. |
-| `data-disabled` | Date button | Present when the date is disabled (outside min/max). |
-| `data-today` | Date button | Present on today's date. |
-| `data-focused` | Date button | Present on the keyboard-focused date. |
-| `data-range-middle` | Date button | Present on dates within a selected range. |
-| `data-hover-preview` | Date button | Present on dates in the range preview (before finalized). |
-| `data-special` | Date button | Present on special days. Value is space-separated category keys. |
-| `data-selected` | Preset button | Present on the active preset. |
+| Attribute | Description |
+| --------- | ----------- |
+| `data-slot="calendar-cell"` | Applied to each selectable day `<button>`. |
+| `data-slot="calendar-blank-day-cell"` | Applied to blank days from adjacent months. |
+| `data-selected` | Present on a cell when its date is selected. |
+| `data-disabled` | Present on a cell when its date is disabled (outside min/max or unavailable). |
+| `data-unavailable` | Present on a cell when explicitly marked unavailable (still visible, non-selectable). |
+| `data-today` | Present on a cell representing today's date. |
+| `data-focused` | Present on the currently focused cell (keyboard navigation). |
+| `data-range-middle` | Present on cells between the start and end of a selected range. |
+| `data-hover-preview` | Present on cells in the range preview while selecting range end (before click). |
+| `data-hover-end` | Present on the hovered cell while selecting range end. |
+| `data-first-in-row` | Present on the first cell of each week row. |
+| `data-last-in-row` | Present on the last cell of each week row. |
+| `data-special` | Present on cells that have at least one special category. Value is a space‑separated list of category keys (e.g., `"holiday birthday"`). |
+| `data-has-tooltip` | Present on cells that have a tooltip (from `special-tooltips`). Useful for CSS selectors like `[data-has-tooltip]:hover [data-special-tooltip]`. |
+| `data-slot="calendar-week-num-cell"` | Applied to each week number cell. |
