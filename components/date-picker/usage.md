@@ -683,6 +683,10 @@ Available positions: `top-start`, `top`, `top-end`, `bottom-start`, `bottom`, `b
 | `week-numbers` | boolean | `false` | Show ISO week numbers in a separate column. |
 | `top-inputs` | boolean | `false` | Show date input field(s) above the calendar for direct keyboard entry. Note: typically handled by presets and formatting in date picker. |
 
+### x-ui.date-picker.input
+### x-ui.date-picker.input.start
+### x-ui.date-picker.input.end
+
 
 ## Data Attributes
 
