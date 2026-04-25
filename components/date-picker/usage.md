@@ -145,11 +145,12 @@ Change the separator between start and end date in range display:
 @blade
 <x-demo lazy class="flex gap-4 justify-center">
     <x-ui.date-picker mode="range" range-separator="→" />
-    <x-ui.date-picker mode="range" range-separator="-" />
-    <x-ui.date-picker mode="range" range-separator="to" />
 </x-demo>
 @endblade
 
+```blade
+<x-ui.date-picker mode="range" range-separator="→" />
+```
 ### Input
 
 Bind a masked text input directly to the date picker for keyboard-first date entry. Inputs are context-aware arrow keys increment/decrement each segment, typing auto-advances between segments, and the calendar stays in sync all built from absolute scratch (see `calendar/masker.js` file).
@@ -225,73 +226,6 @@ you can use the pills *only* in multiple mode
 
 
 
-## Presets
-
-Date picker includes powerful preset buttons for quick selection of common date ranges. Presets are context-aware and generate the appropriate date range based on today's date.
-
-### Available Presets
-
-```blade
-@php
-$availablePresets = [
-    'today'                => 'Today',
-    'yesterday'            => 'Yesterday',
-    'this_week'            => 'This Week',
-    'last_week'            => 'Last Week',
-    'this_month'           => 'This Month',
-    'last_month'           => 'Last Month',
-    'this_quarter'         => 'This Quarter',
-    'last_quarter'         => 'Last Quarter',
-    'this_year'            => 'This Year',
-    'last_year'            => 'Last Year',
-    'last_3_days'          => 'Last 3 Days',
-    'last_7_days'          => 'Last 7 Days',
-    'last_14_days'         => 'Last 14 Days',
-    'last_30_days'         => 'Last 30 Days',
-    'last_90_days'         => 'Last 90 Days',
-    'last_3_months'        => 'Last 3 Months',
-    'last_6_months'        => 'Last 6 Months',
-    'year_to_date'         => 'Year to Date',
-    'last_week_to_date'    => 'Last Week to Date',
-    'last_month_to_date'   => 'Last Month to Date',
-    'last_quarter_to_date' => 'Last Quarter to Date',
-    'next_7_days'          => 'Next 7 Days',
-    'next_30_days'         => 'Next 30 Days',
-    'next_month'           => 'Next Month',
-    'next_quarter'         => 'Next Quarter',
-    'next_year'            => 'Next Year',
-    'all'                  => 'All Time',
-    'custom'               => 'Custom Range',
-];
-@endphp
-```
-
-### Customize Displayed Presets
-
-Pass a comma-separated string or array to show only specific presets:
-
-@blade
-<x-demo lazy class="flex justify-center">
-    <x-ui.date-picker 
-        mode="range"
-        :presets="['today', 'yesterday', 'this_week', 'last_week', 'this_month', 'last_month']"
-    />
-</x-demo>
-@endblade
-
-```blade
-{{-- Array style --}}
-<x-ui.date-picker 
-    mode="range"
-    :presets="['today', 'this_week', 'this_month', 'last_month']"
-/>
-
-{{-- String style (comma-separated) --}}
-<x-ui.date-picker 
-    mode="range"
-    presets="today,this_week,this_month,last_month"
-/>
-```
 
 ## Min & Max Dates
 
@@ -624,6 +558,75 @@ use other form component like `label` and `field`... to build forms in pair with
     <x-ui.date-picker wire:model="multiple" clearable />
 </x-ui.field>
 ```
+
+## Presets
+
+Date picker includes powerful preset buttons for quick selection of common date ranges. Presets are context-aware and generate the appropriate date range based on today's date.
+
+### Available Presets
+
+```blade
+@php
+$availablePresets = [
+    'today'                => 'Today',
+    'yesterday'            => 'Yesterday',
+    'this_week'            => 'This Week',
+    'last_week'            => 'Last Week',
+    'this_month'           => 'This Month',
+    'last_month'           => 'Last Month',
+    'this_quarter'         => 'This Quarter',
+    'last_quarter'         => 'Last Quarter',
+    'this_year'            => 'This Year',
+    'last_year'            => 'Last Year',
+    'last_3_days'          => 'Last 3 Days',
+    'last_7_days'          => 'Last 7 Days',
+    'last_14_days'         => 'Last 14 Days',
+    'last_30_days'         => 'Last 30 Days',
+    'last_90_days'         => 'Last 90 Days',
+    'last_3_months'        => 'Last 3 Months',
+    'last_6_months'        => 'Last 6 Months',
+    'year_to_date'         => 'Year to Date',
+    'last_week_to_date'    => 'Last Week to Date',
+    'last_month_to_date'   => 'Last Month to Date',
+    'last_quarter_to_date' => 'Last Quarter to Date',
+    'next_7_days'          => 'Next 7 Days',
+    'next_30_days'         => 'Next 30 Days',
+    'next_month'           => 'Next Month',
+    'next_quarter'         => 'Next Quarter',
+    'next_year'            => 'Next Year',
+    'all'                  => 'All Time',
+    'custom'               => 'Custom Range',
+];
+@endphp
+```
+
+### Customize Displayed Presets
+
+Pass a comma-separated string or array to show only specific presets:
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker 
+        mode="range"
+        :presets="['today', 'yesterday', 'this_week', 'last_week', 'this_month', 'last_month']"
+    />
+</x-demo>
+@endblade
+
+```blade
+{{-- Array style --}}
+<x-ui.date-picker 
+    mode="range"
+    :presets="['today', 'this_week', 'this_month', 'last_month']"
+/>
+
+{{-- String style (comma-separated) --}}
+<x-ui.date-picker 
+    mode="range"
+    presets="today,this_week,this_month,last_month"
+/>
+```
+
 
 ## Panel Position
 Control where the date picker dialog appears relative to the trigger button using the `position` and `offset` props.
