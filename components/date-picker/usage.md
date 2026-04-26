@@ -619,12 +619,9 @@ Then bind it to your calendar view:
 <x-ui.calendar mode="range" wire:model.live="range" />
 ```
 
-### Presets
+#### Presets
 
 Date picker includes powerful preset buttons for quick selection of common date ranges. Presets are context-aware and generate the appropriate date range based on today's date.
-
-
-### Customize Displayed Presets
 
 Pass a comma-separated string or array to show only specific presets:
 
@@ -680,10 +677,6 @@ $this->vacation->preset(DateRangePreset::Custom);
 
 // Create a new range with only a start date
 $partial = DateRange::setStart('2026-04-15'); // end will be null
-
-// Create a new range with only an end date
-$partial = DateRange::setEnd('2026-04-25');   // start will be null
-
 ```
 
 
