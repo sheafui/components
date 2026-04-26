@@ -284,7 +284,7 @@ Common usage patterns for status indicators and labels.
 </div>
 ```
 
-## Component Props Reference
+## Component Props 
 
 ### ui.badge
 
