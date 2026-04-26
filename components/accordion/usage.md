@@ -300,14 +300,6 @@ Use the reverse layout to position chevron icons on the left side.
 | `trigger` | `string` | `null` | Shorthand trigger content (alternative to using trigger slot) |
 | `expanded` | `boolean` | `false` | Whether the item is expanded by default |
 
-### Inherited Props (Accordion Item)
-
-These props are automatically inherited from the parent `accordion` component:
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `reverse` | `boolean` | `false` | Reverse layout inherited from parent accordion |
-
 ### ui.accordion.trigger
 
 | Prop | Type | Description |
