@@ -567,46 +567,62 @@ use other form component like `label` and `field`... to build forms in pair with
 </x-ui.field>
 ```
 
-## Presets
+
+
+##  The `DateRange` Synthesizer
+
+When using `mode="range"` with Livewire, we recommend binding the calendar to a `DateRange` object instead of a raw `['start'=>'...', 'end'=>'...']`. This powerful object extends Laravel's `CarbonPeriod` and provides a rich API for working with date ranges.
+
+#### Installation
+
+First, register the synthesizer in your service provider:
+
+```php
+use App\Livewire\Synthesizers\DateRangeSynthesizer;
+use Livewire\Livewire;
+
+// ...
+public function boot(): void
+{
+    Livewire::propertySynthesizer(DateRangeSynthesizer::class);
+}
+```
+
+#### Basic Usage
+
+In your Livewire component, type-hint the property:
+
+```php
+use App\View\Components\DateRange;
+
+class Dashboard extends Component
+{
+    public DateRange $range;
+
+    public function mount()
+    {
+        // Initialize as empty range
+        $this->range = new DateRange();
+        
+        // Or initialize with specific dates
+        $this->range = new DateRange('2026-04-15', '2026-04-25');
+        
+        // Or using Carbon instances
+        $this->range = new DateRange(now()->subDays(1), now()->addDays(4));
+    }
+}
+```
+
+Then bind it to your calendar view:
+
+```blade
+<x-ui:calendar mode="range" wire:model.live="range" />
+```
+
+### Presets
 
 Date picker includes powerful preset buttons for quick selection of common date ranges. Presets are context-aware and generate the appropriate date range based on today's date.
 
-### Available Presets
-
-```blade
-@php
-$availablePresets = [
-    'today'                => 'Today',
-    'yesterday'            => 'Yesterday',
-    'this_week'            => 'This Week',
-    'last_week'            => 'Last Week',
-    'this_month'           => 'This Month',
-    'last_month'           => 'Last Month',
-    'this_quarter'         => 'This Quarter',
-    'last_quarter'         => 'Last Quarter',
-    'this_year'            => 'This Year',
-    'last_year'            => 'Last Year',
-    'last_3_days'          => 'Last 3 Days',
-    'last_7_days'          => 'Last 7 Days',
-    'last_14_days'         => 'Last 14 Days',
-    'last_30_days'         => 'Last 30 Days',
-    'last_90_days'         => 'Last 90 Days',
-    'last_3_months'        => 'Last 3 Months',
-    'last_6_months'        => 'Last 6 Months',
-    'year_to_date'         => 'Year to Date',
-    'last_week_to_date'    => 'Last Week to Date',
-    'last_month_to_date'   => 'Last Month to Date',
-    'last_quarter_to_date' => 'Last Quarter to Date',
-    'next_7_days'          => 'Next 7 Days',
-    'next_30_days'         => 'Next 30 Days',
-    'next_month'           => 'Next Month',
-    'next_quarter'         => 'Next Quarter',
-    'next_year'            => 'Next Year',
-    'all'                  => 'All Time',
-    'custom'               => 'Custom Range',
-];
-@endphp
-```
 
 ### Customize Displayed Presets
 
@@ -634,6 +650,88 @@ Pass a comma-separated string or array to show only specific presets:
     presets="today,this_week,this_month,last_month"
 />
 ```
+
+
+
+#### Core Methods
+
+```php
+// Get the start date as a Y-m-d string (or null if not set)
+$start = $this->vacation->getStart(); // e.g., "2026-04-15"
+
+// Get the end date as a Y-m-d string (or null if not set)
+$end = $this->vacation->getEnd();     // e.g., "2026-04-25"
+
+// Check if the range has a start date
+if ($this->vacation->hasStart()) {
+    // Start is set
+}
+
+// Check if the range has an end date
+if ($this->vacation->hasEnd()) {
+    // End is set
+}
+
+// Get the preset used to create this range (e.g., DateRangePreset::ThisWeek)
+$preset = $this->vacation->getPreset();
+
+// Manually set the preset (e.g., after modifying dates)
+$this->vacation->preset(DateRangePreset::Custom);
+
+// Create a new range with only a start date
+$partial = DateRange::setStart('2026-04-15'); // end will be null
+
+// Create a new range with only an end date
+$partial = DateRange::setEnd('2026-04-25');   // start will be null
+
+```
+
+
+#### Advanced Use Cases
+
+Because `DateRange` extends `CarbonPeriod`, you can leverage its full power.
+
+##### Iterating Over the Range
+
+```php
+foreach ($this->range as $date) {
+    echo $date->format('Y-m-d'); // Each $date is a Carbon instance
+}
+```
+
+##### Filtering the Range
+
+Use `addFilter()` to include or exclude specific days. For example, to get all weekdays within a range:
+
+```php
+$weekdays = $this->range->addFilter('isWeekday')->toArray();
+```
+
+##### Using with Eloquent
+
+The `DateRange` object works directly with `whereBetween`:
+
+```php
+use App\Models\Booking;
+
+$bookings = Booking::whereBetween('date', $this->range)->get();
+```
+
+##### Validating the Range
+
+```php
+use Illuminate\Validation\Validator;
+
+public function rules(): array
+{
+    return [
+        'vacation.start' => 'required|date_format:Y-m-d',
+        'vacation.end' => 'required|date_format:Y-m-d|after:vacation.start',
+    ];
+}
+```
+
+
 
 
 ## Panel Position
