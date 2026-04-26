@@ -337,6 +337,14 @@ Enable dropdown selectors for quick jumps to specific months and years.
 <x-ui.date-picker selectable-months selectable-years wire:model="date" />
 ```
 
+### Years Range Configuration
+
+The `years-range` prop accepts an array with two values `[start, end]`:
+- **Relative offsets**: Values with absolute value ≤ 100 are treated as offsets from the current year. For example, `[-10, 10]` shows years from 10 years ago to 10 years in the future.
+- **Absolute years**: Larger values (e.g., `2020`) are treated as absolute year numbers. For example, `[2020, 2030]` shows years 2020 through 2030.
+
+When multiple months are displayed, the month and year selectors appear only in the first month's header to avoid duplication.
+
 
 ## Size Variants
 
