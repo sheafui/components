@@ -21,6 +21,13 @@ Then import the script in your JS entry point:
 import './components/calendar/index.js';
 ```
 
+import the css:
+
+```css
+/* app.css */
+@import './components/calendar/cell.css';
+```
+
 > Once installed, you can use the `<x-ui.calendar />` component in any Blade view.
 
 If you're using range mode with livewire, we recomend to register the synthesizer in your service provider so Livewire knows how to serialize the `DateRange` object between requests:
@@ -621,7 +628,7 @@ class Dashboard extends Component
 Then bind it to your calendar view:
 
 ```blade
-<flux:calendar mode="range" wire:model.live="range" />
+<x-ui.calendar mode="range" wire:model.live="range" />
 ```
 
 #### Core Methods
@@ -786,6 +793,14 @@ public function rules(): array
 | `last30Days(): static` | Creates a range for the last 30 days. |
 | `last3Months(): static` | Creates a range for the last 3 months. |
 | `last6Months(): static` | Creates a range for the last 6 months. |
-| `yearToDate(): static` | Creates a range from January 1st of the current year to today. |
+| `yearToDate(): static` | Creates a range from January& 1st of the current year to today. |
+| `lastWeekToDate(): static` | Creates a range from the start of last week (Monday) to today. |
+| `lastMonthToDate(): static` | Creates a range from the first of last month to today. |
+| `lastQuarterToDate(): static` | Creates a range from the start of last quarter to today. |
+| `next7Days(): static` | Creates a range from today through the next 7 days. |
+| `next30Days(): static` | Creates a range from today through the next 30 days. |
+| `nextMonth(): static` | Creates a range for the next full calendar month. |
+| `nextQuarter(): static` | Creates a range for the next full quarter. |
+| `nextYear(): static` | Creates a range for the next full calendar year. |
 
 > **Note:** `DateRange` extends `CarbonPeriod`, so it also inherits all methods from `CarbonPeriod` (e.g., `getStartDate()`, `getEndDate()`, `addFilter()`, `toArray()`, etc.). For a complete list of those, refer to the official [CarbonPeriod documentation](https://carbon.nesbot.com/guide/specialized-use/carbon-period.html). The table above only lists methods that are **exclusive to your `DateRange` class**.
