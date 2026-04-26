@@ -630,7 +630,7 @@ class Dashboard extends Component
 Then bind it to your calendar view:
 
 ```blade
-<x-ui:calendar mode="range" wire:model.live="range" />
+<x-ui.calendar mode="range" wire:model.live="range" />
 ```
 
 #### Core Methods
