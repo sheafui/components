@@ -570,14 +570,14 @@ The tabs component consists of three main parts:
 | `x-model` | string | - | No | Alpine.js property to bind to |
 | `class` | string | `''` | No | Additional CSS classes |
 
-### x-ui.tab.group
+### ui.tab.group
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
 | `variant` | string | `'default'` | No | Visual variant inherited from parent |
 | `class` | string | `''` | No | Additional CSS classes use `justify-center, justify-start, justify-end` for alignment control |
 
-###  x-ui.tab
+###  ui.tab
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
@@ -586,7 +586,7 @@ The tabs component consists of three main parts:
 | `variant` | string | `'default'` | No | Visual variant inherited from parent |
 | `class` | string | `''` | No | Additional CSS classes |
 
-### x-ui.tab.panel
+### ui.tab.panel
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
