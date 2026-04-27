@@ -18,8 +18,8 @@ php artisan sheaf:install tabs
 ## Basic Usage
 
 @blade
-<x-demo>
-    <x-ui.tabs>
+<x-demo class="w-full flex-1">
+    <x-ui.tabs class="w-full">
         <x-ui.tab.group>
             <x-ui.tab name="users" label="Tab 1" />
             <x-ui.tab name="dashboard" label="Tab 2" />
@@ -70,8 +70,8 @@ php artisan sheaf:install tabs
 Use `wire:model` to bind the active tab to a Livewire property:
 
 @blade
-<x-demo>
-    <x-ui.tabs >
+<x-demo class="w-full flex-1">
+    <x-ui.tabs class="w-full">
         <x-ui.tab.group>
             <x-ui.tab label="Dashboard" name="dashboard" />
             <x-ui.tab label="Settings" name="settings" />
@@ -113,9 +113,9 @@ Use `wire:model` to bind the active tab to a Livewire property:
 You can use the tabs component with Alpine.js using `x-model`:
 
 @blade
-<x-demo>
+<x-demo class="w-full flex-1">
     <div x-data="{ currentTab: 'tab1' }">
-        <x-ui.tabs x-model="currentTab">
+        <x-ui.tabs class="w-full" x-model="currentTab">
             <x-ui.tab.group>
                 <x-ui.tab label="Home" name="tab1" />
                 <x-ui.tab label="About" name="tab2" />
@@ -163,8 +163,8 @@ You can use the tabs component with Alpine.js using `x-model`:
 Use the `name` attribute to create identifiable tabs, here order of tab and panels matter:
 
 @blade
-<x-demo>
-    <x-ui.tabs activeTab="general">
+<x-demo class="w-full flex-1">
+    <x-ui.tabs class="w-full" activeTab="general">
         <x-ui.tab.group>
             <x-ui.tab label="General" name="general" />
             <x-ui.tab label="Security" name="security" />
@@ -209,8 +209,8 @@ For simpler use cases, you can use numeric indices, here order of tab and panels
 > this is less specifity when using named tabs, so names needs to be edentifiable across panels and tabs  
 
 @blade
-<x-demo>
-    <x-ui.tabs activeTab="1">
+<x-demo class="w-full flex-1">
+    <x-ui.tabs class="w-full" activeTab="1">
         <x-ui.tab.group>
             <x-ui.tab label="First" />
             <x-ui.tab label="Second" />
@@ -260,8 +260,8 @@ For simpler use cases, you can use numeric indices, here order of tab and panels
 you can also get rid of any `activeTab` prop or any *:model binding, and the first component will activate the first component  
 
 @blade
-<x-demo>
-    <x-ui.tabs>
+<x-demo class="w-full flex-1">
+    <x-ui.tabs class="w-full">
         <x-ui.tab.group>
             <x-ui.tab label="First" />
             <x-ui.tab label="Second" />
@@ -301,8 +301,8 @@ you can also get rid of any `activeTab` prop or any *:model binding, and the fir
 ### Tabs with Icons
 
 @blade
-<x-demo>
-    <x-ui.tabs>
+<x-demo class="w-full flex-1">
+    <x-ui.tabs class="w-full">
         <x-ui.tab.group>
             <x-ui.tab label="user" icon="user" />
             <x-ui.tab label="settings" icon="cog-6-tooth" />
@@ -347,8 +347,8 @@ default tabs called `outlined`, but there is more variants: `non-contained`, `pi
 #### Non Contained
 
 @blade
-<x-demo>
-    <x-ui.tabs variant="non-contained">
+<x-demo class="w-full flex-1">
+    <x-ui.tabs class="w-full" variant="non-contained">
         <x-ui.tab.group>
             <x-ui.tab label="user" icon="user" />
             <x-ui.tab label="settings" icon="cog-6-tooth" />
@@ -394,7 +394,7 @@ default tabs called `outlined`, but there is more variants: `non-contained`, `pi
 #### Pills
 
 @blade
-<x-demo>
+<x-demo class="w-full flex-1">
     <x-ui.tabs variant="pills">
         <x-ui.tab.group>
             <x-ui.tab label="user" icon="user" />
@@ -456,8 +456,8 @@ by default tabs group are centred, to tweack that you can use `flex` properties 
 
 to push tabs to start **use `justify-start`**
 @blade
-<x-demo>
-    <x-ui.tabs class="non-contained">
+<x-demo class="w-full flex-1">
+    <x-ui.tabs class="non-contained w-full">
         <x-ui.tab.group class="justify-start">
             <x-ui.tab label="user" icon="user" />
             <x-ui.tab label="settings" icon="cog-6-tooth" />
@@ -498,8 +498,8 @@ to push tabs to start **use `justify-start`**
 to push tabs to end **use `justify-end`**
 
 @blade
-<x-demo>
-    <x-ui.tabs class="non-contained">
+<x-demo class="w-full flex-1">
+    <x-ui.tabs class="non-contained w-full">
         <x-ui.tab.group class="justify-end">
             <x-ui.tab label="user" icon="user" />
             <x-ui.tab label="settings" icon="cog-6-tooth" />
@@ -559,7 +559,7 @@ The tabs component consists of three main parts:
 
 ## Component Props
 
-### Main Tabs Component (`<x-ui.tabs>`)
+### ui.tabs
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
@@ -570,14 +570,14 @@ The tabs component consists of three main parts:
 | `x-model` | string | - | No | Alpine.js property to bind to |
 | `class` | string | `''` | No | Additional CSS classes |
 
-### Tab Group Component (`<x-ui.tab.group>`)
+### x-ui.tab.group
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
 | `variant` | string | `'default'` | No | Visual variant inherited from parent |
 | `class` | string | `''` | No | Additional CSS classes use `justify-center, justify-start, justify-end` for alignment control |
 
-### Tab Index Component (`<x-ui.tab>`)
+###  x-ui.tab
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
@@ -586,7 +586,7 @@ The tabs component consists of three main parts:
 | `variant` | string | `'default'` | No | Visual variant inherited from parent |
 | `class` | string | `''` | No | Additional CSS classes |
 
-### Tab Panel Component (`<x-ui.tab.panel>`)
+### x-ui.tab.panel
 
 | Prop Name | Type | Default | Required | Description |
 |-----------|------|---------|----------|-------------|
