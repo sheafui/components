@@ -22,7 +22,7 @@ php artisan sheaf:install image-diff
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.image-diff :aspectRatio="16/9">
     <x-ui.image-diff.before class="blur-sm" src="/before.jpg" alt="Before" />
     <x-ui.image-diff.after src="/after.jpg" alt="After" />
@@ -48,7 +48,7 @@ Control the aspect ratio to match your images.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.image-diff :aspectRatio="16/9">...</x-ui.image-diff>
 <x-ui.image-diff :aspectRatio="1">...</x-ui.image-diff>
 ...
@@ -65,7 +65,7 @@ Switch to vertical comparison for top-to-bottom reveals.
     </x-ui.image-diff>
 </x-demo>
 @endblade
-```html
+```blade
 <x-ui.image-diff vertical>
     <x-ui.image-diff.before class="grayscale" src="/before.jpg" alt="Before" />
     <x-ui.image-diff.after src="/after.jpg" alt="After" />
@@ -100,7 +100,7 @@ Use Tailwind filters on the before image for different comparisons.
     </div>
 </x-demo>
 @endblade
-```html
+```blade
 <x-ui.image-diff.before class="grayscale" src="/photo.jpg" />
 <x-ui.image-diff.before class="blur-sm" src="/photo.jpg" />
 <x-ui.image-diff.before class="brightness-50" src="/photo.jpg" />

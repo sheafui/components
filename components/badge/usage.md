@@ -31,7 +31,7 @@ The badge component supports two main visual variants with different corner radi
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Default rounded badge -->
 <x-ui.badge>Default Badge</x-ui.badge>
 
@@ -53,7 +53,7 @@ Choose from three different sizes to match your design hierarchy and context.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Small badge -->
 <x-ui.badge size="sm">Small Badge</x-ui.badge>
 
@@ -93,7 +93,7 @@ The solid style provides bold, high-contrast badges with white text on colored b
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Solid style badges (default) -->
 <x-ui.badge>Default</x-ui.badge>
 <x-ui.badge color="red">Red</x-ui.badge>
@@ -131,7 +131,7 @@ The outline style provides colored text and border.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Outline style badges -->
 <x-ui.badge variant="outline">Default</x-ui.badge>
 <x-ui.badge variant="outline" color="red">Red</x-ui.badge>
@@ -155,7 +155,7 @@ Add leading icons to provide visual context and improve recognition.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Badges with leading icons -->
 <x-ui.badge icon="check-circle" color="green">Completed</x-ui.badge>
 <x-ui.badge icon="clock" color="amber">Pending</x-ui.badge>
@@ -177,7 +177,7 @@ Use trailing icons for actions like removal or additional information.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Badges with trailing icons -->
 <x-ui.badge iconAfter="x-mark" color="blue">JavaScript</x-ui.badge>
 <x-ui.badge iconAfter="chevron-down" color="purple">More Options</x-ui.badge>
@@ -199,7 +199,7 @@ Control the icon style using the `iconVariant` prop, supporting both micro and o
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Micro icon variant (default) -->
 <x-ui.badge icon="heart" iconVariant="micro" color="red">Micro Icon</x-ui.badge>
 
@@ -220,7 +220,7 @@ Badges can function as buttons with hover states when appropriate attributes are
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Interactive badges with hover effects -->
 <x-ui.badge onclick="alert('Badge clicked!')" color="blue" class="cursor-pointer">
     Clickable Badge
@@ -260,7 +260,7 @@ Common usage patterns for status indicators and labels.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Status indicators -->
 <div class="flex items-center gap-2">
     <span class="text-sm font-medium">Order Status:</span>
@@ -284,9 +284,9 @@ Common usage patterns for status indicators and labels.
 </div>
 ```
 
-## Component Props Reference
+## Component Props 
 
-### Badge Props
+### ui.badge
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -297,22 +297,3 @@ Common usage patterns for status indicators and labels.
 | `iconAfter` | `string\|mixed` | `null` | Trailing icon name or custom icon content |
 | `iconVariant` | `string` | `'micro'` | Icon style: `'micro'`, `'outline'` |
 | `pill` | `bool` | `'false'` | for full rounded: `'false'`, `'true'`, `'null'` |
-
-### Styling Variants
-
-#### Style Variants
-
-The component automatically applies different styles based on the presence of a `variant` prop:
-
-| Style | When Applied | Appearance |
-|-------|--------------|------------|
-| **solid** | Default (no variant specified) | Bold colored background with white text |
-| **Outline** | When `variant="outline"` | for outline style with colored text and border |
-
-#### Size Options
-
-| Size | Text Size | Vertical Padding | Use Case |
-|------|-----------|------------------|----------|
-| `'sm'` | `text-xs` | `py-1` | Compact spaces, inline with small text |
-| `null` (default) | `text-sm` | `py-1` | Standard usage, most common |
-| `'lg'` | `text-sm` | `py-1.5` | Emphasis, standalone badges |

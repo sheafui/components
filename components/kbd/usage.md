@@ -28,7 +28,7 @@ Display a single keyboard key with default styling.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.kbd>K</x-ui.kbd>
 ```
 
@@ -46,7 +46,7 @@ Display multiple keys as a shortcut combination using the `keys` prop.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.kbd keys="Ctrl+K" />
 <x-ui.kbd keys="Cmd+Shift+P" />
 <x-ui.kbd keys="Alt+F4" />
@@ -65,7 +65,7 @@ Change the separator between keys using the `separator` prop.
 </x-demo>
 @endblade
 
-```html
+```blade
 <!-- Space separator -->
 <x-ui.kbd keys="Ctrl or Cmd" separator=" or " />
 
@@ -86,7 +86,7 @@ Change the separator between keys using the `separator` prop.
 
 When the `keys` prop is not provided, the component will render whatever content is passed to its default slot:
 
-```html
+```blade
 <!-- Using slot content -->
 <x-ui.kbd>Custom Content</x-ui.kbd>
 ```

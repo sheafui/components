@@ -1,0 +1,813 @@
+---
+name: date-picker
+---
+
+## Introduction
+
+The `DatePicker` component is a **zero dependencies**, **fully accessible**, and **deeply customizable** that wraps the powerful `Calendar` component with an elegant dialog, preset buttons, and intelligent date formatting. It combines the full feature set of the calendar (single, multiple, and range selection modes) with a polished UI layer that includes preset ranges, smart formatting...
+
+it differ from the calendar of dialog-based date selector with presets, formatting, and positioning. Perfect for triggering from buttons or input fields.
+
+## Installation
+
+Use the [sheaf artisan command](/docs/guides/cli-installation#content-component-management) to install the `date-picker` component:
+
+```bash
+php artisan sheaf:install date-picker
+```
+
+Then import the script in your JS entry point:
+
+```js
+// app.js
+import './components/date-picker/index.js';
+```
+
+import the css (if you haven't did it for the calendar component before):
+
+```css
+/* app.css */
+@import './components/calendar/cell.css';
+```
+
+> Once installed, you can use the `<x-ui.date-picker />` component in any Blade view.
+
+if you're using range mode with livewire, we recomend to register the synthesizer in your service provider so Livewire knows how to serialize the `DateRange` object between requests:
+
+```php
+use App\Livewire\Synthesizers\DateRangeSynthesizer;
+use Livewire\Livewire;
+
+// ...
+public function boot(): void
+{
+    Livewire::propertySynthesizer(DateRangeSynthesizer::class);
+}
+```
+
+## Usage
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker />
+</x-demo>
+@endblade
+
+### Bind to Livewire
+
+Use `wire:model` to sync the calendar with a Livewire property. The format depends on the mode.
+
+#### Single Mode
+```php
+public ?string $date = null;
+```
+```blade
+<x-ui.date-picker mode="single" wire:model="date" />             
+```
+
+#### Multiple Mode
+```php
+public array $dates = [];
+```
+```blade
+<x-ui.date-picker mode="multiple" wire:model="dates" />
+```
+
+#### Range Mode
+
+**A) Simple associative array** (start + end as ISO strings):
+```php
+public array $range = ['start' => null, 'end' => null];
+```
+```blade
+<x-ui.date-picker mode="range" wire:model="range" />
+```
+
+**B) `DateRange` object** (recommended – provides presets, date methods, and seamless hydration).  
+See [The DateRange Synth](#content-the-daterange-synthesizer) for full details.
+
+```php
+use App\View\Components\DateRange;
+public DateRange $range;
+
+// ....
+public function mount(){
+    $this->range = new DateRange(start: now(), end: now()->addDays(2));
+}
+
+```
+```blade
+<x-ui.date-picker mode="range" wire:model="range" />
+```
+
+### Using with Alpine 
+
+Outside Livewire, bind with `x-model`:
+
+```blade
+<!-- Single -->
+<div x-data="{ date: null }">
+    <x-ui.date-picker x-model="date" />
+</div>
+
+<!-- bind durrent's day date -->
+<div x-data="{ date: new Date().toISOString() }"> 
+    <x-ui.date-picker x-model="date" />
+</div>
+
+<!-- Multiple -->
+<div x-data="{ dates: [] }">
+    <x-ui.date-picker mode="multiple" x-model="dates" />
+</div>
+
+<!-- Range (simple object) -->
+<div x-data="{ range: { start: null, end: null } }">
+    <x-ui.date-picker mode="range" x-model="range" />
+</div>
+```
+## Trigger
+
+The date picker supports two trigger types: a default button and bindable text inputs for direct keyboard entry.
+
+### Button (default)
+
+The default trigger is a styled button that displays the selected date and opens the calendar on click.
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker mode="range" />
+</x-demo>
+@endblade
+
+#### Range Separator
+
+Change the separator between start and end date in range display:
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker mode="range" range-separator="→" />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker mode="range" range-separator="→" />
+```
+### Input
+
+Bind a masked text input directly to the date picker for keyboard-first date entry. Inputs are context-aware arrow keys increment/decrement each segment, typing auto-advances between segments, and the calendar stays in sync all built from absolute scratch (see `calendar/masker.js` file).
+
+> Supported in `single` and `range` modes only.
+
+#### Single Mode
+
+Pass `<x-ui.date-picker.input />` into the `trigger` slot:
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker>
+        <x-slot:trigger>
+            <x-ui.date-picker.input/>
+        </x-slot>
+    </x-ui.date-picker>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker>
+    <x-slot:trigger>
+        <x-ui.date-picker.input />
+    </x-slot>
+</x-ui.date-picker>
+```
+
+#### Range Mode
+
+In range mode, use the dedicated start and end input components. Each input is independently editable and stays in sync with the calendar selection.
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker mode="range" :months="2">
+        <x-slot:trigger class="flex gap-2">
+            <x-ui.field>
+                <x-ui.label>Start</x-ui.label>
+                <x-ui.date-picker.input.start />
+            </x-ui.field>
+            <x-ui.field>
+                <x-ui.label>End</x-ui.label>
+                <x-ui.date-picker.input.end />
+            </x-ui.field>
+        </x-slot>
+    </x-ui.date-picker>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker mode="range" :months="2">
+    <x-slot:trigger class="flex gap-2">
+        <x-ui.field>
+            <x-ui.label>Start</x-ui.label>
+            <x-ui.date-picker.input.start />
+        </x-ui.field>
+        <x-ui.field>
+            <x-ui.label>End</x-ui.label>
+            <x-ui.date-picker.input.end />
+        </x-ui.field>
+    </x-slot>
+</x-ui.date-picker>
+```
+
+### Pillbox variant
+you can use the pills *only* in multiple mode
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker mode="multiple" class="w-70" variant="pills" clearable/>
+</x-demo>
+@endblade
+
+
+
+
+## Min & Max Dates
+
+Restrict the selectable date range by setting `min` and `max`. Dates outside this range are disabled and cannot be selected.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker min="2026-04-05" max="2026-04-25" />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker 
+    min="2026-04-05" 
+    max="2026-04-25" 
+    wire:model="date" 
+/>
+```
+
+## Unavailable Dates
+
+Mark specific dates as unavailable (visible but disabled) using a comma-separated array of ISO date strings.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker :unavailable-dates="['2026-04-15', '2026-04-20', '2026-04-25']" />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker :unavailable-dates="$blockedDates" wire:model="date" />
+```
+
+## Range Constraints
+
+In `range` mode, enforce minimum and maximum range lengths with `min-range` and `max-range` (both in days).
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker mode="range" :min-range="3" :max-range="14" />
+</x-demo>
+@endblade
+
+```blade
+{{-- Require at least 3 days, at most 2 weeks --}}
+<x-ui.date-picker 
+    mode="range" 
+    :min-range="3" 
+    :max-range="14"
+    wire:model="range"
+/>
+```
+
+## Display Multiple Months
+
+Show multiple months side-by-side for easier date browsing.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker :months="2" mode="range" />
+</x-demo>
+@endblade
+
+```blade
+{{-- Show 2 months side-by-side --}}
+<x-ui.date-picker :months="2" mode="range" wire:model="range" />
+
+{{-- Show 3 months --}}
+<x-ui.date-picker :months="3" wire:model="date" />
+```
+
+## Open To Date
+
+Set the initial month the date picker opens to using `open-to`.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker open-to="2028-09-01" />
+</x-demo>
+@endblade
+
+```blade
+{{-- Open to September 2028 when no date is selected --}}
+<x-ui.date-picker open-to="2028-09-01" wire:model="date" />
+
+{{-- Always open to this date, even if a date is already selected --}}
+<x-ui.date-picker open-to="2028-09-01" force-open-to wire:model="date" />
+```
+
+## Navigation Controls
+
+Disable month navigation buttons if needed.
+
+```blade
+<x-ui.date-picker :allow-navigation="false" />
+```
+
+## Selectable Months & Years
+
+Enable dropdown selectors for quick jumps to specific months and years.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker selectable-months selectable-years />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker selectable-months selectable-years wire:model="date" />
+```
+
+### Years Range Configuration
+
+The `years-range` prop accepts an array with two values `[start, end]`:
+- **Relative offsets**: Values with absolute value ≤ 100 are treated as offsets from the current year. For example, `[-10, 10]` shows years from 10 years ago to 10 years in the future.
+- **Absolute years**: Larger values (e.g., `2020`) are treated as absolute year numbers. For example, `[2020, 2030]` shows years 2020 through 2030.
+
+When multiple months are displayed, the month and year selectors appear only in the first month's header to avoid duplication.
+
+
+## Size Variants
+
+Choose from multiple sizes to fit different UI contexts.
+
+```blade
+<x-ui.date-picker size="xs" />
+<x-ui.date-picker size="sm" />
+<x-ui.date-picker size="md" />  {{-- default --}}
+<x-ui.date-picker size="lg" />
+<x-ui.date-picker size="xl" />
+<x-ui.date-picker size="2xl" />
+```
+
+## Today Button
+
+Show a button to jump to today's date.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker :with-today="true" />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker :with-today="true" wire:model="date" />
+```
+
+## Week Numbers
+
+Display ISO 8601 week numbers for project planning and reporting.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker week-numbers />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker week-numbers wire:model="date" />
+```
+
+## Fixed Week Heights
+
+Lock all months to a consistent layout height (6 rows) for stable layouts.
+
+```blade
+<x-ui.date-picker :fixed-weeks="true" :months="2" wire:model="date" />
+```
+
+## Readonly
+
+Display the date picker without allowing interaction.
+
+```blade
+<x-ui.date-picker readonly />
+```
+
+## Localization
+
+### Set Locale
+
+Override the browser's default locale to control weekday names and the first day of the week.
+
+@blade
+<x-demo lazy class="flex gap-4 justify-center">
+    <x-ui.date-picker locale="fr-Ma" mode="range" />
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker locale="fr-Ma" wire:model="date" />
+<!-- backend driven -->
+<x-ui.date-picker :locale="app()->getLocale()" wire:model="date" />
+```
+
+### Custom Week Start
+
+Override the locale-determined first day of the week.
+
+```blade
+{{-- Force Monday as first day regardless of locale --}}
+<x-ui.date-picker locale="en-US" :start-day="1" wire:model="date" />
+```
+
+## Special Days
+
+Mark specific dates with custom categories for styling, disabling, and tooltips. This is especially useful for booking systems where you need to highlight holidays, unavailable dates, or special events.
+
+### Mark Special Dates with Color
+
+Pass a `special-days` associative array where each key is a category name.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <div class="[&_[data-special~=holiday]]:text-yellow-600 [&_[data-special~=birthday]]:text-pink-500 [&_[data-special~=blocked]]:text-red-500">
+        <x-ui.date-picker 
+            mode="multiple"
+            open-to="2026-04-01"
+            :special-days="[
+                'holiday'   => ['2026-04-20', '2026-04-21'],
+                'birthday'  => ['2026-04-15'],
+                'blocked'   => ['2026-04-25', '2026-04-27'],
+            ]"
+        />
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<div class="
+    [&_[data-special~=holiday]]:text-yellow-600 
+    [&_[data-special~=birthday]]:text-pink-500 
+    [&_[data-special~=blocked]]:text-red-500
+">
+    <x-ui.date-picker 
+        :special-days="[
+            'holiday'   => ['2026-04-20', '2026-04-21'],
+            'birthday'  => ['2026-04-15'],
+            'blocked'   => ['2026-04-25', '2026-04-27'],
+        ]"
+    />
+</div>
+```
+
+### Disable Specific Categories
+
+Prevent selection of certain special day categories.
+
+```blade
+<x-ui.date-picker 
+    :special-days="[
+        'holiday'   => ['2026-04-20', '2026-04-21'],
+        'blocked'   => ['2026-04-25'],
+    ]"
+    :special-disabled="['blocked']"
+/>
+```
+
+Now dates with the `blocked` category cannot be selected, while holidays remain selectable.
+
+### Add Tooltips
+
+Show helpful text on hover for special day categories.
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <div class="[&_[data-special~=holiday]]:text-yellow-600 [&_[data-special~=blocked]]:text-red-500">
+        <x-ui.date-picker 
+            :special-days="[
+                'holiday'   => ['2026-04-20'],
+                'blocked'   => ['2026-04-25'],
+            ]"
+            open-to="2026-04-01"
+            :special-disabled="['blocked']"
+            :special-tooltips="[
+                'blocked' => 'Already booked',
+                'holiday' => 'Public holiday',
+            ]"
+        />
+    </div>
+</x-demo>
+@endblade
+
+```blade
+<x-ui.date-picker 
+    :special-days="[...]"
+    :special-disabled="['blocked']"
+    :special-tooltips="[
+        'blocked' => 'Blocked day – unavailable',
+        'holiday' => 'Public holiday',
+        'birthday' => 'Birthday celebration 🎂',
+    ]"
+/>
+```
+
+
+### Special Days Scenario
+
+Use special days for a booking system where customers can see available, booked, and featured dates:
+
+```blade
+@php
+your php
+$bookedDates = app(BookingRepository::class)->getBookedDates();
+$featuredDates = app(PropertyRepository::class)->getFeaturedDates();
+
+// Today onwards to 1 year from now
+$minDate = now()->format('Y-m-d');
+$maxDate = now()->addYear()->format('Y-m-d');
+@endphp
+
+<div class="[&_[data-special~=booked]]:line-through [&_[data-special~=booked]]:opacity-50 [&_[data-special~=featured]]:font-bold [&_[data-special~=featured]]:text-amber-600">
+    <x-ui.date-picker 
+        mode="range"
+        :min-range="2"
+        :max-range="14"
+        :min="$minDate"
+        :max="$maxDate"
+        :special-days="[
+            'booked' => $bookedDates,
+            'featured' => $featuredDates,
+        ]"
+        :special-disabled="['booked']"
+        :special-tooltips="[
+            'booked' => 'Already reserved',
+            'featured' => 'Special rate available!',
+        ]"
+        wire:model="stay"
+    />
+</div>
+```
+## Date Picker In Form
+
+use other form component like `label` and `field`... to build forms in pair with `date-picker`... 
+```blade
+<x-ui.field>
+    <x-ui.label>Pick a date</x-ui.label>
+    <x-ui.date-picker wire:model="multiple" clearable />
+</x-ui.field>
+```
+
+
+
+##  The `DateRange` Synthesizer
+
+When using `mode="range"` with Livewire, we recommend binding the calendar to a `DateRange` object instead of a raw `['start'=>'...', 'end'=>'...']`. This powerful object extends Laravel's `CarbonPeriod` and provides a rich API for working with date ranges.
+
+#### Installation
+
+First, register the synthesizer in your service provider:
+
+```php
+use App\Livewire\Synthesizers\DateRangeSynthesizer;
+use Livewire\Livewire;
+
+// ...
+public function boot(): void
+{
+    Livewire::propertySynthesizer(DateRangeSynthesizer::class);
+}
+```
+
+#### Basic Usage
+
+In your Livewire component, type-hint the property:
+
+```php
+use App\View\Components\DateRange;
+
+class Dashboard extends Component
+{
+    public DateRange $range;
+
+    public function mount()
+    {
+        // Initialize as empty range
+        $this->range = new DateRange();
+        
+        // Or initialize with specific dates
+        $this->range = new DateRange('2026-04-15', '2026-04-25');
+        
+        // Or using Carbon instances
+        $this->range = new DateRange(now()->subDays(1), now()->addDays(4));
+    }
+}
+```
+
+Then bind it to your calendar view:
+
+```blade
+<x-ui.calendar mode="range" wire:model.live="range" />
+```
+
+#### Presets
+
+Date picker includes powerful preset buttons for quick selection of common date ranges. Presets are context-aware and generate the appropriate date range based on today's date.
+
+Pass a comma-separated string or array to show only specific presets:
+
+@blade
+<x-demo lazy class="flex justify-center">
+    <x-ui.date-picker 
+        mode="range"
+        :presets="['today', 'yesterday', 'this_week', 'last_week', 'this_month', 'last_month']"
+    />
+</x-demo>
+@endblade
+
+```blade
+{{-- Array style --}}
+<x-ui.date-picker 
+    mode="range"
+    :presets="['today', 'this_week', 'this_month', 'last_month']"
+/>
+
+{{-- String style (comma-separated) --}}
+<x-ui.date-picker 
+    mode="range"
+    presets="today,this_week,this_month,last_month"
+/>
+```
+
+
+
+#### Core Methods
+
+```php
+// Get the start date as a Y-m-d string (or null if not set)
+$start = $this->vacation->getStart(); // e.g., "2026-04-15"
+
+// Get the end date as a Y-m-d string (or null if not set)
+$end = $this->vacation->getEnd();     // e.g., "2026-04-25"
+
+// Check if the range has a start date
+if ($this->vacation->hasStart()) {
+    // Start is set
+}
+
+// Check if the range has an end date
+if ($this->vacation->hasEnd()) {
+    // End is set
+}
+
+// Get the preset used to create this range (e.g., DateRangePreset::ThisWeek)
+$preset = $this->vacation->getPreset();
+
+// Manually set the preset (e.g., after modifying dates)
+$this->vacation->preset(DateRangePreset::Custom);
+
+// Create a new range with only a start date
+$partial = DateRange::setStart('2026-04-15'); // end will be null
+```
+
+
+#### Advanced Use Cases
+
+Because `DateRange` extends `CarbonPeriod`, you can leverage its full power.
+
+##### Iterating Over the Range
+
+```php
+foreach ($this->range as $date) {
+    echo $date->format('Y-m-d'); // Each $date is a Carbon instance
+}
+```
+
+##### Filtering the Range
+
+Use `addFilter()` to include or exclude specific days. For example, to get all weekdays within a range:
+
+```php
+$weekdays = $this->range->addFilter('isWeekday')->toArray();
+```
+
+##### Using with Eloquent
+
+The `DateRange` object works directly with `whereBetween`:
+
+```php
+use App\Models\Booking;
+
+$bookings = Booking::whereBetween('date', $this->range)->get();
+```
+
+##### Validating the Range
+
+```php
+use Illuminate\Validation\Validator;
+
+public function rules(): array
+{
+    return [
+        'vacation.start' => 'required|date_format:Y-m-d',
+        'vacation.end' => 'required|date_format:Y-m-d|after:vacation.start',
+    ];
+}
+```
+
+
+
+
+## Panel Position
+Control where the date picker dialog appears relative to the trigger button using the `position` and `offset` props.
+
+```blade
+{{-- Bottom-left (default) --}}
+<x-ui.date-picker position="bottom-start" offset="3" />
+
+{{-- Bottom-right --}}
+<x-ui.date-picker position="bottom-end" offset="3" />
+
+{{-- Top-left --}}
+<x-ui.date-picker position="top-start" offset="3" />
+
+{{-- Top-right --}}
+<x-ui.date-picker position="top-end" offset="3" />
+```
+
+Available positions: `top-start`, `top`, `top-end`, `bottom-start`, `bottom`, `bottom-end`, `left-start`, `left`, `left-end`, `right-start`, `right`, `right-end`.
+
+
+## Component Props
+
+### x-ui.date-picker
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `trigger` | slot | `null` | Custom trigger element. If not provided, a default button is shown. |
+| `label` | string | `'select a date'` | Label text for the default trigger button. |
+| `position` | string | `'bottom-start'` | Dialog position relative to trigger. Options: `top-start`, `top`, `top-end`, `bottom-start`, `bottom`, `bottom-end`, `left-start`, `left`, `left-end`, `right-start`, `right`, `right-end`. |
+| `offset` | integer | `3` | Distance in pixels between dialog and trigger. |
+| `presets` | array\|string | `[]` | Preset keys to display. Pass as array or comma-separated string. Leave empty to hide presets. |
+| `separator` | string | `'→'` | Separator text between start and end date in range display. |
+| `wire:model` | string | — | Binds to a Livewire property. Value format depends on mode. |
+| `mode` | string | `'single'` | Selection mode. Options: `single`, `multiple`, `range`. |
+| `min` | string | `null` | Earliest selectable date as `YYYY-MM-DD`. |
+| `max` | string | `null` | Latest selectable date as `YYYY-MM-DD`. |
+| `min-range` | integer | `null` | Minimum range length in days (range mode only). |
+| `max-range` | integer | `null` | Maximum range length in days (range mode only). |
+| `unavailable-dates` | array\|string | `[]` | Array or comma-separated list of unavailable dates as `YYYY-MM-DD`. |
+| `special-days` | array | `[]` | Associative array of category keys → arrays of ISO date strings. |
+| `special-disabled` | array | `[]` | List of category keys that should be non‑selectable (disabled). |
+| `special-tooltips` | array | `[]` | Associative array of category keys → tooltip text. |
+| `locale` | string | `'auto'` | BCP‑47 locale for weekday names and first day of week. `auto` uses `navigator.language`. |
+| `start-day` | integer\|string | `'auto'` | First day of the week (0 = Sunday, 1 = Monday, …, 6 = Saturday). `auto` respects locale. |
+| `months` | integer | `1` | Number of months to display side‑by‑side. |
+| `fixed-weeks` | boolean | `false` | Lock all months to 6 rows for consistent layout height. |
+| `allow-navigation` | boolean | `true` | Show previous/next month navigation buttons. |
+| `with-today` | boolean | `false` | Show a "go to today" button. |
+| `selectable-months` | boolean | `false` | Show month selector dropdown. |
+| `selectable-years` | boolean | `false` | Show year selector dropdown. |
+| `years-range` | array | `[-10, 10]` | Range of selectable years. Values ≤ 100 are relative offsets from current year. |
+| `readonly` | boolean | `false` | Disable all interaction (display‑only). |
+| `size` | string | `'md'` | Size variant. Options: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`. |
+| `open-to` | string | `null` | Date (`YYYY-MM-DD`) the calendar opens to when no date is selected. |
+| `force-open-to` | boolean | `false` | When `true`, forces calendar to always open to `open-to`, even if a date is selected. |
+| `week-numbers` | boolean | `false` | Show ISO week numbers in a separate column. |
+| `top-inputs` | boolean | `false` | Show date input field(s) above the calendar for direct keyboard entry. Note: typically handled by presets and formatting in date picker. |
+
+### x-ui.date-picker.input
+### x-ui.date-picker.input.start
+### x-ui.date-picker.input.end
+
+
+## Data Attributes
+
+The date picker dialog and underlying calendar both expose data attributes for advanced CSS customization:
+
+| Attribute | Description |
+| --------- | ----------- |
+| `data-slot="calendar-cell"` | Applied to each selectable day `<button>`. |
+| `data-slot="calendar-blank-day-cell"` | Applied to blank days from adjacent months. |
+| `data-selected` | Present on a cell when its date is selected. |
+| `data-disabled` | Present on a cell when its date is disabled (outside min/max or unavailable). |
+| `data-unavailable` | Present on a cell when explicitly marked unavailable (still visible, non-selectable). |
+| `data-today` | Present on a cell representing today's date. |
+| `data-focused` | Present on the currently focused cell (keyboard navigation). |
+| `data-range-middle` | Present on cells between the start and end of a selected range. |
+| `data-hover-preview` | Present on cells in the range preview while selecting range end (before click). |
+| `data-hover-end` | Present on the hovered cell while selecting range end. |
+| `data-first-in-row` | Present on the first cell of each week row. |
+| `data-last-in-row` | Present on the last cell of each week row. |
+| `data-special` | Present on cells that have at least one special category. Value is a space‑separated list of category keys (e.g., `"holiday birthday"`). |
+| `data-has-tooltip` | Present on cells that have a tooltip (from `special-tooltips`). Useful for CSS selectors like `[data-has-tooltip]:hover [data-special-tooltip]`. |
+| `data-slot="calendar-week-num-cell"` | Applied to each week number cell. |

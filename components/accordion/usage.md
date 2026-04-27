@@ -53,7 +53,7 @@ php artisan sheaf:install accordion
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.accordion>
     <x-ui.accordion.item>
         <x-ui.accordion.trigger>
@@ -109,7 +109,7 @@ For simple accordions, you can use the shorthand syntax with the `trigger` prop.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.accordion>
     <x-ui.accordion.item trigger="Account Settings">
         <p>Manage your account preferences, update your profile information, and configure notification settings.</p>
@@ -163,7 +163,7 @@ Set an accordion item to be expanded when the component loads.
 </x-demo>
 @endblade
 
-```html
+```blade
 <div class="w-full">
     <x-ui.accordion>
         <x-ui.accordion.item expanded trigger="Getting Started">
@@ -213,7 +213,7 @@ Disable specific accordion items to prevent user interaction.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.accordion>
     //
     <x-ui.accordion.item 
@@ -278,7 +278,7 @@ Use the reverse layout to position chevron icons on the left side.
 </x-demo>
 @endblade
 
-```html
+```blade
 <x-ui.accordion reverse>
     //..
 </x-ui.accordion>
@@ -286,13 +286,13 @@ Use the reverse layout to position chevron icons on the left side.
 
 ## Component Props Reference
 
-### Accordion Props
+### ui.accordion
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `reverse` | `boolean` | `false` | Whether to reverse the trigger layout (chevron on left) |
 
-### Accordion Item Props
+### ui.accordion.item
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -300,15 +300,7 @@ Use the reverse layout to position chevron icons on the left side.
 | `trigger` | `string` | `null` | Shorthand trigger content (alternative to using trigger slot) |
 | `expanded` | `boolean` | `false` | Whether the item is expanded by default |
 
-### Inherited Props (Accordion Item)
-
-These props are automatically inherited from the parent `accordion` component:
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `reverse` | `boolean` | `false` | Reverse layout inherited from parent accordion |
-
-### Accordion Item Trigger Props
+### ui.accordion.trigger
 
 | Prop | Type | Description |
 |------|------|-------------|
