@@ -2,3 +2,27 @@ files:
   contents: resources/views/components/ui/empty/contents.blade.php
   index: resources/views/components/ui/empty/index.blade.php
   media: resources/views/components/ui/empty/media.blade.php
+mcp:
+  name: empty
+  title: Empty state
+  summary: Compose meaningful empty states with media, guidance, and next actions.
+  category: feedback
+  tags: [empty-state, no-data, placeholder, action]
+  capabilities: [show-empty-state]
+  access: free
+  install: empty
+  root_tag: x-ui.empty
+  child_tags: [x-ui.empty.media, x-ui.empty.contents]
+  props:
+    variant: {type: string, required: false, default: default}
+  slots:
+    default: {required: true, description: Empty-state media and contents.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.empty.media, x-ui.empty.contents]}
+  examples:
+    minimal: '<x-ui.empty>No results</x-ui.empty>'
+    common: '<x-ui.empty><x-ui.empty.media><x-ui.icon name="inbox" /></x-ui.empty.media><x-ui.empty.contents>No messages</x-ui.empty.contents></x-ui.empty>'
+    advanced: '<x-ui.empty class="border rounded-box"><x-ui.empty.media><x-ui.icon name="folder-plus" /></x-ui.empty.media><x-ui.empty.contents><x-ui.heading>No projects</x-ui.heading><x-ui.button>Create project</x-ui.button></x-ui.empty.contents></x-ui.empty>'
+  docs: docs/components/empty/usage.md
+  mistakes: [Include guidance or an action when the user can resolve the empty state.]

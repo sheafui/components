@@ -1,3 +1,55 @@
 files:
   index: resources/views/components/ui/tags-input/index.blade.php
   tag: resources/views/components/ui/tags-input/tag.blade.php
+mcp:
+  name: tags-input
+  title: Tags input
+  summary: Collect, validate, suggest, sort, and reorder multiple tag values.
+  category: forms
+  tags: [tags, keywords, multiple-values, suggestions]
+  capabilities: [collect-tags, validate-tags, bind-form-state]
+  access: free
+  install: tags-input
+  root_tag: x-ui.tags-input
+  child_tags: []
+  props:
+    disabled: {type: boolean, required: false, default: false}
+    name: {type: string, required: false}
+    placeholder: {type: string, required: false, default: Add tags...}
+    maxTags: {type: integer, required: false}
+    minTagLength: {type: integer, required: false, default: 1}
+    maxTagLength: {type: integer, required: false, default: 50}
+    allowDuplicates: {type: boolean, required: false, default: false}
+    allowedChars: {type: string, required: false}
+    blockedWords: {type: array, required: false, default: []}
+    splitKeys: {type: array, required: false}
+    createOnBlur: {type: boolean, required: false, default: true}
+    createOnPaste: {type: boolean, required: false, default: true}
+    trimWhitespace: {type: boolean, required: false, default: true}
+    tagColor: {type: string, required: false, default: default}
+    tagVariant: {type: string, required: false, default: rounded}
+    showCounter: {type: boolean, required: false, default: true}
+    showClearAll: {type: boolean, required: false, default: true}
+    emptyMessage: {type: string, required: false, default: No tags added}
+    maxTagsMessage: {type: string, required: false, default: Maximum tags reached}
+    duplicateMessage: {type: string, required: false, default: Tag already exists}
+    invalidMessage: {type: string, required: false, default: Invalid tag format}
+    ariaLabel: {type: string, required: false, default: Tags input}
+    ariaDescription: {type: string, required: false}
+    persist: {type: boolean, required: false, default: false}
+    persistKey: {type: string, required: false}
+    suggestions: {type: array, required: false, default: []}
+    allowCustom: {type: boolean, required: false, default: true}
+    sortTags: {type: boolean, required: false, default: false}
+    sortDirection: {type: string, required: false, default: asc}
+  slots: []
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.tags-input wire:model="tags" />'
+    common: '<x-ui.tags-input x-model="tags" :suggestions="[''Laravel'', ''Livewire'']" />'
+    advanced: '<x-ui.tags-input wire:model="skills" :max-tags="5" :allow-custom="false" :sort-tags="true" />'
+  docs: docs/components/tags-input/usage.md
+  mistakes:
+    - Pass array state through wire:model or x-model.

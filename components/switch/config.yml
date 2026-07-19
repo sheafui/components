@@ -2,3 +2,42 @@ files:
   index: resources/views/components/ui/switch/index.blade.php
 dependencies:
   internal: [icon]
+mcp:
+  name: switch
+  title: Switch
+  summary: Toggle a binary setting with labels, descriptions, sizes, and state icons.
+  category: forms
+  tags: [switch, toggle, boolean, settings]
+  capabilities: [toggle-setting, bind-form-state]
+  access: free
+  install: switch
+  root_tag: x-ui.switch
+  child_tags: []
+  props:
+    align: {type: string, required: false, default: right}
+    label: {type: string, required: false, default: ''}
+    name: {type: string, required: false}
+    description: {type: string, required: false}
+    disabled: {type: boolean, required: false, default: false}
+    maxWidth: {type: string, required: false, default: max-w-md}
+    checked: {type: boolean, required: false, default: false}
+    size: {type: string, required: false, default: md}
+    switchClass: {type: string, required: false, default: ''}
+    thumbClass: {type: string, required: false, default: ''}
+    iconOn: {type: string, required: false}
+    iconOff: {type: string, required: false}
+    onClass: {type: string, required: false, default: ''}
+    offClass: {type: string, required: false, default: ''}
+    thumbOnClass: {type: string, required: false, default: ''}
+    thumbOffClass: {type: string, required: false, default: ''}
+  slots: []
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.switch label="Notifications" />'
+    common: '<x-ui.switch wire:model="notifications" label="Email notifications" />'
+    advanced: '<x-ui.switch x-model="enabled" align="left" iconOn="check" iconOff="x-mark" />'
+  docs: docs/components/switch/usage.md
+  mistakes:
+    - Bind a boolean value on the switch root.

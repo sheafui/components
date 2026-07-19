@@ -3,6 +3,47 @@ files:
   slider-js: resources/js/components/slider.js
   slider-css: resources/css/components/slider.css
 dependencies:
-  external: [
-    noUiSlider: 'npm install nouislider'
-  ]  
+  external: ['noUiSlider: npm install nouislider']
+mcp:
+  name: slider
+  title: Slider
+  summary: Select numeric values or ranges with draggable handles, tooltips, and markers.
+  category: forms
+  tags: [slider, range, numeric, nouislider]
+  capabilities: [select-numeric-value, select-numeric-range, bind-form-state]
+  access: free
+  install: slider
+  root_tag: x-ui.slider
+  child_tags: []
+  props:
+    id: {type: string, required: false}
+    minValue: {type: mixed, required: false, default: 0}
+    maxValue: {type: mixed, required: false, default: 100}
+    step: {type: mixed, required: false}
+    decimalPlaces: {type: integer, required: false}
+    vertical: {type: boolean, required: false, default: false}
+    topToBottom: {type: boolean, required: false, default: false}
+    rtl: {type: boolean, required: false}
+    fillTrack: {type: array, required: false}
+    tooltips: {type: boolean, required: false, default: false}
+    pips: {type: boolean, required: false, default: false}
+    pipsMode: {type: string, required: false}
+    pipsDensity: {type: integer, required: false}
+    pipsValues: {type: array, required: false}
+    arePipsStepped: {type: boolean, required: false, default: false}
+    behavior: {type: string, required: false, default: tap}
+    margin: {type: mixed, required: false}
+    limit: {type: mixed, required: false}
+    rangePadding: {type: mixed, required: false}
+    nonLinearPoints: {type: array, required: false}
+    handleVariant: {type: string, required: false, default: default}
+  slots: []
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.slider wire:model="volume" />'
+    common: '<x-ui.slider wire:model.live="range" :step="5" tooltips />'
+    advanced: '<x-ui.slider x-model="price" :min-value="0" :max-value="1000" pips :fill-track="[true, false]" />'
+  docs: docs/components/slider/usage.md
+  mistakes: [Install noUiSlider and bind array state when using multiple handles.]

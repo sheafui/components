@@ -12,3 +12,52 @@ files:
   trigger: resources/views/components/ui/combobox/trigger.blade.php
 dependencies:
   internal: [icon,text]
+mcp:
+  name: combobox
+  title: Combobox
+  summary: Type to filter and select one or many options from an accessible popup.
+  category: forms
+  tags: [combobox, search, select, multiple, options]
+  capabilities: [search-options, select-options, bind-form-state]
+  access: free
+  install: combobox
+  root_tag: x-ui.combobox
+  child_tags: [x-ui.combobox.option, x-ui.combobox.group, x-ui.combobox.input, x-ui.combobox.separator, x-ui.combobox.empty, x-ui.combobox.option.create, x-ui.combobox.option.empty]
+  props:
+    label: {type: string, required: false}
+    name: {type: string, required: false}
+    search: {type: mixed, required: false}
+    placeholder: {type: string, required: false, default: Type to search...}
+    multiple: {type: boolean, required: false, default: false}
+    clearable: {type: boolean, required: false, default: false}
+    disabled: {type: boolean, required: false, default: false}
+    icon: {type: string, required: false}
+    iconAfter: {type: string, required: false, default: chevron-up-down}
+    checkIcon: {type: string, required: false, default: check}
+    checkIconClass: {type: string, required: false}
+    invalid: {type: boolean, required: false}
+    triggerClass: {type: string, required: false}
+    maxSelection: {type: integer, required: false}
+    minSelection: {type: integer, required: false}
+    size: {type: string, required: false, default: default}
+    empty: {type: mixed, required: false}
+    loading: {type: mixed, required: false}
+    preventLoading: {type: boolean, required: false, default: false}
+    value: {type: mixed, required: false}
+    searchLabel: {type: string, required: false}
+    iconClass: {type: string, required: false}
+    allowCustomSlots: {type: boolean, required: false, default: false}
+  slots:
+    default: {required: true, description: 'Combobox options, groups, and helpers.'}
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships:
+    requires_parent: null
+    allows_children: [x-ui.combobox.option, x-ui.combobox.group, x-ui.combobox.input, x-ui.combobox.separator, x-ui.combobox.empty]
+  examples:
+    minimal: '<x-ui.combobox><x-ui.combobox.option value="us">United States</x-ui.combobox.option></x-ui.combobox>'
+    common: '<x-ui.combobox wire:model="country"><x-ui.combobox.option value="ca">Canada</x-ui.combobox.option></x-ui.combobox>'
+    advanced: '<x-ui.combobox wire:model="roles" multiple clearable><x-ui.combobox.group label="Roles"><x-ui.combobox.option value="admin">Admin</x-ui.combobox.option></x-ui.combobox.group></x-ui.combobox>'
+  docs: docs/components/combobox/usage.md
+  mistakes:
+    - Use combobox for type-to-search behavior and bind selection on the root.

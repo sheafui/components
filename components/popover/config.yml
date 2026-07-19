@@ -4,3 +4,29 @@ files:
   trigger: resources/views/components/ui/popover/trigger.blade.php
 dependencies:
   helpers: [popup]
+mcp:
+  name: popover
+  title: Popover
+  summary: Display contextual interactive content beside a trigger.
+  category: overlays
+  tags: [popover, overlay, contextual, trigger]
+  capabilities: [show-contextual-overlay]
+  access: free
+  install: popover
+  root_tag: x-ui.popover
+  child_tags: [x-ui.popover.trigger, x-ui.popover.overlay]
+  props:
+    onHover: {type: boolean, required: false, default: false}
+    position: {type: string, required: false, default: bottom}
+    offset: {type: integer, required: false, default: 3}
+  slots:
+    default: {required: true, description: Trigger and overlay components.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.popover.trigger, x-ui.popover.overlay]}
+  examples:
+    minimal: '<x-ui.popover><x-ui.popover.trigger>Open</x-ui.popover.trigger><x-ui.popover.overlay>Details</x-ui.popover.overlay></x-ui.popover>'
+    common: '<x-ui.popover><x-ui.popover.trigger><x-ui.button>Open</x-ui.button></x-ui.popover.trigger><x-ui.popover.overlay position="bottom">Content</x-ui.popover.overlay></x-ui.popover>'
+    advanced: '<x-ui.popover onHover><x-ui.popover.trigger>Preview</x-ui.popover.trigger><x-ui.popover.overlay :offset="8" class="w-96">Preview</x-ui.popover.overlay></x-ui.popover>'
+  docs: docs/components/popover/usage.md
+  mistakes: [Place both trigger and overlay inside the popover root.]

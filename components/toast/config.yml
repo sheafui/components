@@ -1,3 +1,29 @@
 files:
   index: resources/views/components/ui/toast/index.blade.php
   item: resources/views/components/ui/toast/item.blade.php
+mcp:
+  name: toast
+  title: Toast
+  summary: Display queued global notifications with auto-dismiss and progress feedback.
+  category: feedback
+  tags: [toast, notification, global-feedback, progress]
+  capabilities: [show-toast-notification]
+  access: free
+  install: toast
+  root_tag: x-ui.toast
+  child_tags: []
+  props:
+    position: {type: string, required: false, default: bottom-right}
+    maxToasts: {type: integer, required: false, default: 5}
+    progressBarVariant: {type: string, required: false, default: full}
+    progressBarAlignment: {type: string, required: false, default: bottom}
+  slots: []
+  bindings: []
+  events: [notify]
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.toast />'
+    common: '<x-ui.toast position="top-right" :max-toasts="3" />'
+    advanced: '<x-ui.toast position="bottom-center" progressBarVariant="compact" progressBarAlignment="top" />'
+  docs: docs/components/toast/usage.md
+  mistakes: [Mount one toast host and dispatch notify events globally.]

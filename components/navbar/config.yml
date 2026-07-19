@@ -3,3 +3,31 @@ files:
   item: resources/views/components/ui/navbar/item.blade.php
 dependencies:
   internal: [icon, badge, button]
+mcp:
+  name: navbar
+  title: Navbar
+  summary: Build horizontal primary navigation with icons, badges, and active states.
+  category: navigation
+  tags: [navbar, horizontal-navigation, header, links]
+  capabilities: [render-primary-navigation]
+  access: free
+  install: navbar
+  root_tag: x-ui.navbar
+  child_tags: [x-ui.navbar.item]
+  props:
+    icon: {type: string, required: false}
+    badge: {type: mixed, required: false}
+    label: {type: string, required: false}
+    href: {type: string, required: false}
+    active: {type: boolean, required: false}
+  slots:
+    default: {required: true, description: Navbar items.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.navbar.item]}
+  examples:
+    minimal: '<x-ui.navbar><x-ui.navbar.item label="Home" href="/" /></x-ui.navbar>'
+    common: '<x-ui.navbar><x-ui.navbar.item label="Dashboard" icon="home" href="/" active /></x-ui.navbar>'
+    advanced: '<x-ui.navbar><x-ui.navbar.item label="Inbox" icon="inbox" :badge="$unread" href="/inbox" /></x-ui.navbar>'
+  docs: docs/components/navbar/usage.md
+  mistakes: [Use navlist rather than navbar for vertical sidebar navigation.]

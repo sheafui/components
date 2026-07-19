@@ -1,0 +1,70 @@
+name: dashboard-shell
+title: Dashboard shell
+summary: Compose a responsive application layout with branding, navigation, and main content.
+intents:
+  - build a dashboard shell
+  - build an application layout
+capabilities:
+  - compose-application-shell
+  - render-sidebar-navigation
+  - establish-content-hierarchy
+tags: [dashboard, application-shell, layout, sidebar, navigation]
+required_components: [layout, sidebar, brand, navlist, heading]
+optional_components: [navbar, avatar, dropdown]
+tree:
+  component: layout
+  tag: x-ui.layout
+  children:
+    - component: sidebar
+      tag: x-ui.sidebar
+      children:
+        - component: brand
+          tag: x-ui.brand
+          slot: brand
+        - component: navlist
+          tag: x-ui.navlist
+          children:
+            - component: navlist
+              tag: x-ui.navlist.item
+    - component: layout
+      tag: x-ui.layout.main
+      children:
+        - component: layout
+          tag: x-ui.layout.header
+          children:
+            - component: heading
+              tag: x-ui.heading
+install: [layout, sidebar, brand, navlist, heading]
+example: |-
+  <x-ui.layout>
+      <x-ui.sidebar>
+          <x-slot:brand>
+              <x-ui.brand name="Acme" href="/dashboard" logo="/logo.svg" alt="Acme" />
+          </x-slot:brand>
+
+          <x-ui.navlist>
+              <x-ui.navlist.item
+                  label="Dashboard"
+                  icon="home"
+                  href="/dashboard"
+                  :active="request()->routeIs('dashboard')"
+              />
+              <x-ui.navlist.item label="Settings" icon="cog-6-tooth" href="/settings" />
+          </x-ui.navlist>
+      </x-ui.sidebar>
+
+      <x-ui.layout.main>
+          <x-ui.layout.header>
+              <x-ui.heading level="h1" size="xl">Dashboard</x-ui.heading>
+          </x-ui.layout.header>
+
+          <div class="p-6">
+              Dashboard content
+          </div>
+      </x-ui.layout.main>
+  </x-ui.layout>
+customization:
+  - Add navbar for horizontal navigation, avatar for identity, or dropdown for account actions.
+mistakes:
+  - Keep sidebar and layout regions inside x-ui.layout so responsive state remains coordinated.
+access: free

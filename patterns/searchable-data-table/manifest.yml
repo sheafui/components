@@ -1,0 +1,67 @@
+name: searchable-data-table
+title: Searchable data table
+summary: Search, sort, display, and paginate tabular records.
+intents:
+  - build a searchable data table
+  - display searchable paginated records
+capabilities:
+  - search-data
+  - display-tabular-data
+  - sort-data
+  - paginate-data
+tags: [table, data-grid, search, sorting, pagination]
+required_components: [input, table, pagination]
+optional_components: [select, dropdown]
+tree:
+  component: table
+  tag: x-ui.table
+  children:
+    - component: table
+      tag: x-ui.table.header
+      children:
+        - component: table
+          tag: x-ui.table.columns
+          children:
+            - component: table
+              tag: x-ui.table.head
+    - component: table
+      tag: x-ui.table.rows
+      children:
+        - component: table
+          tag: x-ui.table.row
+          children:
+            - component: table
+              tag: x-ui.table.cell
+install: [input, table, pagination]
+example: |-
+  <div class="space-y-4">
+      <x-ui.input
+          wire:model.live.debounce.300ms="search"
+          prefixIcon="magnifying-glass"
+          placeholder="Search users"
+          clearable
+      />
+
+      <x-ui.table :paginator="$users" wire:loading loadOn="pagination, search, sorting">
+          <x-ui.table.header>
+              <x-ui.table.columns>
+                  <x-ui.table.head column="name" sortable>Name</x-ui.table.head>
+                  <x-ui.table.head column="email" sortable>Email</x-ui.table.head>
+              </x-ui.table.columns>
+          </x-ui.table.header>
+
+          <x-ui.table.rows>
+              @foreach ($users as $user)
+                  <x-ui.table.row wire:key="user-{{ $user->id }}">
+                      <x-ui.table.cell>{{ $user->name }}</x-ui.table.cell>
+                      <x-ui.table.cell>{{ $user->email }}</x-ui.table.cell>
+                  </x-ui.table.row>
+              @endforeach
+          </x-ui.table.rows>
+      </x-ui.table>
+  </div>
+customization:
+  - Add select for filters or dropdown for row actions when the data workflow requires them.
+mistakes:
+  - Keep header, column, row, and cell tags inside the documented table hierarchy.
+access: free

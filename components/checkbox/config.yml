@@ -6,3 +6,40 @@ files:
   variant-default: resources/views/components/ui/checkbox/variant/default.blade.php
   variant-card: resources/views/components/ui/checkbox/variant/card.blade.php
   variant-pill: resources/views/components/ui/checkbox/variant/pill.blade.php
+mcp:
+  name: checkbox
+  title: Checkbox
+  summary: Collect boolean or multi-value choices with labels and visual variants.
+  category: forms
+  tags: [checkbox, boolean, multiple-choice, form]
+  capabilities: [toggle-choice, bind-form-state, group-checkboxes]
+  access: free
+  install: checkbox
+  root_tag: x-ui.checkbox
+  child_tags: [x-ui.checkbox.group]
+  props:
+    variant: {type: string, required: false, default: default, values: [default, card, pill]}
+    name: {type: string, required: false}
+    label: {type: string, required: false}
+    description: {type: string, required: false}
+    value: {type: mixed, required: false}
+    checked: {type: boolean, required: false, default: false}
+    indeterminate: {type: boolean, required: false, default: false}
+    disabled: {type: boolean, required: false, default: false}
+    invalid: {type: boolean, required: false, default: false}
+    size: {type: string, required: false, default: md}
+    indicator: {type: boolean, required: false, default: true}
+  slots:
+    default: {required: false, description: Custom checkbox label content.}
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships:
+    requires_parent: null
+    allows_children: [x-ui.checkbox]
+  examples:
+    minimal: '<x-ui.checkbox label="Remember me" />'
+    common: '<x-ui.checkbox wire:model="agreed" label="I agree to the terms" />'
+    advanced: '<x-ui.checkbox.group wire:model="roles"><x-ui.checkbox value="admin" label="Admin" /><x-ui.checkbox value="editor" label="Editor" /></x-ui.checkbox.group>'
+  docs: docs/components/checkbox/usage.md
+  mistakes:
+    - Use checkbox.group when binding multiple checkbox values together.

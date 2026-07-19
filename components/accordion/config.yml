@@ -3,3 +3,30 @@ files:
   item: resources/views/components/ui/accordion/item.blade.php
   trigger: resources/views/components/ui/accordion/trigger.blade.php
   content: resources/views/components/ui/accordion/content.blade.php
+mcp:
+  name: accordion
+  title: Accordion
+  summary: Organize related content into accessible collapsible sections.
+  category: navigation
+  tags: [accordion, disclosure, faq, collapsible]
+  capabilities: [toggle-content-sections]
+  access: free
+  install: accordion
+  root_tag: x-ui.accordion
+  child_tags: [x-ui.accordion.item, x-ui.accordion.trigger, x-ui.accordion.content]
+  props:
+    reverse: {type: boolean, required: false, default: false}
+    disabled: {type: boolean, required: false, default: false}
+    trigger: {type: string, required: false}
+    expanded: {type: boolean, required: false, default: false}
+  slots:
+    default: {required: true, description: Accordion items.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.accordion.item]}
+  examples:
+    minimal: '<x-ui.accordion><x-ui.accordion.item trigger="Question">Answer</x-ui.accordion.item></x-ui.accordion>'
+    common: '<x-ui.accordion><x-ui.accordion.item><x-ui.accordion.trigger>Question</x-ui.accordion.trigger><x-ui.accordion.content>Answer</x-ui.accordion.content></x-ui.accordion.item></x-ui.accordion>'
+    advanced: '<x-ui.accordion reverse><x-ui.accordion.item expanded trigger="Open by default">Content</x-ui.accordion.item></x-ui.accordion>'
+  docs: docs/components/accordion/usage.md
+  mistakes: [Place items inside the accordion and trigger/content inside each item.]

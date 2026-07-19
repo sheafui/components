@@ -1,5 +1,41 @@
 files:
   index: resources/views/components/ui/avatar/index.blade.php
   group: resources/views/components/ui/avatar/group.blade.php
+mcp:
+  name: avatar
+  title: Avatar
+  summary: Represent a person with an image, initials, icon, and optional status badge.
+  category: data-display
+  tags: [avatar, user, profile, initials]
+  capabilities: [show-user-identity, group-avatars]
+  access: free
+  install: avatar
+  root_tag: x-ui.avatar
+  child_tags: [x-ui.avatar.group]
+  props:
+    iconVariant: {type: string, required: false, default: outline}
+    initials: {type: string, required: false}
+    circle: {type: boolean, required: false}
+    color: {type: string, required: false}
+    badge: {type: mixed, required: false}
+    name: {type: string, required: false}
+    icon: {type: string, required: false}
+    size: {type: string, required: false, default: md}
+    src: {type: string, required: false}
+    href: {type: string, required: false}
+    alt: {type: string, required: false}
+    as: {type: string, required: false, default: div}
+    class: {type: string, required: false, default: ''}
+    badgeClass: {type: string, required: false, default: ''}
+  slots: []
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.avatar name="Ada Lovelace" />'
+    common: '<x-ui.avatar src="/ada.jpg" alt="Ada Lovelace" size="lg" circle />'
+    advanced: '<x-ui.avatar.group><x-ui.avatar name="Ada Lovelace" /><x-ui.avatar name="Grace Hopper" /></x-ui.avatar.group>'
+  docs: docs/components/avatar/usage.md
+  mistakes: [Provide name or alt text so the avatar has an accessible identity.]
 dependency:
   internal: [button]

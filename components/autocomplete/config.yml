@@ -7,3 +7,35 @@ files:
 dependencies:
   internal: [icon]
   helpers: [popup]
+mcp:
+  name: autocomplete
+  title: Autocomplete
+  summary: Search and choose from inline suggestions with keyboard navigation.
+  category: forms
+  tags: [autocomplete, suggestions, search, input]
+  capabilities: [filter-suggestions, choose-suggestion, bind-form-state]
+  access: free
+  install: autocomplete
+  root_tag: x-ui.autocomplete
+  child_tags: [x-ui.autocomplete.item]
+  props:
+    name: {type: string, required: false}
+    placeholder: {type: string, required: false, default: search...}
+    value: {type: mixed, required: false}
+    label: {type: string, required: false}
+    disabled: {type: boolean, required: false, default: false}
+    allowCustomSlots: {type: boolean, required: false, default: false}
+  slots:
+    default: {required: true, description: Autocomplete item components.}
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships:
+    requires_parent: null
+    allows_children: [x-ui.autocomplete.item]
+  examples:
+    minimal: '<x-ui.autocomplete><x-ui.autocomplete.item>Canada</x-ui.autocomplete.item></x-ui.autocomplete>'
+    common: '<x-ui.autocomplete wire:model="country" placeholder="Search countries"><x-ui.autocomplete.item>Canada</x-ui.autocomplete.item></x-ui.autocomplete>'
+    advanced: '<x-ui.autocomplete x-model="product"><x-ui.autocomplete.item disabled>Unavailable</x-ui.autocomplete.item></x-ui.autocomplete>'
+  docs: docs/components/autocomplete/usage.md
+  mistakes:
+    - Put autocomplete.item tags inside the autocomplete root.

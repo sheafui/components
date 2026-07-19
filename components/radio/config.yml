@@ -4,3 +4,44 @@ files:
   indicator: resources/views/components/ui/radio/indicator.blade.php
 dependencies:
   internal: [icon]
+mcp:
+  name: radio
+  title: Radio group
+  summary: Collect one choice from an accessible group of radio items.
+  category: forms
+  tags: [radio, single-choice, group, form]
+  capabilities: [select-one-option, bind-form-state]
+  access: free
+  install: radio
+  root_tag: x-ui.radio.group
+  child_tags: [x-ui.radio.item]
+  props:
+    label: {type: string, required: false}
+    required: {type: boolean, required: false, default: false}
+    error: {type: string, required: false, default: ''}
+    direction: {type: string, required: false, default: vertical}
+    disabled: {type: boolean, required: false, default: false}
+    variant: {type: string, required: false, default: default}
+    labelClass: {type: string, required: false, default: ''}
+    indicator: {type: boolean, required: false, default: true}
+    name: {type: string, required: false}
+    value: {type: mixed, required: false}
+    checked: {type: boolean, required: false, default: false}
+    description: {type: string, required: false, default: ''}
+    icon: {type: string, required: false, default: ''}
+    iconVariant: {type: string, required: false, default: outline}
+    iconClass: {type: string, required: false, default: ''}
+  slots:
+    default: {required: true, description: Radio item components.}
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships:
+    requires_parent: null
+    allows_children: [x-ui.radio.item]
+  examples:
+    minimal: '<x-ui.radio.group><x-ui.radio.item value="one" label="One" /></x-ui.radio.group>'
+    common: '<x-ui.radio.group wire:model="plan" label="Plan"><x-ui.radio.item value="free" label="Free" /><x-ui.radio.item value="pro" label="Pro" /></x-ui.radio.group>'
+    advanced: '<x-ui.radio.group x-model="choice" direction="horizontal"><x-ui.radio.item value="card" label="Card" icon="credit-card" /></x-ui.radio.group>'
+  docs: docs/components/radio/usage.md
+  mistakes:
+    - Use x-ui.radio.group as the root and place only radio items inside it.

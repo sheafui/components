@@ -1,2 +1,28 @@
 files:
   description: resources/views/components/ui/description.blade.php
+mcp:
+  name: description
+  title: Description
+  summary: Display contextual help text for a form control.
+  category: forms
+  tags: [description, help-text, form, field]
+  capabilities: [describe-form-control]
+  access: free
+  install: description
+  root_tag: x-ui.description
+  child_tags: []
+  props: []
+  slots:
+    default: {required: true, description: Contextual help text.}
+  bindings: []
+  events: []
+  relationships:
+    requires_parent: x-ui.field
+    allows_children: []
+  examples:
+    minimal: '<x-ui.description>Use your work email.</x-ui.description>'
+    common: '<x-ui.field><x-ui.input name="email" /><x-ui.description>We never share your email.</x-ui.description></x-ui.field>'
+    advanced: '<x-ui.field><x-ui.label>Password</x-ui.label><x-ui.description>Use at least 12 characters.</x-ui.description><x-ui.input type="password" /></x-ui.field>'
+  docs: docs/components/description/usage.md
+  mistakes:
+    - Keep form-specific help text inside the related field.

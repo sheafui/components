@@ -3,5 +3,33 @@ files:
   header: resources/views/components/ui/layout/header.blade.php
   main: resources/views/components/ui/layout/main.blade.php
   runtime: resources/views/components/ui/layout/runtime.blade.php
-  variant/header-sidebar: resources/views/components/ui/layout/variant/header-sidebar.blade.php 
+  variant/header-sidebar: resources/views/components/ui/layout/variant/header-sidebar.blade.php
   variant/sidebar-main: resources/views/components/ui/layout/variant/sidebar-main.blade.php
+mcp:
+  name: layout
+  title: Application layout
+  summary: Coordinate application headers, sidebars, main content, and collapse state.
+  category: layout
+  tags: [layout, application-shell, dashboard, responsive]
+  capabilities: [compose-application-shell, coordinate-sidebar]
+  access: free
+  install: layout
+  root_tag: x-ui.layout
+  child_tags: [x-ui.layout.header, x-ui.layout.main]
+  props:
+    sticky: {type: boolean, required: false, default: true}
+    brand: {type: mixed, required: false}
+    collapsable: {type: boolean, required: false, default: true}
+    variant: {type: string, required: false, default: sidebar-main, values: [sidebar-main, header-sidebar]}
+    collapsible: {type: boolean, required: false, default: true}
+  slots:
+    default: {required: true, description: 'Sidebar, header, and main layout regions.'}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.sidebar, x-ui.layout.header, x-ui.layout.main]}
+  examples:
+    minimal: '<x-ui.layout><x-ui.layout.main>Content</x-ui.layout.main></x-ui.layout>'
+    common: '<x-ui.layout><x-ui.sidebar>Navigation</x-ui.sidebar><x-ui.layout.main><x-ui.layout.header>Header</x-ui.layout.header>Content</x-ui.layout.main></x-ui.layout>'
+    advanced: '<x-ui.layout variant="header-sidebar"><x-ui.layout.header>Header</x-ui.layout.header><x-ui.sidebar>Navigation</x-ui.sidebar><x-ui.layout.main>Content</x-ui.layout.main></x-ui.layout>'
+  docs: docs/components/layout/usage.md
+  mistakes: [Wrap the UI layout in a base document layout that loads assets.]

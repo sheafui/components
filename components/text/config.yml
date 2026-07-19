@@ -1,2 +1,26 @@
 files:
   text: resources/views/components/ui/text.blade.php
+mcp:
+  name: text
+  title: Text
+  summary: Display theme-aware body text with consistent typography.
+  category: typography
+  tags: [text, body, typography, content]
+  capabilities: [render-body-text]
+  access: free
+  install: text
+  root_tag: x-ui.text
+  child_tags: []
+  props: []
+  slots:
+    default: {required: true, description: Text or inline HTML contents.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.text>Profile details</x-ui.text>'
+    common: '<x-ui.text class="max-w-prose">Update your personal information below.</x-ui.text>'
+    advanced: '<x-ui.text><strong>Note:</strong> Changes are saved immediately.</x-ui.text>'
+  docs: docs/components/text/usage.md
+  mistakes:
+    - Use heading for headings and text for body content.

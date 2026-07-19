@@ -1,2 +1,27 @@
 files:
   field: resources/views/components/ui/field.blade.php
+mcp:
+  name: field
+  title: Field
+  summary: Group a label, form control, description, and validation error.
+  category: forms
+  tags: [field, form, validation, layout]
+  capabilities: [group-form-control, propagate-form-state]
+  access: free
+  install: field
+  root_tag: x-ui.field
+  child_tags: []
+  props:
+    required: {type: boolean, required: false, default: false}
+    disabled: {type: boolean, required: false, default: false}
+  slots:
+    default: {required: true, description: 'Label, control, description, and error components.'}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.label, x-ui.input, x-ui.textarea, x-ui.description, x-ui.error]}
+  examples:
+    minimal: '<x-ui.field><x-ui.input name="email" /></x-ui.field>'
+    common: '<x-ui.field required><x-ui.label>Email</x-ui.label><x-ui.input name="email" /><x-ui.error name="email" /></x-ui.field>'
+    advanced: '<x-ui.field required><x-ui.label>Email</x-ui.label><x-ui.description>Work email only.</x-ui.description><x-ui.input wire:model="email" /></x-ui.field>'
+  docs: docs/components/field/usage.md
+  mistakes: [Keep related form elements in one field.]

@@ -72,3 +72,18 @@ Sheaf UI is open source software licensed under the [MIT License](LICENSE).
 ---
 
 **Ready to enhance your Laravel development workflow?** Visit [sheafui.dev](https://sheafui.dev) or install the CLI to get started.
+
+## SheafUI MCP
+
+Connect an MCP-compatible coding client to `https://sheafui.dev/mcp/sheafui`.
+
+The server is public and read-only. It provides authoritative component APIs, complete UI patterns, and dependency-safe installation plans. All current components are Free and do not require a token.
+
+For a build request, use the MCP workflow in this order:
+
+1. Search the catalog.
+2. Inspect the exact component or pattern records.
+3. Plan the UI from catalog records.
+4. Create an installation plan.
+
+The MCP server does not write local files or execute commands. Your coding client remains responsible for running approved installation commands and applying changes in your project.

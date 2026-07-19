@@ -3,3 +3,42 @@ files:
   abstract: resources/views/components/ui/button/abstract.blade.php
 dependencies:
   internal: [icon]
+mcp:
+  name: button
+  title: Button
+  summary: Trigger actions, submit forms, or render button-styled links.
+  category: actions
+  tags: [button, action, submit, link, icon]
+  capabilities: [trigger-action, submit-form, navigate]
+  access: free
+  install: button
+  root_tag: x-ui.button
+  child_tags: []
+  props:
+    href: {type: string, required: false}
+    as: {type: string, required: false, default: button, values: [button, a, div]}
+    disabled: {type: boolean, required: false, default: false}
+    type: {type: string, required: false, default: button}
+    size: {type: string, required: false, default: md, values: [xs, sm, md, lg]}
+    color: {type: string, required: false}
+    loading: {type: boolean, required: false, default: false}
+    variant: {type: string, required: false, default: primary, values: [primary, danger, outline, solid, ghost, soft, none]}
+    icon: {type: string, required: false}
+    iconAfter: {type: string, required: false}
+    iconVariant: {type: string, required: false}
+    iconClasses: {type: mixed, required: false}
+    squared: {type: boolean, required: false, default: false}
+  slots:
+    default: {required: false, description: Button label or custom contents.}
+  bindings: []
+  events: []
+  relationships:
+    requires_parent: null
+    allows_children: []
+  examples:
+    minimal: '<x-ui.button>Save</x-ui.button>'
+    common: '<x-ui.button type="submit" icon="check">Save changes</x-ui.button>'
+    advanced: '<x-ui.button href="/settings" variant="outline" iconAfter="arrow-right">Settings</x-ui.button>'
+  docs: docs/components/button/usage.md
+  mistakes:
+    - Use documented camelCase prop names such as iconAfter.

@@ -6,3 +6,56 @@ files:
   backdrop: resources/views/components/ui/modal/backdrop.blade.php
   trigger: resources/views/components/ui/modal/trigger.blade.php
 dependencies: [icon, button]
+mcp:
+  name: modal
+  title: Modal
+  summary: Present focused dialogs or slideovers with managed focus and dismissal.
+  category: overlays
+  tags: [modal, dialog, slideover, overlay]
+  capabilities: [show-dialog, show-slideover, trap-focus]
+  access: free
+  install: modal
+  root_tag: x-ui.modal
+  child_tags: [x-ui.modal.trigger]
+  props:
+    alignment: {type: string, required: false, default: start}
+    ariaLabelledby: {type: string, required: false}
+    autofocus: {type: boolean, required: false, default: true}
+    closeButton: {type: boolean, required: false, default: true}
+    closeByClickingAway: {type: boolean, required: false, default: true}
+    closeByEscaping: {type: boolean, required: false, default: true}
+    openEventName: {type: string, required: false, default: open-modal}
+    closeEventName: {type: string, required: false, default: close-modal}
+    description: {type: string, required: false}
+    displayClasses: {type: string, required: false, default: inline-block}
+    footer: {type: mixed, required: false}
+    header: {type: mixed, required: false}
+    heading: {type: string, required: false}
+    icon: {type: string, required: false}
+    iconVariant: {type: string, required: false, default: primary}
+    id: {type: string, required: false}
+    slideover: {type: boolean, required: false, default: false}
+    stickyFooter: {type: boolean, required: false, default: false}
+    stickyHeader: {type: boolean, required: false, default: false}
+    trigger: {type: mixed, required: false}
+    visible: {type: boolean, required: false, default: true}
+    width: {type: string, required: false, default: sm}
+    backdrop: {type: string, required: false, default: blur}
+    persistent: {type: boolean, required: false, default: false}
+    animation: {type: string, required: false}
+    position: {type: string, required: false, default: top}
+    bare: {type: boolean, required: false, default: false}
+    shortcut: {type: array, required: false, default: []}
+  slots:
+    default: {required: true, description: Modal body.}
+    header: {required: false, description: Custom header.}
+    footer: {required: false, description: Footer actions.}
+  bindings: []
+  events: [open-modal, close-modal]
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.modal id="help" heading="Help">Content</x-ui.modal>'
+    common: '<x-ui.modal.trigger id="edit"><x-ui.button>Edit</x-ui.button></x-ui.modal.trigger><x-ui.modal id="edit" heading="Edit profile">Form</x-ui.modal>'
+    advanced: '<x-ui.modal id="delete" heading="Delete account" persistent stickyFooter><x-slot:footer><x-ui.button variant="danger">Delete</x-ui.button></x-slot:footer></x-ui.modal>'
+  docs: docs/components/modal/usage.md
+  mistakes: [Give triggers and their modal the same id.]

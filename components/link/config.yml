@@ -1,2 +1,29 @@
 files:
   link: resources/views/components/ui/link.blade.php
+mcp:
+  name: link
+  title: Link
+  summary: Render an accessible styled anchor with primary, ghost, and soft treatments.
+  category: actions
+  tags: [link, anchor, navigation, typography]
+  capabilities: [navigate, open-external-link]
+  access: free
+  install: link
+  root_tag: x-ui.link
+  child_tags: []
+  props:
+    openInNewTab: {type: boolean, required: false}
+    primary: {type: boolean, required: false, default: true}
+    variant: {type: string, required: false, values: [ghost, soft]}
+  slots:
+    default: {required: true, description: Link label or custom inline contents.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.link href="/docs">Documentation</x-ui.link>'
+    common: '<x-ui.link href="/settings" variant="ghost">Settings</x-ui.link>'
+    advanced: '<x-ui.link href="https://example.com" openInNewTab variant="soft">External resource</x-ui.link>'
+  docs: docs/components/link/usage.md
+  mistakes:
+    - Supply href as a normal HTML attribute and use openInNewTab for a new tab.

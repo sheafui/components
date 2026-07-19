@@ -1,0 +1,66 @@
+name: onboarding-wizard
+title: Onboarding wizard
+summary: Guide a user through a multi-step onboarding form with validation and actions.
+intents:
+  - build an onboarding wizard
+  - build a multi step onboarding form
+capabilities:
+  - guide-multi-step-flow
+  - collect-form-data
+  - display-validation-errors
+  - submit-form
+tags: [onboarding, wizard, steps, form]
+required_components: [wizard, field, label, input, error, button]
+optional_components: [progress, select, checkbox]
+tree:
+  component: wizard
+  tag: x-ui.wizard
+  children:
+    - component: wizard
+      tag: x-ui.wizard.steps
+      children:
+        - component: wizard
+          tag: x-ui.wizard.step
+    - component: wizard
+      tag: x-ui.wizard.body
+      children:
+        - component: field
+          tag: x-ui.field
+          children:
+            - component: label
+              tag: x-ui.label
+            - component: input
+              tag: x-ui.input
+            - component: error
+              tag: x-ui.error
+        - component: button
+          tag: x-ui.button
+install: [wizard, field, label, input, error, button]
+example: |-
+  <x-ui.wizard>
+      <x-ui.wizard.steps>
+          <x-ui.wizard.step :completed="$step > 1" :active="$step === 1" :label="1">
+              Account
+          </x-ui.wizard.step>
+          <x-ui.wizard.step :active="$step === 2" :label="2">
+              Profile
+          </x-ui.wizard.step>
+      </x-ui.wizard.steps>
+
+      <x-ui.wizard.body>
+          <form wire:submit="continue" class="space-y-6">
+              <x-ui.field required>
+                  <x-ui.label for="name">Name</x-ui.label>
+                  <x-ui.input id="name" wire:model="name" />
+                  <x-ui.error name="name" />
+              </x-ui.field>
+
+              <x-ui.button type="submit" iconAfter="arrow-right">Continue</x-ui.button>
+          </form>
+      </x-ui.wizard.body>
+  </x-ui.wizard>
+customization:
+  - Add progress, select, or checkbox only when the onboarding flow requires them.
+mistakes:
+  - Keep wizard step state synchronized with the content shown in x-ui.wizard.body.
+access: free

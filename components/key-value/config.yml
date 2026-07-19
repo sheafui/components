@@ -6,3 +6,43 @@ files:
   top-bar: resources/views/components/ui/key-value/th.blade.php
 dependencies:
   internal: [icon, button]
+mcp:
+  name: key-value
+  title: Key-value input
+  summary: Edit dynamic key-value pairs with row limits, validation, and reordering.
+  category: forms
+  tags: [key-value, metadata, configuration, dynamic-rows]
+  capabilities: [collect-key-value-pairs, manage-dynamic-rows, bind-form-state]
+  access: free
+  install: key-value
+  root_tag: x-ui.key-value
+  child_tags: []
+  props:
+    label: {type: string, required: false}
+    keyLabel: {type: string, required: false, default: Key}
+    valueLabel: {type: string, required: false, default: Value}
+    minRows: {type: integer, required: false, default: 1}
+    maxRows: {type: integer, required: false}
+    required: {type: boolean, required: false, default: false}
+    disabled: {type: boolean, required: false, default: false}
+    allowEmptyValues: {type: boolean, required: false, default: true}
+    preventDuplicateKeys: {type: boolean, required: false, default: true}
+    keyPlaceholder: {type: string, required: false, default: Enter key...}
+    valuePlaceholder: {type: string, required: false, default: Enter value...}
+    addButtonText: {type: string, required: false, default: Add Row}
+    showDuplicate: {type: boolean, required: false, default: true}
+    showTopBar: {type: boolean, required: false, default: true}
+    reorderable: {type: boolean, required: false, default: false}
+    errorClass: {type: string, required: false, default: text-red-500 text-sm mt-1}
+    placeholder: {type: string, required: false}
+  slots: []
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.key-value wire:model="metadata" />'
+    common: '<x-ui.key-value x-model="headers" keyLabel="Header" valueLabel="Value" />'
+    advanced: '<x-ui.key-value wire:model="environment" :min-rows="2" :max-rows="10" reorderable />'
+  docs: docs/components/key-value/usage.md
+  mistakes:
+    - Bind an array of key-value rows on the root component.

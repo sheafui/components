@@ -4,3 +4,35 @@ files:
   panel: resources/views/components/ui/tab/panel.blade.php
   tabs:  resources/views/components/ui/tabs.blade.php
 dependencies: [button]
+mcp:
+  name: tabs
+  title: Tabs
+  summary: Switch between related content panels using named or ordered tabs.
+  category: navigation
+  tags: [tabs, navigation, panels, settings]
+  capabilities: [switch-content, bind-active-tab]
+  access: free
+  install: tabs
+  root_tag: x-ui.tabs
+  child_tags: [x-ui.tab.group, x-ui.tab, x-ui.tab.panel]
+  props:
+    label: {type: string, required: false}
+    name: {type: string, required: false}
+    iconAfter: {type: string, required: false}
+    icon: {type: string, required: false}
+    iconVariant: {type: string, required: false}
+    iconClasses: {type: mixed, required: false}
+    variant: {type: string, required: false, default: outlined, values: [outlined, non-contained, pills]}
+    size: {type: string, required: false, default: default}
+    activeTab: {type: mixed, required: false}
+  slots:
+    default: {required: true, description: A tab group followed by matching panels.}
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.tab.group, x-ui.tab.panel]}
+  examples:
+    minimal: '<x-ui.tabs><x-ui.tab.group><x-ui.tab name="profile" label="Profile" /></x-ui.tab.group><x-ui.tab.panel name="profile">Profile</x-ui.tab.panel></x-ui.tabs>'
+    common: '<x-ui.tabs wire:model="activeTab"><x-ui.tab.group><x-ui.tab name="profile" label="Profile" /></x-ui.tab.group><x-ui.tab.panel name="profile">Profile</x-ui.tab.panel></x-ui.tabs>'
+    advanced: '<x-ui.tabs x-model="tab" variant="non-contained"><x-ui.tab.group><x-ui.tab name="security" icon="lock-closed" /></x-ui.tab.group><x-ui.tab.panel name="security">Security</x-ui.tab.panel></x-ui.tabs>'
+  docs: docs/components/tabs/usage.md
+  mistakes: [Match each tab name to one panel name.]

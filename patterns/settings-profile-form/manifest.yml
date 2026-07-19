@@ -1,0 +1,39 @@
+name: settings-profile-form
+title: Settings and profile form
+summary: Edit account or profile fields with labels, validation, and actions.
+intents:
+  - build a settings form
+  - build a profile edit page
+capabilities:
+  - collect-form-data
+  - display-validation-errors
+  - submit-form
+tags: [settings, profile, form, account]
+required_components: [field, label, input, error, button]
+optional_components: [textarea, select, switch, avatar]
+tree:
+  component: field
+  tag: x-ui.field
+  children:
+    - component: label
+      tag: x-ui.label
+    - component: input
+      tag: x-ui.input
+    - component: error
+      tag: x-ui.error
+install: [field, label, input, error, button]
+example: |-
+  <form wire:submit="save" class="space-y-6">
+      <x-ui.field>
+          <x-ui.label for="name">Name</x-ui.label>
+          <x-ui.input id="name" wire:model="name" />
+          <x-ui.error name="name" />
+      </x-ui.field>
+
+      <x-ui.button type="submit">Save changes</x-ui.button>
+  </form>
+customization:
+  - Add textarea, select, switch, or avatar only when the form requires them.
+mistakes:
+  - Keep the label, control, and error inside the field wrapper.
+access: free

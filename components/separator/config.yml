@@ -1,2 +1,27 @@
 files:
   index: resources/views/components/ui/separator/index.blade.php
+mcp:
+  name: separator
+  title: Separator
+  summary: Visually separate content horizontally or vertically with an optional label.
+  category: layout
+  tags: [separator, divider, layout, label]
+  capabilities: [separate-content]
+  access: free
+  install: separator
+  root_tag: x-ui.separator
+  child_tags: []
+  props:
+    vertical: {type: boolean, required: false, default: false}
+    variant: {type: string, required: false}
+    label: {type: string, required: false}
+  slots: []
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.separator />'
+    common: '<x-ui.separator label="Or continue with" />'
+    advanced: '<div class="flex h-8"><span>Left</span><x-ui.separator vertical /><span>Right</span></div>'
+  docs: docs/components/separator/usage.md
+  mistakes: [Give a vertical separator a constrained-height parent.]

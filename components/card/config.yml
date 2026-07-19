@@ -1,2 +1,26 @@
 files:
   index: resources/views/components/ui/card/index.blade.php
+mcp:
+  name: card
+  title: Card
+  summary: Encapsulate related content in a responsive bordered container.
+  category: layout
+  tags: [card, container, panel, content]
+  capabilities: [group-content]
+  access: free
+  install: card
+  root_tag: x-ui.card
+  child_tags: []
+  props:
+    size: {type: string, required: false, default: md}
+  slots:
+    default: {required: true, description: Card contents.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.card>Content</x-ui.card>'
+    common: '<x-ui.card size="lg"><x-ui.heading>Profile</x-ui.heading><x-ui.text>Details</x-ui.text></x-ui.card>'
+    advanced: '<x-ui.card class="shadow-sm"><div class="flex justify-between"><x-ui.heading>Team</x-ui.heading><x-ui.button>Add member</x-ui.button></div></x-ui.card>'
+  docs: docs/components/card/usage.md
+  mistakes: [Use semantic child components for card content hierarchy.]

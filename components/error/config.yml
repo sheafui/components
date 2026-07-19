@@ -2,3 +2,27 @@ files:
   error: resources/views/components/ui/error.blade.php
 dependencies:
   internal: [icon]
+mcp:
+  name: error
+  title: Error
+  summary: Display validation errors from Laravel's error bag or explicit messages.
+  category: forms
+  tags: [error, validation, form, feedback]
+  capabilities: [display-validation-errors]
+  access: free
+  install: error
+  root_tag: x-ui.error
+  child_tags: []
+  props:
+    name: {type: string, required: false}
+    messages: {type: mixed, required: false, default: [], accepted_types: [array, string, 'null']}
+  slots: []
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.error name="email" />'
+    common: '<x-ui.error :messages="[''Something went wrong'']" />'
+    advanced: '<x-ui.field><x-ui.input name="email" /><x-ui.error name="email" /></x-ui.field>'
+  docs: docs/components/error/usage.md
+  mistakes: [Pass an array when supplying multiple explicit messages.]

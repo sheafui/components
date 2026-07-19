@@ -2,3 +2,34 @@ files:
   index: resources/views/components/ui/badge/index.blade.php
 dependencies:
   internal: [button, icon]
+mcp:
+  name: badge
+  title: Badge
+  summary: Highlight status, categories, and compact metadata with optional icons.
+  category: data-display
+  tags: [badge, status, label, metadata, icon]
+  capabilities: [display-status, label-metadata]
+  access: free
+  install: badge
+  root_tag: x-ui.badge
+  child_tags: []
+  props:
+    iconVariant: {type: string, required: false, default: micro}
+    iconAfter: {type: string, required: false}
+    variant: {type: string, required: false, default: solid, values: [solid, outline]}
+    pill: {type: boolean, required: false, default: false}
+    color: {type: string, required: false}
+    size: {type: string, required: false, values: [sm, lg]}
+    icon: {type: string, required: false}
+  slots:
+    default: {required: true, description: Badge label.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.badge>Active</x-ui.badge>'
+    common: '<x-ui.badge color="green" icon="check">Active</x-ui.badge>'
+    advanced: '<x-ui.badge pill variant="outline" color="blue" iconAfter="arrow-right">Shipped</x-ui.badge>'
+  docs: docs/components/badge/usage.md
+  mistakes:
+    - Use only solid or outline variants documented by the component.

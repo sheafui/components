@@ -7,3 +7,35 @@ files:
   group/variant/compact: resources/views/components/ui/navlist/group/variant/compact.blade.php
 dependencies:
   internal: [icon, badge, button]
+mcp:
+  name: navlist
+  title: Navigation list
+  summary: Build collapsible vertical navigation with groups, icons, badges, and tooltips.
+  category: navigation
+  tags: [navlist, sidebar, vertical-navigation, group]
+  capabilities: [render-sidebar-navigation, group-navigation-items]
+  access: free
+  install: navlist
+  root_tag: x-ui.navlist
+  child_tags: [x-ui.navlist.item, x-ui.navlist.group]
+  props:
+    collapsable: {type: boolean, required: false, default: false}
+    variant: {type: string, required: false, default: default}
+    label: {type: string, required: false}
+    tooltip: {type: string, required: false}
+    condition: {type: boolean, required: false, default: false}
+    icon: {type: string, required: false}
+    badge: {type: mixed, required: false}
+    href: {type: string, required: false, default: '#'}
+    active: {type: boolean, required: false}
+  slots:
+    default: {required: true, description: Navigation items and groups.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.navlist.item, x-ui.navlist.group]}
+  examples:
+    minimal: '<x-ui.navlist><x-ui.navlist.item label="Home" href="/" /></x-ui.navlist>'
+    common: '<x-ui.navlist><x-ui.navlist.item label="Dashboard" icon="home" href="/" active /></x-ui.navlist>'
+    advanced: '<x-ui.navlist><x-ui.navlist.group label="Settings"><x-ui.navlist.item label="Profile" icon="user" href="/profile" /></x-ui.navlist.group></x-ui.navlist>'
+  docs: docs/components/navlist/usage.md
+  mistakes: [Put vertical navigation groups and items inside navlist.]

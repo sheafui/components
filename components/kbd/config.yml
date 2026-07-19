@@ -1,2 +1,28 @@
 files:
   kbd: resources/views/components/ui/kbd.blade.php
+mcp:
+  name: kbd
+  title: Keyboard key
+  summary: Display keyboard keys and shortcuts using semantic kbd elements.
+  category: typography
+  tags: [keyboard, shortcut, key, documentation]
+  capabilities: [render-keyboard-shortcut]
+  access: free
+  install: kbd
+  root_tag: x-ui.kbd
+  child_tags: []
+  props:
+    keys: {type: string, required: false}
+    separator: {type: string, required: false, default: '+'}
+  slots:
+    default: {required: false, description: A single custom key when keys is not supplied.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.kbd>K</x-ui.kbd>'
+    common: '<x-ui.kbd keys="Ctrl+K" />'
+    advanced: '<x-ui.kbd keys="Cmd+Shift+P" separator="+" />'
+  docs: docs/components/kbd/usage.md
+  mistakes:
+    - Use keys for shortcuts and the default slot for one custom key.

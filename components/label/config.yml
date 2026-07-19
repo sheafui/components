@@ -1,2 +1,29 @@
 files:
   label: resources/views/components/ui/label.blade.php
+mcp:
+  name: label
+  title: Label
+  summary: Display a form-control label with inherited required state.
+  category: forms
+  tags: [label, form, required, accessibility]
+  capabilities: [label-form-control]
+  access: free
+  install: label
+  root_tag: x-ui.label
+  child_tags: []
+  props:
+    text: {type: string, required: false}
+  slots:
+    default: {required: false, description: Label text used before the text prop.}
+  bindings: []
+  events: []
+  relationships:
+    requires_parent: x-ui.field
+    allows_children: []
+  examples:
+    minimal: '<x-ui.label>Email</x-ui.label>'
+    common: '<x-ui.label for="email" text="Email address" />'
+    advanced: '<x-ui.field required><x-ui.label>Email address</x-ui.label><x-ui.input name="email" /></x-ui.field>'
+  docs: docs/components/label/usage.md
+  mistakes:
+    - Place the label inside x-ui.field when relying on inherited required state.

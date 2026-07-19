@@ -1,2 +1,30 @@
 files:
   index: resources/views/components/ui/textarea/index.blade.php
+mcp:
+  name: textarea
+  title: Textarea
+  summary: Collect multiline text with resize and validation-state controls.
+  category: forms
+  tags: [textarea, multiline, form, text]
+  capabilities: [collect-multiline-text, bind-form-state]
+  access: free
+  install: textarea
+  root_tag: x-ui.textarea
+  child_tags: []
+  props:
+    disabled: {type: boolean, required: false, default: false}
+    resize: {type: string, required: false, default: vertical}
+    name: {type: string, required: false}
+    rows: {type: integer, required: false}
+    invalid: {type: boolean, required: false}
+  slots: []
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.textarea name="bio" />'
+    common: '<x-ui.textarea wire:model="bio" rows="5" />'
+    advanced: '<x-ui.textarea x-model="notes" resize="none" :invalid="$errors->has(''notes'')" />'
+  docs: docs/components/textarea/usage.md
+  mistakes:
+    - Bind the value with wire:model or x-model instead of slot content.

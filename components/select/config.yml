@@ -14,3 +14,55 @@ files:
 dependencies:
   internal: [icon,text]
   helpers: [popup]
+mcp:
+  name: select
+  title: Select
+  summary: Select one or many options with search, grouping, and custom option content.
+  category: forms
+  tags: [select, dropdown, options, searchable, multiple]
+  capabilities: [select-options, search-options, bind-form-state]
+  access: free
+  install: select
+  root_tag: x-ui.select
+  child_tags: [x-ui.select.option, x-ui.select.group, x-ui.select.search, x-ui.select.separator, x-ui.select.empty, x-ui.select.option.create, x-ui.select.option.empty]
+  props:
+    label: {type: string, required: false}
+    name: {type: string, required: false}
+    triggerLabel: {type: string, required: false}
+    placeholder: {type: string, required: false, default: select...}
+    searchable: {type: boolean, required: false, default: false}
+    search: {type: mixed, required: false}
+    empty: {type: string, required: false, default: no results found}
+    multiple: {type: boolean, required: false, default: false}
+    clearable: {type: boolean, required: false, default: false}
+    disabled: {type: boolean, required: false, default: false}
+    pillbox: {type: boolean, required: false, default: false}
+    icon: {type: string, required: false}
+    iconAfter: {type: string, required: false, default: chevron-up-down}
+    checkIcon: {type: string, required: false, default: check}
+    checkIconClass: {type: string, required: false}
+    invalid: {type: boolean, required: false}
+    triggerClass: {type: string, required: false}
+    maxSelection: {type: integer, required: false}
+    minSelection: {type: integer, required: false}
+    size: {type: string, required: false, default: default}
+    disableUnSelectedOptionWhenReachingMax: {type: boolean, required: false, default: false}
+    value: {type: mixed, required: false}
+    searchLabel: {type: string, required: false}
+    iconClass: {type: string, required: false}
+    allowCustomSlots: {type: boolean, required: false, default: false}
+    modal: {type: mixed, required: false}
+  slots:
+    default: {required: true, description: 'Select options, groups, separators, or search helpers.'}
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships:
+    requires_parent: null
+    allows_children: [x-ui.select.option, x-ui.select.group, x-ui.select.search, x-ui.select.separator, x-ui.select.empty]
+  examples:
+    minimal: '<x-ui.select><x-ui.select.option value="us">United States</x-ui.select.option></x-ui.select>'
+    common: '<x-ui.select wire:model="country" searchable><x-ui.select.option value="us">United States</x-ui.select.option></x-ui.select>'
+    advanced: '<x-ui.select wire:model="roles" multiple clearable><x-ui.select.group label="Roles"><x-ui.select.option value="admin">Admin</x-ui.select.option></x-ui.select.group></x-ui.select>'
+  docs: docs/components/select/usage.md
+  mistakes:
+    - Place option and group tags inside x-ui.select and bind selection on the root.

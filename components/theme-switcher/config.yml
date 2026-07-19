@@ -5,3 +5,30 @@ files:
   stacked: resources/views/components/ui/theme-switcher/variants/stacked.blade.php
 dependencies:
   internal: [dropdown, button]
+mcp:
+  name: theme-switcher
+  title: Theme switcher
+  summary: Let users choose light, dark, or system color themes.
+  category: actions
+  tags: [theme, dark-mode, light-mode, appearance]
+  capabilities: [switch-color-theme]
+  access: free
+  install: theme-switcher
+  root_tag: x-ui.theme-switcher
+  child_tags: []
+  props:
+    variant: {type: string, required: false, default: dropdown, values: [dropdown, stacked, inline]}
+    darkIcon: {type: string, required: false, default: moon}
+    lightIcon: {type: string, required: false, default: sun}
+    systemIcon: {type: string, required: false, default: computer-desktop}
+    iconVariant: {type: string, required: false, default: mini}
+  slots: []
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.theme-switcher />'
+    common: '<x-ui.theme-switcher variant="inline" />'
+    advanced: '<x-ui.theme-switcher variant="stacked" darkIcon="moon" lightIcon="sun" systemIcon="computer-desktop" />'
+  docs: docs/components/theme-switcher/usage.md
+  mistakes: [Choose only dropdown, stacked, or inline variants.]

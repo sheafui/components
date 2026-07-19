@@ -4,3 +4,31 @@ files:
   description: resources/views/components/ui/alerts/description.blade.php
 dependencies:
   internal: [icon, heading]
+mcp:
+  name: alerts
+  title: Alert
+  summary: Communicate informational, success, warning, or error feedback with actions.
+  category: feedback
+  tags: [alert, notification, feedback, status]
+  capabilities: [display-inline-feedback]
+  access: free
+  install: alerts
+  root_tag: x-ui.alerts
+  child_tags: [x-ui.alerts.heading, x-ui.alerts.description]
+  props:
+    icon: {type: string, required: false}
+    variant: {type: string, required: false, default: info, values: [info, success, warning, error]}
+    color: {type: string, required: false}
+    controls: {type: mixed, required: false}
+  slots:
+    default: {required: true, description: Alert heading and description.}
+    controls: {required: false, description: Alert actions.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.alerts.heading, x-ui.alerts.description]}
+  examples:
+    minimal: '<x-ui.alerts><x-ui.alerts.description>Information</x-ui.alerts.description></x-ui.alerts>'
+    common: '<x-ui.alerts variant="success" icon="check-circle"><x-ui.alerts.heading>Saved</x-ui.alerts.heading><x-ui.alerts.description>Your changes were saved.</x-ui.alerts.description></x-ui.alerts>'
+    advanced: '<x-ui.alerts variant="warning"><x-ui.alerts.description>Review changes.</x-ui.alerts.description><x-slot:controls><x-ui.button>Review</x-ui.button></x-slot:controls></x-ui.alerts>'
+  docs: docs/components/alerts/usage.md
+  mistakes: [Use semantic variants matching the message meaning.]

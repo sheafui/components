@@ -1,2 +1,27 @@
 files:
   fieldset: resources/views/components/ui/fieldset.blade.php
+mcp:
+  name: fieldset
+  title: Fieldset
+  summary: Semantically group related form fields with an optional legend.
+  category: forms
+  tags: [fieldset, form, group, legend]
+  capabilities: [group-related-fields]
+  access: free
+  install: fieldset
+  root_tag: x-ui.fieldset
+  child_tags: []
+  props:
+    label: {type: string, required: false}
+    labelHidden: {type: boolean, required: false, default: false}
+  slots:
+    default: {required: true, description: Related field components.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.field]}
+  examples:
+    minimal: '<x-ui.fieldset><x-ui.field><x-ui.input /></x-ui.field></x-ui.fieldset>'
+    common: '<x-ui.fieldset label="Contact details"><x-ui.field><x-ui.input name="email" /></x-ui.field></x-ui.fieldset>'
+    advanced: '<x-ui.fieldset label="Address"><div class="grid gap-4"><x-ui.field><x-ui.input name="city" /></x-ui.field></div></x-ui.fieldset>'
+  docs: docs/components/fieldset/usage.md
+  mistakes: [Use field components inside a fieldset.]

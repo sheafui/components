@@ -7,3 +7,45 @@ files:
   separator: resources/views/components/ui/dropdown/separator.blade.php
 dependencies:
   internal: [icon]
+mcp:
+  name: dropdown
+  title: Dropdown menu
+  summary: Present accessible action menus with groups, submenus, and choices.
+  category: overlays
+  tags: [dropdown, menu, actions, submenu]
+  capabilities: [show-action-menu, group-menu-actions]
+  access: free
+  install: dropdown
+  root_tag: x-ui.dropdown
+  child_tags: [x-ui.dropdown.item, x-ui.dropdown.submenu, x-ui.dropdown.group, x-ui.dropdown.separator]
+  props:
+    position: {type: string, required: false, default: bottom-center}
+    teleport: {type: string, required: false, default: body}
+    portal: {type: boolean, required: false, default: false}
+    trap: {type: boolean, required: false, default: false}
+    offset: {type: integer, required: false, default: 6}
+    checkbox: {type: boolean, required: false, default: false}
+    radio: {type: boolean, required: false, default: false}
+    resetFocus: {type: boolean, required: false, default: false}
+    disabled: {type: boolean, required: false, default: false}
+    icon: {type: string, required: false}
+    iconVariant: {type: string, required: false, default: mini}
+    shortcut: {type: string, required: false}
+    variant: {type: string, required: false, default: soft}
+    as: {type: string, required: false, default: button}
+    active: {type: boolean, required: false, default: false}
+    name: {type: string, required: false}
+    value: {type: mixed, required: false}
+    readOnly: {type: boolean, required: false, default: false}
+  slots:
+    button: {required: true, description: Menu trigger.}
+    menu: {required: true, description: Menu items and groups.}
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.dropdown.item, x-ui.dropdown.submenu, x-ui.dropdown.group, x-ui.dropdown.separator]}
+  examples:
+    minimal: '<x-ui.dropdown><x-slot:button>Actions</x-slot:button><x-slot:menu><x-ui.dropdown.item>Edit</x-ui.dropdown.item></x-slot:menu></x-ui.dropdown>'
+    common: '<x-ui.dropdown><x-slot:button><x-ui.button>Actions</x-ui.button></x-slot:button><x-slot:menu><x-ui.dropdown.item icon="pencil">Edit</x-ui.dropdown.item></x-slot:menu></x-ui.dropdown>'
+    advanced: '<x-ui.dropdown portal><x-slot:button>More</x-slot:button><x-slot:menu class="w-56"><x-ui.dropdown.group label="Account"><x-ui.dropdown.item>Settings</x-ui.dropdown.item></x-ui.dropdown.group></x-slot:menu></x-ui.dropdown>'
+  docs: docs/components/dropdown/usage.md
+  mistakes: [Use fixed menu widths when portal is enabled.]

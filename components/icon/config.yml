@@ -1,3 +1,29 @@
 files:
   index: resources/views/components/ui/icon/index.blade.php
   loading: resources/views/components/ui/icon/loading.blade.php
+mcp:
+  name: icon
+  title: Icon
+  summary: Render Heroicons, Phosphor icons, or optional Blade Icons through one component.
+  category: media
+  tags: [icon, heroicon, phosphor, loading]
+  capabilities: [render-icon, render-loading-indicator]
+  access: free
+  install: icon
+  root_tag: x-ui.icon
+  child_tags: [x-ui.icon.loading]
+  props:
+    name: {type: string, required: true}
+    variant: {type: string, required: false, default: outline}
+    asButton: {type: boolean, required: false, default: false}
+  slots: []
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.icon name="academic-cap" />'
+    common: '<x-ui.icon name="academic-cap" variant="solid" class="size-5" />'
+    advanced: '<x-ui.icon name="ps:align-top" variant="duotone" class="size-6" />'
+  docs: docs/components/icon/usage.md
+  mistakes:
+    - Install the provider package required by the selected icon name.

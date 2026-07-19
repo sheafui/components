@@ -4,3 +4,32 @@ files:
   toggle: resources/views/components/ui/sidebar/toggle.blade.php
 dependencies:
   internal: [icon, button, navlist]
+mcp:
+  name: sidebar
+  title: Sidebar
+  summary: Provide responsive collapsible application navigation across viewport sizes.
+  category: layout
+  tags: [sidebar, navigation, responsive, collapsible]
+  capabilities: [render-application-sidebar, collapse-navigation]
+  access: free
+  install: sidebar
+  root_tag: x-ui.sidebar
+  child_tags: [x-ui.sidebar.toggle, x-ui.sidebar.push]
+  props:
+    stickyHeader: {type: boolean, required: false, default: true}
+    scrollable: {type: boolean, required: false, default: true}
+    collapsable: {type: boolean, required: false, default: true}
+    brand: {type: mixed, required: false}
+    tooltip: {type: mixed, required: false}
+  slots:
+    default: {required: true, description: Sidebar navigation content.}
+    brand: {required: false, description: Sidebar brand.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: x-ui.layout, allows_children: [x-ui.navlist, x-ui.sidebar.toggle, x-ui.sidebar.push]}
+  examples:
+    minimal: '<x-ui.layout><x-ui.sidebar><x-ui.navlist><x-ui.navlist.item label="Home" /></x-ui.navlist></x-ui.sidebar><x-ui.layout.main>Content</x-ui.layout.main></x-ui.layout>'
+    common: '<x-ui.layout><x-ui.sidebar><x-slot:brand><x-ui.brand name="App" /></x-slot:brand><x-ui.navlist><x-ui.navlist.item label="Home" /></x-ui.navlist></x-ui.sidebar><x-ui.layout.main>Content</x-ui.layout.main></x-ui.layout>'
+    advanced: '<x-ui.layout><x-ui.sidebar :collapsable="true" stickyHeader><x-slot:brand><x-ui.brand name="App" /></x-slot:brand><x-ui.navlist><x-ui.navlist.group label="Manage"><x-ui.navlist.item label="Users" /></x-ui.navlist.group></x-ui.navlist></x-ui.sidebar><x-ui.layout.main>Content</x-ui.layout.main></x-ui.layout>'
+  docs: docs/components/sidebar/usage.md
+  mistakes: [Use sidebar inside x-ui.layout for coordinated responsive behavior.]

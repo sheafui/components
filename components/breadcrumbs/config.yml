@@ -3,3 +3,30 @@ files:
   item: resources/views/components/ui/breadcrumbs/item.blade.php
 dependencies:
   internal: [icon]
+mcp:
+  name: breadcrumbs
+  title: Breadcrumbs
+  summary: Show the current page location within a navigable hierarchy.
+  category: navigation
+  tags: [breadcrumbs, hierarchy, navigation, path]
+  capabilities: [show-navigation-path]
+  access: free
+  install: breadcrumbs
+  root_tag: x-ui.breadcrumbs
+  child_tags: [x-ui.breadcrumbs.item]
+  props:
+    separator: {type: mixed, required: false}
+    iconVariant: {type: string, required: false, default: mini}
+    icon: {type: string, required: false}
+    href: {type: string, required: false}
+  slots:
+    default: {required: true, description: Breadcrumb items.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.breadcrumbs.item]}
+  examples:
+    minimal: '<x-ui.breadcrumbs><x-ui.breadcrumbs.item href="/">Home</x-ui.breadcrumbs.item></x-ui.breadcrumbs>'
+    common: '<x-ui.breadcrumbs><x-ui.breadcrumbs.item href="/">Home</x-ui.breadcrumbs.item><x-ui.breadcrumbs.item>Settings</x-ui.breadcrumbs.item></x-ui.breadcrumbs>'
+    advanced: '<x-ui.breadcrumbs icon="chevron-right"><x-ui.breadcrumbs.item href="/projects">Projects</x-ui.breadcrumbs.item><x-ui.breadcrumbs.item>SheafUI</x-ui.breadcrumbs.item></x-ui.breadcrumbs>'
+  docs: docs/components/breadcrumbs/usage.md
+  mistakes: [Make only ancestor breadcrumb items navigable.]

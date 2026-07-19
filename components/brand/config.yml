@@ -1,2 +1,31 @@
 files:
   index: resources/views/components/ui/brand/index.blade.php
+mcp:
+  name: brand
+  title: Brand
+  summary: Display a linked application logo and name consistently.
+  category: layout
+  tags: [brand, logo, identity, navigation]
+  capabilities: [show-brand-identity]
+  access: free
+  install: brand
+  root_tag: x-ui.brand
+  child_tags: []
+  props:
+    href: {type: string, required: false, default: '#'}
+    logo: {type: mixed, required: false}
+    name: {type: string, required: false, default: ''}
+    alt: {type: string, required: false, default: ''}
+    target: {type: string, required: false, default: _self}
+    logoClass: {type: string, required: false, default: ''}
+  slots:
+    logo: {required: false, description: Custom brand logo.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.brand name="Acme" />'
+    common: '<x-ui.brand name="Acme" href="/" logo="/logo.svg" alt="Acme" />'
+    advanced: '<x-ui.brand name="Acme" href="/" logoClass="size-8"><x-slot:logo><svg aria-hidden="true"></svg></x-slot:logo></x-ui.brand>'
+  docs: docs/components/brand/usage.md
+  mistakes: [Provide alt text when logo is an image.]

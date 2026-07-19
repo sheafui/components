@@ -1,2 +1,28 @@
 files:
   index: resources/views/components/ui/heading/index.blade.php
+mcp:
+  name: heading
+  title: Heading
+  summary: Render semantic headings with consistent responsive typography.
+  category: typography
+  tags: [heading, title, typography, semantic]
+  capabilities: [render-heading, establish-content-hierarchy]
+  access: free
+  install: heading
+  root_tag: x-ui.heading
+  child_tags: []
+  props:
+    level: {type: string, required: false, default: h2, values: [h1, h2, h3, h4, h5, h6]}
+    size: {type: string, required: false, default: sm}
+  slots:
+    default: {required: true, description: Heading text or inline contents.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.heading>Account</x-ui.heading>'
+    common: '<x-ui.heading level="h1" size="xl">Dashboard</x-ui.heading>'
+    advanced: '<x-ui.heading level="h3" size="lg" class="tracking-tight">Security settings</x-ui.heading>'
+  docs: docs/components/heading/usage.md
+  mistakes:
+    - Choose level for semantic hierarchy and size for visual scale.

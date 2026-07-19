@@ -5,5 +5,50 @@ files:
   option-clearable: resources/views/components/ui/input/options/clearable.blade.php
   option-copyable: resources/views/components/ui/input/options/copyable.blade.php
   option-revealable: resources/views/components/ui/input/options/revealable.blade.php
-dependencies: 
+dependencies:
   internal: [icon]
+mcp:
+  name: input
+  title: Input
+  summary: Collect text-like values with icons, affixes, masks, and utility actions.
+  category: forms
+  tags: [input, text-field, form, validation]
+  capabilities: [collect-text, bind-form-state, show-input-actions]
+  access: free
+  install: input
+  root_tag: x-ui.input
+  child_tags: []
+  props:
+    name: {type: string, required: false}
+    prefix: {type: string, required: false}
+    suffix: {type: string, required: false}
+    leftIcon: {type: mixed, required: false}
+    rightIcon: {type: mixed, required: false}
+    prefixIcon: {type: string, required: false}
+    suffixIcon: {type: string, required: false}
+    clearable: {type: boolean, required: false}
+    copyable: {type: boolean, required: false}
+    revealable: {type: boolean, required: false}
+    invalid: {type: boolean, required: false}
+    type: {type: string, required: false, default: text}
+    mask: {type: string, required: false}
+    size: {type: string, required: false}
+    kbd: {type: string, required: false}
+    as: {type: string, required: false}
+    bindScopeToParent: {type: boolean, required: false, default: false}
+    slot: {type: mixed, required: false}
+    slotIcon: {type: mixed, required: false}
+  slots:
+    default: {required: false, description: Custom native input replacement when using as.}
+    prefix: {required: false, description: Custom prefix content.}
+    suffix: {required: false, description: Custom suffix content.}
+  bindings: ['wire:model', x-model]
+  events: []
+  relationships: {requires_parent: null, allows_children: []}
+  examples:
+    minimal: '<x-ui.input name="email" />'
+    common: '<x-ui.input type="email" wire:model="email" placeholder="Email" />'
+    advanced: '<x-ui.input x-model="search" prefixIcon="magnifying-glass" clearable kbd="⌘K" />'
+  docs: docs/components/input/usage.md
+  mistakes:
+    - Use the documented camelCase names for icon and binding options.

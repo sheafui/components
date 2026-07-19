@@ -1,0 +1,46 @@
+name: authentication-form
+title: Authentication form
+summary: Collect credentials, display validation errors, and submit a sign-in request.
+intents:
+  - build an authentication form
+  - build a sign in page
+  - build a login form
+capabilities:
+  - collect-credentials
+  - display-validation-errors
+  - submit-form
+tags: [authentication, login, sign-in, form]
+required_components: [field, label, input, error, button]
+optional_components: [checkbox, card]
+tree:
+  component: field
+  tag: x-ui.field
+  children:
+    - component: label
+      tag: x-ui.label
+    - component: input
+      tag: x-ui.input
+    - component: error
+      tag: x-ui.error
+install: [field, label, input, error, button]
+example: |-
+  <form wire:submit="authenticate" class="space-y-6">
+      <x-ui.field required>
+          <x-ui.label for="email">Email address</x-ui.label>
+          <x-ui.input id="email" type="email" wire:model="email" />
+          <x-ui.error name="email" />
+      </x-ui.field>
+
+      <x-ui.field required>
+          <x-ui.label for="password">Password</x-ui.label>
+          <x-ui.input id="password" type="password" wire:model="password" revealable />
+          <x-ui.error name="password" />
+      </x-ui.field>
+
+      <x-ui.button type="submit">Sign in</x-ui.button>
+  </form>
+customization:
+  - Add checkbox for persistent sessions or card for a contained authentication panel.
+mistakes:
+  - Keep each credential label, input, and error inside its own field wrapper.
+access: free

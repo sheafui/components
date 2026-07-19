@@ -1,3 +1,29 @@
 files:
   index: resources/views/components/ui/tooltip/index.blade.php
   content: resources/views/components/ui/tooltip/content.blade.php
+mcp:
+  name: tooltip
+  title: Tooltip
+  summary: Show concise contextual hints around an interactive trigger.
+  category: overlays
+  tags: [tooltip, hint, contextual, accessibility]
+  capabilities: [show-contextual-hint]
+  access: free
+  install: tooltip
+  root_tag: x-ui.tooltip
+  child_tags: [x-ui.tooltip.content]
+  props:
+    placement: {type: string, required: false, default: top}
+    variant: {type: string, required: false, default: default}
+  slots:
+    default: {required: true, description: Tooltip trigger.}
+    content: {required: false, description: Tooltip text.}
+  bindings: []
+  events: []
+  relationships: {requires_parent: null, allows_children: [x-ui.tooltip.content]}
+  examples:
+    minimal: '<x-ui.tooltip content="Edit"><x-ui.button icon="pencil" /></x-ui.tooltip>'
+    common: '<x-ui.tooltip placement="bottom"><x-ui.button>Hover me</x-ui.button><x-ui.tooltip.content>Helpful text</x-ui.tooltip.content></x-ui.tooltip>'
+    advanced: '<x-ui.tooltip placement="right" variant="soft"><x-ui.button icon="information-circle" /><x-ui.tooltip.content>Account information</x-ui.tooltip.content></x-ui.tooltip>'
+  docs: docs/components/tooltip/usage.md
+  mistakes: [Keep tooltip content concise and nonessential.]

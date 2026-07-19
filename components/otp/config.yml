@@ -4,3 +4,34 @@ files:
   separator: resources/views/components/ui/otp/separator.blade.php
 dependencies:
   internal: [separator]
+mcp:
+  name: otp
+  title: One-time password input
+  summary: Collect fixed-length verification codes with focus, paste, and completion behavior.
+  category: forms
+  tags: [otp, verification-code, authentication, input]
+  capabilities: [collect-verification-code, bind-form-state, signal-completion]
+  access: free
+  install: otp
+  root_tag: x-ui.otp
+  child_tags: [x-ui.otp.input, x-ui.otp.separator]
+  props:
+    name: {type: string, required: false}
+    length: {type: integer, required: false, default: 4}
+    type: {type: string, required: false, default: text}
+    allowedPattern: {type: string, required: false, default: '[0-9]'}
+    autofocus: {type: boolean, required: false, default: false}
+  slots:
+    default: {required: false, description: Custom OTP inputs and separators.}
+  bindings: ['wire:model', x-model]
+  events: [otp-complete, otp-clear, otp-focus]
+  relationships:
+    requires_parent: null
+    allows_children: [x-ui.otp.input, x-ui.otp.separator]
+  examples:
+    minimal: '<x-ui.otp />'
+    common: '<x-ui.otp wire:model="code" :length="6" />'
+    advanced: '<x-ui.otp x-model="code" :length="6" x-on:otp-complete="verify($event.detail.code)" />'
+  docs: docs/components/otp/usage.md
+  mistakes:
+    - Match length to the verification code and listen for otp-complete on the root.
