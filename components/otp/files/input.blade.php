@@ -1,4 +1,4 @@
-@aware(['type' => 'text','name'=> null])
+@aware(['type' => 'text'])
 
 @php
 $classes = [
@@ -21,7 +21,6 @@ $classes = [
 <input
     {{ $attributes
         ->merge([
-            'name' => $name,
             'type' => $type,
         ])
         ->class($classes) 

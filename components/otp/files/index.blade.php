@@ -330,4 +330,11 @@
             @endif
         </div>
     </div>
+
+    {{-- What a plain <form> submits. The boxes carry no name of their own: a name
+         on each of them posts one value per box and the last one wins. Livewire
+         binds through wire:model instead, and needs no field here. --}}
+    @if (filled($name) && ! $modelAttrs)
+        <input type="hidden" name="{{ $name }}" x-bind:value="_state" />
+    @endif
 </div>
