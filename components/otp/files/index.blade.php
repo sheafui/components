@@ -4,6 +4,7 @@
     'type' => 'text',
     'allowedPattern' => '[0-9]',
     'autofocus' => false,
+    'required' => true,
 ])
 
 @php
@@ -93,16 +94,22 @@
                 this._inputs.forEach((input, index) => {
                     input.setAttribute('data-order', index);
                     input.setAttribute('aria-label', `Digit ${index + 1} of ${this.length}`);
+
+                    // Only the first box claims the code. Six boxes all answering to
+                    // `one-time-code` leave a password manager no single field to fill.
+                    input.setAttribute('autocomplete', index === 0 ? 'one-time-code' : 'off');
                 });
             },
 
-            // Enable only the next valid input (lock the rest)
+            // Keep tabbing on the next valid input (skip the rest)
             updateInputAvailability() {
-                // Inputs are enabled only up to (filled count + 1)
+                // Inputs are in play only up to (filled count + 1)
                 const enableCount = this._state.length < this.length ? this._state.length + 1 : this.length;
 
                 this._inputs.forEach((input, index) => {
-                    input.disabled = index >= enableCount;
+                    // Not `disabled`: a disabled input is one a password manager
+                    // cannot write to, so a fill stops at the first box.
+                    input.tabIndex = index >= enableCount ? -1 : 0;
                 });
             },
 
@@ -116,10 +123,12 @@
                 const index = parseInt(el.dataset.order);
                 let value = el.value;
 
-                // Always keep last typed character (avoid multi-char paste in one box)
+                // A password manager fills the whole code into one box and dispatches
+                // `input`, never `paste` — so this is the only place that sees it.
                 if (value.length > 1) {
-                    value = value.slice(-1);
-                    el.value = value;
+                    this.fillFrom(value, index);
+
+                    return;
                 }
 
                 // Reject characters not matching the pattern
@@ -140,12 +149,16 @@
 
             // Handle paste: distribute valid chars across remaining inputs
             handlePaste(e) {
-                const pasted = e.clipboardData.getData('text');
-                const regex = new RegExp(`^${this.allowedPattern}$`);
-                const validChars = Array.from(pasted).filter(char => regex.test(char));
-                const startIndex = parseInt(e.target.dataset.order);
+                this.fillFrom(e.clipboardData.getData('text'), parseInt(e.target.dataset.order));
+            },
 
-                // Clear all inputs after paste start position
+            // Spread a multi-character value across the boxes from one of them on.
+            // Both a paste and a password manager's fill arrive here.
+            fillFrom(text, startIndex) {
+                const regex = new RegExp(`^${this.allowedPattern}$`);
+                const validChars = Array.from(text).filter(char => regex.test(char));
+
+                // Clear all inputs after the start position
                 for (let i = startIndex; i < this._inputs.length; i++) {
                     this._inputs[i].value = '';
                 }
@@ -165,7 +178,7 @@
                     if (next) {
                         this.focusAndSelect(next);
                     } else if (validChars.length + startIndex >= this.length) {
-                        // If paste fills all boxes, focus last input for convenience
+                        // If the fill covers all boxes, focus last input for convenience
                         const lastInput = this._inputs[this.length - 1];
                         if (lastInput) {
                             requestAnimationFrame(() => {
@@ -252,15 +265,18 @@
 
             // Public method: Clear all inputs and reset focus
             clear() {
+                const held = this._inputs.includes(document.activeElement);
+
                 this._inputs.forEach(input => {
                     input.value = '';
-                    input.disabled = true;
                 });
 
-                if (this._inputs[0]) this._inputs[0].disabled = false;
+                // Resetting the state is what restores the tab order
                 this._state = '';
 
-                if (this.autofocus && this._inputs[0]) {
+                // The caret goes back to the first box rather than being left on
+                // one that is no longer in play
+                if ((this.autofocus || held) && this._inputs[0]) {
                     requestAnimationFrame(() => this._inputs[0].focus());
                 }
             },
@@ -273,26 +289,14 @@
 
             // Handle clicks anywhere inside the container (smart focus delegation)
             handleClick(e) {
+                // Clamped to the boxes in play rather than gated on `disabled`, which
+                // nothing sets any more: a click past the caret lands on the first
+                // box still waiting for a digit.
                 const clickedInput = e.target.closest('[data-slot=otp-input]');
+                const furthest = Math.min(this._state.length, this.length - 1);
+                const order = clickedInput ? parseInt(clickedInput.dataset.order) : furthest;
 
-                // If clicked directly on an active input
-                if (clickedInput && !clickedInput.disabled) {
-                    this.focusAndSelect(clickedInput);
-                    return;
-                }
-
-                // Otherwise, find the best input to focus next
-                const firstEmpty = this._inputs.find(input => !input.value && !input.disabled);
-
-                if (firstEmpty) {
-                    this.focusAndSelect(firstEmpty);
-                } else {
-                    // All filled: focus last for easy editing
-                    const lastInput = this._inputs[this.length - 1];
-                    if (lastInput && !lastInput.disabled) {
-                        this.focusAndSelect(lastInput);
-                    }
-                }
+                this.focusAndSelect(this._inputs[Math.min(order, furthest)]);
             }
         }
     }"
@@ -327,4 +331,11 @@
             @endif
         </div>
     </div>
+
+    {{-- What a plain <form> submits. The boxes carry no name of their own: a name
+         on each of them posts one value per box and the last one wins. Livewire
+         binds through wire:model instead, and needs no field here. --}}
+    @if (filled($name) && ! $modelAttrs)
+        <input type="hidden" name="{{ $name }}" x-bind:value="_state" />
+    @endif
 </div>
