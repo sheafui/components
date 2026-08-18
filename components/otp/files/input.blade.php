@@ -39,7 +39,9 @@ $classes = [
     x-on:keydown.backspace.prevent="await handleBackspace($event)"
     
     {{-- accessibilty addons --}}
-    autocomplete="one-time-code"
+    {{-- index.blade.php gives the first box `one-time-code`; the rest stay off, so
+         a password manager has one field to aim at rather than six. --}}
+    autocomplete="off"
     x-on:keydown.right="$focus.within($refs.inputsWrapper).next()"
     x-on:keydown.up="$focus.within($refs.inputsWrapper).next()"
     x-on:keydown.left="$focus.within($refs.inputsWrapper).prev()"
