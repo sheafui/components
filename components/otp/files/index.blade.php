@@ -4,6 +4,7 @@
     'type' => 'text',
     'allowedPattern' => '[0-9]',
     'autofocus' => false,
+    'required' => true,
 ])
 
 @php

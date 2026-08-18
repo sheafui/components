@@ -1,4 +1,4 @@
-@aware(['type' => 'text'])
+@aware(['type' => 'text', 'required' => true])
 
 @php
 $classes = [
@@ -26,7 +26,7 @@ $classes = [
         ->class($classes) 
     }}
     
-    required
+    @if ($required) required @endif
     maxlength="1"
     data-slot="otp-input"
     x-on:input="handleInput($el)"
