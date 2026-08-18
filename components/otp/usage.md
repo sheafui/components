@@ -69,6 +69,22 @@ You can use it outside Livewire with just Alpine (with Blade):
 
 > **Note:** The component uses `_state` and `_inputs` internally, so avoid using these variable names in your Alpine scope.
 
+#### Submitting from a plain form
+
+Outside Livewire the component submits through a hidden input, named after `name` (or after the `x-model` expression when no name is given):
+
+```html
+<form method="POST" action="/two-factor-challenge" x-data="{ code: null }">
+    @csrf
+
+    <x-ui.otp name="code" x-model="code" :length="6" />
+
+    <button type="submit">Continue</button>
+</form>
+```
+
+> **Note:** If the OTP shares a form with another field and is hidden behind `x-show`, pass `:required="false"` or wrap it in a disabled `<fieldset>` — a `required` input that is `display: none` makes the browser refuse the submit.
+
 ## Customization
 
 ### Custom Length
@@ -288,29 +304,29 @@ When you delete a digit from the middle of the OTP, all subsequent digits automa
 - Delete `2`: `[1][3][4][ ]` (values shift left)
 - No gaps remain between digits
 
-### Click-to-Focus on Disabled Inputs
+### Click-to-Focus
 
-Click anywhere in the OTP input container, even on disabled inputs, to automatically focus the appropriate input box.
+Click anywhere in the OTP input container to automatically focus the appropriate input box.
 
 @blade
 <x-demo class="flex justify-center !text-start" x-data="{ clickCode: '12' }">
     <div>
-        <label class="block text-sm font-medium mb-2">Click on any input (even disabled ones)</label>
+        <label class="block text-sm font-medium mb-2">Click on any input</label>
         <x-ui.otp 
             x-model="clickCode"
             :length="6"
         />
-        <p class="text-sm text-neutral-600 mt-2">Try clicking on neutraled-out (disabled) inputs - focus will jump to the next available input.</p>
+        <p class="text-sm text-neutral-600 mt-2">Try clicking past the digits you have typed - focus will jump to the next available input.</p>
     </div>
 </x-demo>
 @endblade
 
 **How it works:**
-- Click on an enabled input → focuses that input
-- Click on a disabled input → focuses the first empty input
+- Click on an input at or before the caret → focuses that input
+- Click on an input past the caret → focuses the first empty input
 - Click on empty space → focuses the first empty input
 
-> **Technical Note:** This feature uses a CSS `::after` pseudo-element overlay trick to capture click events on disabled inputs, which normally block all pointer events.
+> **Technical Note:** Inputs past the caret are taken out of the tab order with `tabindex="-1"` rather than disabled, so a password manager can still fill them.
 
 ### Completion Events
 
@@ -479,7 +495,7 @@ The component exposes methods that can be called from outside:
 The component includes comprehensive accessibility features:
 
 - **ARIA labels**: Each input has a descriptive label (e.g., "Digit 1 of 4")
-- **Autocomplete**: `autocomplete="one-time-code"` for better mobile support
+- **Autocomplete**: `autocomplete="one-time-code"` on the first input, `off` on the rest, so mobile keyboards and password managers have a single field to fill
 - **Keyboard navigation**: Arrow keys move between inputs
 - **Screen reader friendly**: Proper roles and labels
 - **Focus management**: Clear visual focus indicators
@@ -492,6 +508,8 @@ The component includes comprehensive accessibility features:
 | `type` | string | `'text'` | No | HTML input type attribute |
 | `allowedPattern` | string | `'[0-9]'` | No | Regex pattern for allowed characters |
 | `autofocus` | boolean | `false` | No | Auto-focus first input on mount |
+| `name` | string | `wire:model` / `x-model` value | No | Name the code is submitted under in a plain form |
+| `required` | boolean | `true` | No | Mark the inputs required |
 | `wire:model` | string | - | Yes* | Livewire property to bind to |
 | `x-model` | string | - | Yes* | Alpine.js property to bind to |
 | `class` | string | - | No | Additional CSS classes for container |
