@@ -30,7 +30,7 @@ import the css:
 
 > Once installed, you can use the `<x-ui.calendar />` component in any Blade view.
 
-If you're using range mode with livewire, we recomend to register the synthesizer in your service provider so Livewire knows how to serialize the `DateRange` object between requests:
+If you're using range mode with Livewire, we recommend registering the synthesizer in your service provider so Livewire knows how to serialize the `DateRange` object between requests:
 
 ```php
 use App\Livewire\Synthesizers\DateRangeSynthesizer;
@@ -108,7 +108,7 @@ Outside Livewire, bind with `x-model`:
     <x-ui.calendar x-model="date" />
 </div>
 
-<!-- bind durrent's day date -->
+<!-- bind the current day's date -->
 <div x-data="{ date: new Date().toISOString() }"> 
     <x-ui.calendar x-model="date" />
 </div>
@@ -181,7 +181,7 @@ Restrict the selectable date range with `min` and `max`. Both accept ISO date st
 
 ## Unavailable Dates
 
-Mark specific dates as unavailable (greyed out, non-selectable) using a comma-separated array of ISO date strings. Unlike `min`/`max`, unavailable dates are visible but disabled.
+Mark specific dates as unavailable (greyed out, non-selectable) using an array (or comma-separated string) of ISO date strings. Unlike `min`/`max`, unavailable dates are visible but disabled.
 
 @blade
 <x-demo lazy class="flex justify-center">
@@ -294,7 +294,7 @@ Show multiple months side-by-side for easier range selection or date browsing. S
 
 ## Fixed Week Heights
 
-By default, calendar months have different weeks number(4–6 rows). Set `fixed-weeks` to lock all rendered months to a consistent week number (take the number of week from the month with height weeks number).
+By default, calendar months can have a different number of week rows (4–6). Set `fixed-weeks` to lock all rendered months to a consistent row count (taken from the rendered month with the highest number of weeks).
 
 @blade
 <x-demo lazy class="flex justify-center">
@@ -716,7 +716,7 @@ public function rules(): array
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `wire:model` | string | — | Binds to a Livewire property. Value format depends on mode: `YYYY-MM-DD` (single), `YYYY-MM-DD,YYYY-MM-DD,...` (multiple), `YYYY-MM-DD,YYYY-MM-DD` (range). Supports `.live` modifier. |
+| `wire:model` | string | — | Binds to a Livewire property. Value format depends on mode: `YYYY-MM-DD` string (single), array of `YYYY-MM-DD` strings (multiple), `{ start, end }` object or `DateRange` (range). Supports `.live` modifier. |
 | `mode` | string | `'single'` | Selection mode. Options: `single`, `multiple`, `range`. |
 | `min` | string | `null` | Earliest selectable date as `YYYY-MM-DD`. |
 | `max` | string | `null` | Latest selectable date as `YYYY-MM-DD`. |
@@ -793,7 +793,7 @@ public function rules(): array
 | `last30Days(): static` | Creates a range for the last 30 days. |
 | `last3Months(): static` | Creates a range for the last 3 months. |
 | `last6Months(): static` | Creates a range for the last 6 months. |
-| `yearToDate(): static` | Creates a range from January& 1st of the current year to today. |
+| `yearToDate(): static` | Creates a range from January 1st of the current year to today. |
 | `lastWeekToDate(): static` | Creates a range from the start of last week (Monday) to today. |
 | `lastMonthToDate(): static` | Creates a range from the first of last month to today. |
 | `lastQuarterToDate(): static` | Creates a range from the start of last quarter to today. |
