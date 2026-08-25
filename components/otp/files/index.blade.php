@@ -292,7 +292,6 @@
                 // Clamped to the boxes in play rather than gated on `disabled`, which
                 // nothing sets any more: a click past the caret lands on the first
                 // box still waiting for a digit.
-                console.log(e)
                 const clickedInput = e.target.closest('[data-slot=otp-input]');
                 const furthest = Math.min(this._state.length, this.length - 1);
                 const order = clickedInput ? parseInt(clickedInput.dataset.order) : furthest;
