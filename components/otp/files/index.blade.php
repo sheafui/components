@@ -292,6 +292,7 @@
                 // Clamped to the boxes in play rather than gated on `disabled`, which
                 // nothing sets any more: a click past the caret lands on the first
                 // box still waiting for a digit.
+                console.log(e)
                 const clickedInput = e.target.closest('[data-slot=otp-input]');
                 const furthest = Math.min(this._state.length, this.length - 1);
                 const order = clickedInput ? parseInt(clickedInput.dataset.order) : furthest;
@@ -318,7 +319,7 @@
                 '[:where(&>[data-slot=otp-input]:has(+[data-slot=separator]))]:rounded-r-box',
                 '[:where(&>[data-slot=separator]+[data-slot=otp-input])]:rounded-l-box',
             ]) 
-            x-on:click="handleClick($event)"
+            x-on:mousedown.prevent="handleClick($event)"
         >
             @if ($slot->isNotEmpty())
                 {{-- Developer-defined slot version (for custom design control) --}}
@@ -332,9 +333,7 @@
         </div>
     </div>
 
-    {{-- What a plain <form> submits. The boxes carry no name of their own: a name
-         on each of them posts one value per box and the last one wins. Livewire
-         binds through wire:model instead, and needs no field here. --}}
+    {{-- What a plain <form> submits. --}}
     @if (filled($name) && ! $modelAttrs)
         <input type="hidden" name="{{ $name }}" x-bind:value="_state" />
     @endif
