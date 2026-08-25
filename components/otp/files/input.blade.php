@@ -1,33 +1,35 @@
-@aware(['type' => 'text','name'=> null])
+@aware([
+    'type' => 'text',
+    'required' => true
+])
 
 @php
-$classes = [
-    'z-0 relative', // reset stacking context
-    'focus:z-10', // prevent this input to get clipped from next input
-    '[:where(&:first-child)]:rounded-l-box overflow-visible [:where(&:last-child)]:rounded-r-box', // default rounding with zero specificity, allows external classes to override without !
-    'text-center text-base max-w-12 w-full h-12',
-    'bg-white dark:bg-neutral-900', // background
-    'text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500',
-    'border border-black/10 dark:border-white/10', // base border
-    'focus:outline-none focus:ring-3 focus:ring-[color-mix(in_oklab,_var(--color-primary)_15%,_var(--color-primary-fg)_60%)]',
-    'transition duration-300 ease-in-out',
-    'shadow-sm',
-    'disabled:pointer-events-none',
-    // overlay for disabled inputs to catch clicks, it a hack but needed for better UX
-    'disabled:after:content-[""] disabled:after:absolute disabled:after:inset-0 disabled:after:cursor-text disabled:after:pointer-events-auto',
-];
+    $classes = [
+        'z-0 relative', // reset stacking context
+        'focus:z-10', // prevent this input to get clipped from next input
+        '[:where(&:first-child)]:rounded-l-box overflow-visible [:where(&:last-child)]:rounded-r-box', // default rounding with zero specificity, allows external classes to override without !
+        'text-center text-base max-w-12 w-full h-12',
+        'bg-white dark:bg-neutral-900', // background
+        'text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500',
+        'border border-black/10 dark:border-white/10', // base border
+        'focus:outline-none focus:ring-3 focus:ring-[color-mix(in_oklab,_var(--color-primary)_15%,_var(--color-primary-fg)_60%)]',
+        'transition duration-300 ease-in-out',
+        'shadow-sm',
+        'disabled:pointer-events-none',
+        // overlay for disabled inputs to catch clicks, it a hack but needed for better UX
+        'disabled:after:content-[""] disabled:after:absolute disabled:after:inset-0 disabled:after:cursor-text disabled:after:pointer-events-auto',
+    ];
 @endphp
 
 <input
     {{ $attributes
         ->merge([
-            'name' => $name,
             'type' => $type,
         ])
         ->class($classes) 
     }}
     
-    required
+    @required($required)
     maxlength="1"
     data-slot="otp-input"
     x-on:input="handleInput($el)"
