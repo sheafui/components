@@ -1,4 +1,3 @@
-{{-- resources/views/components/brand.blade.php --}}
 @aware([
     'href' => '#',
     'logo' => null,

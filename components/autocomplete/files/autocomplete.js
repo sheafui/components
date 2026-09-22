@@ -1,4 +1,3 @@
-
 const autocompleteComponent = ({
     model,
     livewire,
