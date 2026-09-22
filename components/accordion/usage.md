@@ -284,6 +284,34 @@ Use the reverse layout to position chevron icons on the left side.
 </x-ui.accordion>
 ```
 
+### FAQ Schema (JSON-LD)
+
+Add the `faq` attribute to the root `<x-ui.accordion>` tag to automatically generate a [FAQPage JSON-LD schema](https://developers.google.com/search/docs/appearance/structured-data/faqpage) from the accordion's triggers and content, and push it to your page's `<head>`.
+
+This walks the rendered accordion items, using each trigger's text as the `Question` and each content panel's markup as the `Answer`.
+
+```blade
+<x-ui.accordion faq>
+    <x-ui.accordion.item trigger="What is your return policy?">
+        <p>We offer a 30-day return policy for all unused items in their original packaging.</p>
+    </x-ui.accordion.item>
+    <x-ui.accordion.item trigger="How long does shipping take?">
+        <p>Standard shipping typically takes 3-5 business days.</p>
+    </x-ui.accordion.item>
+</x-ui.accordion>
+```
+
+This pushes a `<script type="application/ld+json">` tag onto the `head` stack, so your layout must declare it:
+
+```blade
+<head>
+    ...
+    @stack('head')
+</head>
+```
+
+> Items without a resolvable trigger/content pair (e.g. empty triggers) are skipped rather than emitted as blank schema entries.
+
 ## Component Props Reference
 
 ### ui.accordion
@@ -291,6 +319,7 @@ Use the reverse layout to position chevron icons on the left side.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `reverse` | `boolean` | `false` | Whether to reverse the trigger layout (chevron on left) |
+| `faq` | `boolean` | `false` | Automatically build a FAQPage JSON-LD schema from the accordion items and push it to the `head` stack |
 
 ### ui.accordion.item
 
