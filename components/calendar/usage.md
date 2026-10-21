@@ -468,6 +468,7 @@ Prevent selection of certain special days by adding `special-disabled` with the 
                 [&_[data-special~=blocked]]:text-red-500">
         <x-ui.calendar 
             mode="multiple"
+            open-to="2026-04-01"
             :special-days="[
                 'holiday'   => ['2026-04-20', '2026-04-21'],
                 'birthday'  => ['2026-04-15'],
@@ -500,6 +501,7 @@ Provide tooltip text for each category using `special-tooltips`. The tooltip app
                 [&_[data-special~=blocked]]:text-red-500">
         <x-ui.calendar 
             mode="multiple"
+            open-to="2026-04-01"
             :special-days="[
                 'holiday'   => ['2026-04-20', '2026-04-21'],
                 'birthday'  => ['2026-04-15'],
