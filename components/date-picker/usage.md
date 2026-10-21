@@ -4,9 +4,9 @@ name: date-picker
 
 ## Introduction
 
-The `DatePicker` component is a **zero dependencies**, **fully accessible**, and **deeply customizable** that wraps the powerful `Calendar` component with an elegant dialog, preset buttons, and intelligent date formatting. It combines the full feature set of the calendar (single, multiple, and range selection modes) with a polished UI layer that includes preset ranges, smart formatting...
+The `DatePicker` component is a **zero dependencies**, **fully accessible**, and **deeply customizable** component that wraps the powerful `Calendar` component with an elegant dialog, preset buttons, and intelligent date formatting. It combines the full feature set of the calendar (single, multiple, and range selection modes) with a polished UI layer that includes preset ranges and smart formatting.
 
-it differ from the calendar of dialog-based date selector with presets, formatting, and positioning. Perfect for triggering from buttons or input fields.
+It differs from the calendar by wrapping it in a dialog-based date selector with presets, formatting, and positioning. Perfect for triggering from buttons or input fields.
 
 ## Installation
 
@@ -32,7 +32,7 @@ import the css (if you haven't did it for the calendar component before):
 
 > Once installed, you can use the `<x-ui.date-picker />` component in any Blade view.
 
-if you're using range mode with livewire, we recomend to register the synthesizer in your service provider so Livewire knows how to serialize the `DateRange` object between requests:
+If you're using range mode with Livewire, we recommend registering the synthesizer in your service provider so Livewire knows how to serialize the `DateRange` object between requests:
 
 ```php
 use App\Livewire\Synthesizers\DateRangeSynthesizer;
@@ -109,7 +109,7 @@ Outside Livewire, bind with `x-model`:
     <x-ui.date-picker x-model="date" />
 </div>
 
-<!-- bind durrent's day date -->
+<!-- bind the current day's date -->
 <div x-data="{ date: new Date().toISOString() }"> 
     <x-ui.date-picker x-model="date" />
 </div>

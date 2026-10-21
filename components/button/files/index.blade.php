@@ -140,7 +140,7 @@ $loadingAttributes = $loadingAttributes->merge($hasWireLoading || $type === 'sub
     'wire:target' => $attributes->has('wire:target') ? $attributes->get('wire:target') : ($attributes->whereStartsWith('wire:click')->first() ?? null),
 ] : []);
 
-// Fallback for non-Livewire cases, I believe there use case for this static case beyond we actually need it in demo docs: 
+// Fallback for non-Livewire cases, I believe there is a use case for this static case beyond we actually need it in demo docs: 
 $loadingAttributes = $loadingAttributes->merge($loading ? [
     'data-loading' => 'true', // thats 'true' is crucial, boolean true will break the work
 ] : []);
@@ -155,12 +155,12 @@ $loadingAttributes = $loadingAttributes->merge($loading ? [
         'role' => $as === 'a' && !$attributes->has('href') ? 'button' : null,
         'aria-busy' => $loading ? 'true' : 'false',
         'aria-disabled' => $attributes->has('disabled') ? 'true' : 'false',
-        // I know it basic, but you can create mapping labels for popular icons like ['x-mark' => 'Close']... 
+        // Optionally create mapping labels for popular icons like ['x-mark' => 'Close']... 
         'aria-label' => $squared && blank($slot) ? Str::title($icon ?? $iconAfter ?? 'Button') : null,
     ])"  
     data-slot="button"
 >
-        {{-- This is a special icon component (ui/icon/loading.blade.php) required for the loading indicator --}}
+        {{-- Dependency: (ui/icon/loading.blade.php) --}}
         <div
             @class([
                 'absolute inset-0 hidden items-center justify-center '
